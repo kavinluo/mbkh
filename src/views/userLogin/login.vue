@@ -54,22 +54,22 @@ export default {
       password: ''
     })
     const onSubmit = (formEl) => {
-      router.push('/work')
+      router.push('/manage')
       // router.push({
-      //   name: 'work',
-      //   path: '/work'
+      //   name: 'manage',
+      //   path: '/manage'
       // })
       // return
-      // if (!formEl) return
-      // formEl.validate((valid) => {
-      //   console.log('valid', valid)
-      //   if (valid) {
-      //     console.log('submit!')
-      //   } else {
-      //     console.log('error submit!')
-      //     return false
-      //   }
-      // })
+      if (!formEl) return
+      formEl.validate((valid) => {
+        console.log('valid', valid)
+        if (valid) {
+          console.log('submit!')
+        } else {
+          console.log('error submit!')
+          return false
+        }
+      })
     }
     const rules = reactive({
       username: [

@@ -1,7 +1,7 @@
 import { computed } from 'vue'
 import { useStore } from 'vuex'
 
-export default function useMapState (mapper, mapFn) {
+export default function useMapper (mapper, mapFn) {
   // 拿到store独享
   const store = useStore()
 

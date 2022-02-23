@@ -1,5 +1,7 @@
 // import Vue from 'vue'
 import { createRouter, createWebHistory } from 'vue-router'
+import Index from '@/views/layout/index.vue'
+
 const work = {
   name: 'work',
   path: '/work',
@@ -8,10 +10,31 @@ const work = {
 const Login = {
   name: 'login',
   path: '/login',
-  component: () => import(/*  webpackChunkName: "login"  */'@/views/userLogin/login.vue')
+  component: () => import(/* webpackChunkName: "login" */'@/views/userLogin/login.vue')
 }
 
 const routes = [
+  {
+    path: '/manage',
+    name: 'manage',
+    meta: {
+      requireAuth: true // 添加该字段，表示进入这个路由是需要登录的
+    },
+    component: Index,
+    children: [
+      work
+    ]
+  },
+  {
+    path: '/',
+    redirect: '/login'
+  },
+  {
+    path: '/:pathMatch(.*)',
+    // path: '/:pathMatch(.*)*', // 后面加*，pathMatch拿到的是数组['jjj','ggg']
+		name: 'notFound',
+		component: () => import(/* webpackChunkName: "notFound-chunk" */'@/views/sty/NotFound.vue')
+	},
   Login,
   work
 ]

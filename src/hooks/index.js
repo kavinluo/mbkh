@@ -1,5 +1,6 @@
-import useMapState from './useMapState.js'
-
+import useGetters from './useGetters'
+import useState from './useState'
 export {
-  useMapState
+  useGetters,
+  useState
 }

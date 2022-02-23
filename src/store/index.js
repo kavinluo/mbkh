@@ -36,9 +36,9 @@ import { createStore } from 'vuex'
 const store = createStore({
   state () {
     return {
-      token: '77',
-      counter: 'counter',
-      name: 'name'
+      token: 'token:8888',
+      counter: 'counter：888',
+      name: 'name：kevin'
     }
   }
 })

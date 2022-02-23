@@ -7,21 +7,21 @@
 </template>
 
 <script>
-import { useMapState } from '@/hooks/index'
+import { useState } from '@/hooks/index'
 
-import { mapState, useStore } from 'vuex'
+import { useStore } from 'vuex'
 import { computed } from 'vue'
 
   export default {
     name: 'Work',
     setup () {
       const store = useStore()
-      const storeStateFns = useMapState(['counter', 'name'], mapState)
-      const storeState = {}
+      const storeStateFns = useState(['counter', 'name'])
+      // const storeState = {}
       const sCounter = computed(() => store.state.token)
       return {
         sCounter,
-        ...storeState,
+        // ...storeState,
         ...storeStateFns
       }
     }
