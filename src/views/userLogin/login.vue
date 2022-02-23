@@ -2,7 +2,7 @@
   <div class="loginPage">
     <div class="login-wrap">
       <div class="login-title">登录 / LOGIN</div>
-      <el-form ref="ruleFormRef" :model="ruleForm" label-width="0" :rules="rules">
+      <el-form ref="ruleFormRef" :model="form" label-width="0" :rules="rules">
         <el-form-item prop="username">
           <el-input v-model="form.username" clearable size="large" placeholder="请输用户名">
             <template #suffix>
@@ -32,6 +32,7 @@ import { Avatar, Lock } from '@element-plus/icons-vue'
 import { getEnvs } from '@/api/test.js'
 import { ElForm } from 'element-plus'
 import { ref, reactive } from 'vue'
+import { useRouter, useRoute } from 'vue-router'
 
 export default {
   components: {
@@ -44,21 +45,31 @@ export default {
     // const { $axios } = currentInstance.appContext.config.globalProperties
     // const { proxy } = getCurrentInstance()
     // type FormInstance = InstanceType<typeof ElForm>
+    const router = useRouter()
+    const route = useRoute()
+    console.log('router', router, route)
     const ruleFormRef = ref(ElForm)
     const form = reactive({
       username: '',
       password: ''
     })
     const onSubmit = (formEl) => {
-      if (!formEl) return
-      formEl.validate((valid) => {
-        if (valid) {
-          console.log('submit!')
-        } else {
-          console.log('error submit!')
-          return false
-        }
-      })
+      router.push('/work')
+      // router.push({
+      //   name: 'work',
+      //   path: '/work'
+      // })
+      // return
+      // if (!formEl) return
+      // formEl.validate((valid) => {
+      //   console.log('valid', valid)
+      //   if (valid) {
+      //     console.log('submit!')
+      //   } else {
+      //     console.log('error submit!')
+      //     return false
+      //   }
+      // })
     }
     const rules = reactive({
       username: [
@@ -100,7 +111,8 @@ export default {
       form,
       rules,
       ruleFormRef,
-      onSubmit
+      onSubmit,
+      route
     }
     /**
     // function getList() {

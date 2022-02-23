@@ -1,26 +1,26 @@
 // import Vue from 'vue'
 import { createRouter, createWebHistory } from 'vue-router'
-const home = {
-  name: 'home',
-  path: '/home',
-  component: import(/*  webpackChunkName:"Home"  */'@/views/sty/Home.vue')
+const work = {
+  name: 'work',
+  path: '/work',
+  component: () => import(/*  webpackChunkName:"Work"  */'@/views/layout/work.vue')
 }
 const Login = {
   name: 'login',
   path: '/login',
-  component: import(/*  webpackChunkName: "login"  */'@/views/userLogin/login.vue')
+  component: () => import(/*  webpackChunkName: "login"  */'@/views/userLogin/login.vue')
 }
 
 const routes = [
   Login,
-  home
+  work
 ]
 
 const router = createRouter({
   history: createWebHistory(),
   routes
 })
-const token = ''
+const token = 'gggg'
 router.beforeEach((to, from) => {
   console.log('from', from)
   if (to.path !== '/login') {

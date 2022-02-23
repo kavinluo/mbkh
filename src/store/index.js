@@ -1,3 +1,4 @@
+
 // import Vue from 'vue'
 // import Vuex from 'vuex'
 
@@ -30,3 +31,16 @@
 //   },
 //   getters
 // })
+import { createStore } from 'vuex'
+
+const store = createStore({
+  state () {
+    return {
+      token: '77',
+      counter: 'counter',
+      name: 'name'
+    }
+  }
+})
+
+export default store
