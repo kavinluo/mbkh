@@ -5,6 +5,7 @@ import ElementPlus from 'element-plus'
 import { axios } from './utils/request'
 import store from './store/index'
 import './assets/style/reset.css'
+import './assets/style/common.less'
 import 'element-plus/dist/index.css'
 const app = createApp(App)
 
