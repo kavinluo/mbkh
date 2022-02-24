@@ -30,9 +30,9 @@ import leftMenu from './leftMenu.vue'
     background: #dce9f4;
     padding: 0 10px;
     display: flex;
-    .left-menu {
-      width: 200px;
-    }
+    // .left-menu {
+    //   width: 200px;
+    // }
   }
   .right-mian {
     flex: 1;

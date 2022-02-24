@@ -1,27 +1,41 @@
 <template>
   <div>
-    {{ sCounter }}
-    {{ counter }}
+    {{ token }} <br>
+    counter：{{ counter }}
+    <button @click="add">+1</button>
+    <button @click="updown">-1</button>
+    <br>
     {{ name }}
+    {{ useInfo }}<br>
+    模块中中的数据: {{ name }}
   </div>
 </template>
 
 <script>
-import { useState } from '@/hooks/index'
-
+import { useState, useGetters } from '@/hooks/index'
 import { useStore } from 'vuex'
 import { computed } from 'vue'
 
   export default {
-    name: 'Work',
     setup () {
       const store = useStore()
+      const getters = useGetters(['useInfo'])
       const storeStateFns = useState(['counter', 'name'])
-      // const storeState = {}
-      const sCounter = computed(() => store.state.token)
+      const modulesInfo = useState(['name'], 'user')
+      const token = computed(() => store.state.token)
+      const updown = function () {
+        store.commit('updown')
+      }
+      const add = function () {
+        store.commit('add')
+      }
       return {
-        sCounter,
+        add,
+        updown,
+        token,
+        ...modulesInfo,
         // ...storeState,
+        ...getters,
         ...storeStateFns
       }
     }

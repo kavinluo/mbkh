@@ -3,7 +3,7 @@
 // import Vuex from 'vuex'
 
 // import app from './modules/app'
-// import user from './modules/user'
+import user from './modules/user'
 
 // default router permission control
 // import permission from './modules/permission'
@@ -34,11 +34,33 @@
 import { createStore } from 'vuex'
 
 const store = createStore({
+  modules: {
+    // app,
+    user
+    // permission
+  },
   state () {
     return {
       token: 'token:8888',
-      counter: 'counter：888',
-      name: 'name：kevin'
+      counter: 0,
+      name: 'kevin',
+      names: 'hhh'
+    }
+  },
+  mutations: {
+    add (state) {
+      state.counter++
+    },
+    updown (state) {
+      state.counter--
+    }
+  },
+  actions: {
+
+  },
+  getters: {
+    useInfo (state) {
+      return `请叫我 ${state.name}`
     }
   }
 })

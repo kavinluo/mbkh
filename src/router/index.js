@@ -1,6 +1,6 @@
 // import Vue from 'vue'
 import { createRouter, createWebHistory } from 'vue-router'
-import Index from '@/views/layout/index.vue'
+import Index from '@/layout/index.vue'
 import { work } from './work'
 import { systemStaff, menuManagement } from './systemSetting'
 
@@ -41,7 +41,6 @@ const router = createRouter({
 })
 const token = 'gggg'
 router.beforeEach((to, from) => {
-  console.log('from', from)
   if (to.path !== '/login') {
     if (!token) {
       return '/login'
