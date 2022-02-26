@@ -3,7 +3,7 @@ module.exports = {
   env: {
     node: true
   },
-  'extends': [
+  extends: [
     'plugin:vue/strongly-recommended',
     '@vue/standard'
   ],
@@ -12,14 +12,14 @@ module.exports = {
     'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off',
     'generator-star-spacing': 'off',
     'no-mixed-operators': 0,
-    'vue/max-attributes-per-line': ["error", {
-      "singleline": {
-        "max": 10
-      },      
-      "multiline": {
-        "max": 10
-      }
-    }],
+    // 'vue/max-attributes-per-line': ['error', {
+    //   'singleline': {
+    //     'max': 10
+    //   },
+    //   'multiline': {
+    //     'max': 10
+    //   }
+    // }],
     'vue/multi-word-component-names': 0, // disable this rule just for views
     'vue/attribute-hyphenation': 0,
     'vue/html-self-closing': 0,
