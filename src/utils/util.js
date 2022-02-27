@@ -112,7 +112,10 @@ export function setStaticData (name, val) {
  * @returns {any}
  */
 export function getStaticData (name) {
-  return JSON.parse(localStorage.getItem(name))
+  const value = JSON.parse(localStorage.getItem(name))
+  if (value) {
+    return value
+  }
 }
 
 /**
@@ -151,34 +154,7 @@ export const compareTime = {
       this.formatDateToTen(d.getMinutes()),
       '00'
     ]
-
     return new Date(arr1.join('-') + ' ' + arr2.join(':')).getTime()
-  },
-  // 与当前时间比较大小 t => 字符串
-  comTimeSize: function (t1, t2) {
-    // alert(t1+"-comTimeSize-"+t2)
-    if (!t1) return null
-    if (!t2) {
-      return this.formatDateToStamp(new Date(t1)) >= this.formatDateToStamp(new Date())
-    } else {
-      return this.formatDateToStamp(new Date(t1)) >= this.formatDateToStamp(new Date(t2))
-    }
-  },
-  // 比较当前时间是否不在两个时间范围内
-  compareTimeSlot: function (st, et) {
-    // alert(st+"-compareTimeSlot-"+et)
-    const flag = false
-
-    // et
-    if (this.formatDateToStamp(new Date()) > this.formatDateToStamp(new Date(et))) { // et大于当前时间
-      console.log('et大于当前时间')
-      return 99
-    }
-    if (this.formatDateToStamp(new Date()) < this.formatDateToStamp(new Date(st))) { // st小于当前时间
-      console.log('st小于当前时间')
-      return -99
-    }
-    return flag
   }
 }
 

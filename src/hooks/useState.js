@@ -9,7 +9,7 @@ import useMapper from './useMapper'
 export default function useState (mapper, moduleName) {
   let mapperFn = mapState
   if (typeof moduleName === 'string' && moduleName) {
-    console.log(moduleName)
+    console.log('moduleName', moduleName)
     mapperFn = createNamespacedHelpers(moduleName).mapState
   }
   return useMapper(mapper, mapperFn)

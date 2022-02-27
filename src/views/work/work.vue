@@ -5,9 +5,9 @@
     <button @click="add">+1</button>
     <button @click="updown">-1</button>
     <br>
-    {{ name }}
+    {{ userInfo }}
     {{ useInfo }}<br>
-    模块中中的数据: {{ name }}
+    模块中中的数据: {{ userInfo }}
   </div>
 </template>
 
@@ -26,7 +26,7 @@ import { Envs } from '@/api/test.js'
       const store = useStore()
       const getters = useGetters(['useInfo'])
       const storeStateFns = useState(['counter', 'name'])
-      const modulesInfo = useState(['name'], 'user')
+      const modulesInfo = useState(['userInfo'], 'login')
       const token = computed(() => store.state.token)
       const updown = function () {
         store.commit('updown')

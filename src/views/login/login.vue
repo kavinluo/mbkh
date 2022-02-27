@@ -35,12 +35,16 @@
 
 <script>
 import { getEnvs } from '@/api/test.js'
+import { useStore, mapActions } from 'vuex'
 import { ref, reactive } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { accountRules } from './rules'
 export default {
   name: 'Login',
   setup () {
+    const actions = mapActions(['accountLoginAction'])
+    console.log('actions', actions)
+    const store = useStore()
     const rules = reactive(accountRules)
     // const currentInstance = getCurrentInstance()
     // const { $axios } = currentInstance.appContext.config.globalProperties
@@ -64,6 +68,8 @@ export default {
       formEl?.validate((valid) => {
         console.log('valid', valid)
         if (valid) {
+          console.log(store)
+          store.dispatch('accoun', { ...form })
           console.log('submit!')
         } else {
           console.log('error submit!')
