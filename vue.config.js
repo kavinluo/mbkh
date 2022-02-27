@@ -1,3 +1,7 @@
+
+// const AutoImport = require('unplugin-auto-import/webpack')
+// const Components = require('unplugin-vue-components/webpack')
+// const { ElementPlusResolver } = require('unplugin-vue-components/resolvers')
 const { defineConfig } = require('@vue/cli-service')
 const path = require('path')
 function resolve (dir) {
@@ -32,6 +36,12 @@ module.exports = defineConfig({
     plugins: [
       // Ignore all locale files of moment.js
       // new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/)
+      // AutoImport({
+      //   resolvers: [ElementPlusResolver()]
+      // }),
+      // Components({
+      //   resolvers: [ElementPlusResolver()]
+      // })
     ],
     // if prod, add externals
     externals: isProd ? assetsCDN.externals : {}

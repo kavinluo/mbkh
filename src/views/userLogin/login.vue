@@ -13,7 +13,13 @@
           </el-input>
         </el-form-item>
         <el-form-item style="margin: 30px 0" prop="password">
-          <el-input v-model="form.password" type="password" clearable size="large" placeholder="请输入密码" show-password>
+          <el-input
+            v-model="form.password"
+            type="password"
+            clearable
+            size="large"
+            placeholder="请输入密码"
+            show-password>
             <template #suffix>
               <el-icon class="el-input__icon">
                 <Lock />
@@ -28,27 +34,20 @@
 </template>
 
 <script>
-import { Avatar, Lock } from '@element-plus/icons-vue'
 import { getEnvs } from '@/api/test.js'
-import { ElForm } from 'element-plus'
 import { ref, reactive } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 
 export default {
-  components: {
-    Avatar,
-    Lock
-  },
   name: 'Login',
   setup () {
     // const currentInstance = getCurrentInstance()
     // const { $axios } = currentInstance.appContext.config.globalProperties
     // const { proxy } = getCurrentInstance()
-    // type FormInstance = InstanceType<typeof ElForm>
     const router = useRouter()
     const route = useRoute()
     console.log('router', router, route)
-    const ruleFormRef = ref(ElForm)
+    const ruleFormRef = ref({})
     const form = reactive({
       username: '',
       password: ''

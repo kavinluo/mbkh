@@ -1,6 +1,8 @@
 // import Vue from 'vue'
 // import { createApp } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
+// import 'element-plus/es/components/message/style/css'
+// import 'element-plus/es/components/message-box/style/css'
 import axios from 'axios'
 // import store from '@/store'
 const store = {}
@@ -29,14 +31,14 @@ const err = (error) => {
     }
     if (error.response.status === 500) {
       if (data.message && data.message.length > 0) {
-        ElMessage.error(data.message)
+        // ElMessage.error(data.message)
       }
     }
     if (error.response.status === 401 && !(data.result && data.result.isLogin)) {
-      ElMessage.error({
-        message: 'Unauthorized',
-        description: 'Authorization verification failed'
-      })
+      // ElMessage.error({
+      //   message: 'Unauthorized',
+      //   description: 'Authorization verification failed'
+      // })
       if (token) {
         store.dispatch('Logout').then(() => {
           setTimeout(() => {
@@ -52,6 +54,7 @@ const err = (error) => {
 // request interceptor
 service.interceptors.request.use(config => {
   const token = 'jhgjhgjgjgj' // Vue.ls.get(ACCESS_TOKEN)
+
   if (token) {
     config.headers.Authorization = 'Bearer ' + token
   }
