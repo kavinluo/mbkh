@@ -28,8 +28,10 @@
 <script>
   import { Monitor, Histogram, ReadingLamp, EditPen, Setting } from '@element-plus/icons-vue'
   import { ref } from 'vue'
+  import { useRouter } from 'vue-router'
   export default {
     setup () {
+      const router = useRouter()
       const downStatus = ref(false)
       const headline = ref(null) // $refs
       function downOut () {
@@ -38,6 +40,7 @@
       }
       function logOut () {
         console.log('退出')
+        router.push('/login')
       }
 
       // 点击任何区域关闭

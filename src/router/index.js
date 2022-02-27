@@ -7,7 +7,7 @@ import { systemStaff, menuManagement } from './systemSetting'
 const Login = {
   name: 'login',
   path: '/login',
-  component: () => import(/* webpackChunkName: "login" */'@/views/userLogin/login.vue')
+  component: () => import(/* webpackChunkName: "login" */'@/views/login/login.vue')
 }
 
 const routes = [

@@ -37,10 +37,11 @@
 import { getEnvs } from '@/api/test.js'
 import { ref, reactive } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
-
+import { accountRules } from './rules'
 export default {
   name: 'Login',
   setup () {
+    const rules = reactive(accountRules)
     // const currentInstance = getCurrentInstance()
     // const { $axios } = currentInstance.appContext.config.globalProperties
     // const { proxy } = getCurrentInstance()
@@ -53,14 +54,14 @@ export default {
       password: ''
     })
     const onSubmit = (formEl) => {
-      router.push('/manage')
-      // router.push({
-      //   name: 'manage',
-      //   path: '/manage'
-      // })
-      // return
-      if (!formEl) return
-      formEl.validate((valid) => {
+      // router.push('/manage')
+      // // router.push({
+      // //   name: 'manage',
+      // //   path: '/manage'
+      // // })
+      // // return
+      // if (!formEl) return
+      formEl?.validate((valid) => {
         console.log('valid', valid)
         if (valid) {
           console.log('submit!')
@@ -70,23 +71,6 @@ export default {
         }
       })
     }
-    const rules = reactive({
-      username: [
-        {
-          required: true,
-          message: '请输入登录账号',
-          trigger: 'blur'
-        }
-      ],
-      password: [
-        {
-          required: true,
-          message: '请输入密码',
-          trigger: 'blur'
-        }
-      ]
-    })
-
     const envsData = ref({ })
     // const getData = async ()=> await getEnvs().then((res) =>{
     //   console.log('res',res);
@@ -94,16 +78,12 @@ export default {
     //   envsData.value = data
     //   console.log('envsData',envsData);
     // })
-    console.log('envsData', envsData)
-
     getEnvs().then((res) => {
       console.log('res', res)
       const { data } = res
       envsData.value = data
-      console.log('envsData', envsData)
     })
     // getData()
-    console.log('envsData', envsData)
 
     return {
       envsData,
@@ -143,9 +123,6 @@ export default {
 </script>
 
 <style>
-  html, body, #app {
-    height: 100%;
-  }
   .loginPage {
     height: 100%;
     background: url('@/assets/img/loginBg.jpg') no-repeat center top;
