@@ -1,10 +1,19 @@
+/*
+ * @Author: kevin
+ * @Date: 2022-02-21 13:45:02
+ * @LastEditors: kevin
+ * @LastEditTime: 2022-02-28 18:13:14
+ * @Description: Do not edit
+ */
 
 import axios from 'axios'
-import { ElMessage, ElMessageBox } from 'element-plus'
+import { ElMessage } from 'element-plus'
 import NProgress from 'nprogress' // progress bar
 import 'nprogress/nprogress.css' // progress bar custom style
+import { getStaticData } from '@/utils/util'
 
-const store = {}
+// import { useStore } from 'vuex'
+ const store = {} // useStore()
 // import { message, Modal, notification } from 'ant-design-vue' /// es/notification
 
 // import { VueAxios } from './axios'
@@ -17,6 +26,7 @@ const service = axios.create({
 })
 
 const err = (error) => {
+  console.log('error', error)
   // error.isLoading?.close()
   if (error.response) {
     const data = error.response.data
@@ -45,18 +55,13 @@ const err = (error) => {
 
 // request interceptor
 service.interceptors.request.use(config => {
-  console.log('config', config)
-  // config.isLoading = !config.isLoading ? config.isLoading : ElLoading.service({
-  //     lock: true,
-  //     text: '加载中...',
-  //     background: 'rgba(0, 0, 0, 0.5)'
-  //   })
     if (config.isLoading) {
       NProgress.start()
     }
-  const token = 'jhgjhgjgjgj' // Vue.ls.get(ACCESS_TOKEN)
+  const token = getStaticData('token') // Vue.ls.get(ACCESS_TOKEN)
   if (token) {
-    config.headers.Authorization = 'Bearer ' + token
+    // config.headers.Authorization = token // 'Bearer ' + token
+    config.headers.token = token // 'Bearer ' + token
   }
   if (typeof config['Content-Type'] !== 'undefined') {
     config.headers['Content-Type'] = config['Content-Type']
@@ -69,26 +74,31 @@ service.interceptors.request.use(config => {
  * 所有请求统一返回
  */
 service.interceptors.response.use((response) => {
+  console.log('response', response)
   NProgress.done()
-  // response.config.isLoading = response.config.isLoading ? response.config.isLoading.close() : false
-  if (response.request.responseType === 'blob') {
-    return response
-  }
-  const code = response.data.code
-  if (code === 1011006 || code === 1011007 || code === 1011008 || code === 1011009) {
-    ElMessageBox.alert(response.data.message, '提示：', {
-      confirmButtonText: '确定',
-      callback: () => {
-        window.location.reload()
-      }
-    })
-  } else if (code === 1013002 || code === 1016002 || code === 1015002) {
-    ElMessage.error(response.data.message)
-    return response.data
-  } else {
+  // const code = response.data?.status?.code
+  console.log('errorCode(response)', errorCode(response))
+  if (errorCode(response)) {
+    if (response.request.responseType === 'blob') {
+      return response
+    }
     return response.data
   }
 }, err)
+
+function errorCode (response) {
+  const { data } = response
+  console.log('data', data)
+  const code = (typeof data.status !== 'undefined') && (typeof data.status.code !== 'undefined') && data.status.code
+  console.log('code', code)
+  const msg = (typeof data.status !== 'undefined') && (typeof data.status.msg !== 'undefined') && data.status.msg
+  let flag = true
+  if (code && code !== '0') {
+    ElMessage.error(msg + '！')
+    flag = false
+  }
+  return flag
+}
 
 export {
   // installer as VueAxios,

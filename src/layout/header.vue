@@ -15,9 +15,9 @@
     </div>
     <div class="topbar-info topbar-right" ref="headline">
       <div class="welcome-info">
-        欢迎您，管理员
+        欢迎您，{{ userInfo.name }}
       </div>
-      <span class="use-name" @click="downOut" id="useName">管</span>
+      <span class="use-name" @click="downOut" id="useName">{{ userInfo.name ? userInfo.name.substr(0,1) : '' }}</span>
       <ul class="show-down" v-if="downStatus">
         <li @click="logOut">退出</li>
       </ul>
@@ -28,19 +28,24 @@
 <script>
   import { Monitor, Histogram, ReadingLamp, EditPen, Setting } from '@element-plus/icons-vue'
   import { ref } from 'vue'
-  import { useRouter } from 'vue-router'
+  import { useStore } from 'vuex'
+  import { useState } from '@/hooks/index'
+
   export default {
     setup () {
-      const router = useRouter()
+      const stroe = useStore()
       const downStatus = ref(false)
       const headline = ref(null) // $refs
+      stroe.dispatch('user/userInfoAction')
+
+      const userInfo = useState(['userInfo'], 'user')
+
       function downOut () {
         downStatus.value = !downStatus.value
         console.log('显示下拉', downStatus)
       }
       function logOut () {
-        console.log('退出')
-        router.push('/login')
+        stroe.dispatch('user/loginOut')
       }
 
       // 点击任何区域关闭
@@ -62,7 +67,8 @@
         Histogram,
         ReadingLamp,
         EditPen,
-        Setting
+        Setting,
+        ...userInfo
       }
     }
   }

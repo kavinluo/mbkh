@@ -27,6 +27,17 @@
             </template>
           </el-input>
         </el-form-item>
+        <el-form-item style="margin: 30px 0;position: relative;" prop="reCode">
+          <el-input
+            v-model="form.reCode "
+            type="text"
+            clearable
+            size="large"
+            placeholder="请输入验证码"
+            style="padding-right:0">
+          </el-input>
+          <img :src="rCodeData[0]" @click="changeRcode()" style="position: absolute;right:1px;cursor: pointer; height:40px">
+        </el-form-item>
       </el-form>
       <el-button type="primary" size="large" style="display: block; width: 100%" @click="onSubmit(ruleFormRef)">登录</el-button>
     </div>
@@ -34,28 +45,29 @@
 </template>
 
 <script>
-import { getEnvs } from '@/api/test.js'
-import { useStore, mapActions } from 'vuex'
+import { getVerificationCode } from '@/api/user.js'
+import { useStore } from 'vuex'
 import { ref, reactive } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { accountRules } from './rules'
 export default {
   name: 'Login',
   setup () {
-    const actions = mapActions(['accountLoginAction'])
-    console.log('actions', actions)
     const store = useStore()
     const rules = reactive(accountRules)
-    // const currentInstance = getCurrentInstance()
-    // const { $axios } = currentInstance.appContext.config.globalProperties
-    // const { proxy } = getCurrentInstance()
+    const rCodeData = ref({ })
+    const getVerifCode = async () => await getVerificationCode().then((res) => {
+      rCodeData.value = res
+    })
     const router = useRouter()
     const route = useRoute()
     console.log('router', router, route)
     const ruleFormRef = ref({})
     const form = reactive({
       username: '',
-      password: ''
+      password: '',
+      key: '',
+      reCode: ''
     })
     const onSubmit = (formEl) => {
       // router.push('/manage')
@@ -66,10 +78,11 @@ export default {
       // // return
       // if (!formEl) return
       formEl?.validate((valid) => {
-        console.log('valid', valid)
         if (valid) {
-          console.log(store)
-          store.dispatch('accoun', { ...form })
+          form.key = rCodeData.value[1]
+          console.log('form', form)
+          store.dispatch('user/accountLoginAction', { ...form })
+          changeRcode()
           console.log('submit!')
         } else {
           console.log('error submit!')
@@ -77,22 +90,16 @@ export default {
         }
       })
     }
-    const envsData = ref({ })
-    // const getData = async ()=> await getEnvs().then((res) =>{
-    //   console.log('res',res);
-    //   const  { data } = res
-    //   envsData.value = data
-    //   console.log('envsData',envsData);
-    // })
-    getEnvs().then((res) => {
-      console.log('res', res)
-      const { data } = res
-      envsData.value = data
-    })
-    // getData()
+    function changeRcode () {
+      getVerifCode()
+    }
+     getVerifCode()
+
+     store.dispatch('envsAction')
 
     return {
-      envsData,
+      changeRcode,
+      rCodeData,
       form,
       rules,
       ruleFormRef,
@@ -144,8 +151,8 @@ export default {
     position: absolute;
     left: 50%;
     top: 50%;
-    width: 500px;
-    height: 300px;
+    width: 420px;
+    height: 370px;
     box-sizing: border-box;
     background: #fff;
     padding: 20px 40px;

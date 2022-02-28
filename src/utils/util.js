@@ -10,41 +10,6 @@ export function welcome () {
   return arr[index]
 }
 
-/**
- * 触发 window.resize
- */
-// export function triggerWindowResizeEvent () {
-//   const event = document.createEvent('HTMLEvents')
-//   event.initEvent('resize', true, true)
-//   event.eventType = 'message'
-//   window.dispatchEvent(event)
-// }
-
-// export function handleScrollHeader (callback) {
-//   let timer = 0
-
-//   let beforeScrollTop = window.pageYOffset
-//   callback = callback || function () {}
-//   window.addEventListener(
-//     'scroll',
-//     event => {
-//       clearTimeout(timer)
-//       timer = setTimeout(() => {
-//         let direction = 'up'
-//         const afterScrollTop = window.pageYOffset
-//         const delta = afterScrollTop - beforeScrollTop
-//         if (delta === 0) {
-//           return false
-//         }
-//         direction = delta > 0 ? 'down' : 'up'
-//         callback(direction)
-//         beforeScrollTop = afterScrollTop
-//       }, 50)
-//     },
-//     false
-//   )
-// }
-
 export function isIE () {
   const bw = window.navigator.userAgent
   const compare = (s) => bw.indexOf(s) >= 0
@@ -112,9 +77,12 @@ export function setStaticData (name, val) {
  * @returns {any}
  */
 export function getStaticData (name) {
-  const value = JSON.parse(localStorage.getItem(name))
-  if (value) {
-    return value
+  const value = localStorage.getItem(name)
+    try {
+      return JSON.parse(value)
+    } catch (e) {
+      console.log(e)
+     return value
   }
 }
 
@@ -123,7 +91,7 @@ export function getStaticData (name) {
  * @param name
  */
 export function delStaticData (name) {
-  localStorage.removeItem(name)
+  if (name) localStorage.removeItem(name)
 }
 
 export const compareTime = {

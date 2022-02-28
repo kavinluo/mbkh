@@ -15,18 +15,12 @@
 import { useState, useGetters } from '@/hooks/index'
 import { useStore } from 'vuex'
 import { computed } from 'vue'
-import { Envs } from '@/api/test.js'
   export default {
     setup () {
-    Envs().then((res) => {
-      console.log('res', res)
-      const { data } = res
-      console.log('first', data)
-    })
       const store = useStore()
       const getters = useGetters(['useInfo'])
       const storeStateFns = useState(['counter', 'name'])
-      const modulesInfo = useState(['userInfo'], 'login')
+      const modulesInfo = useState(['userInfo'], 'user')
       const token = computed(() => store.state.token)
       const updown = function () {
         store.commit('updown')

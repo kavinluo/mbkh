@@ -1,7 +1,16 @@
+/*
+ * @Author: kevin
+ * @Date: 2022-02-21 11:54:16
+ * @LastEditors: kevin
+ * @LastEditTime: 2022-02-28 17:26:45
+ * @Description: 配置文件
+ */
 
 // const AutoImport = require('unplugin-auto-import/webpack')
 // const Components = require('unplugin-vue-components/webpack')
 // const { ElementPlusResolver } = require('unplugin-vue-components/resolvers')
+
+const targetIp = 'http://192.168.1.166:11006'
 const { defineConfig } = require('@vue/cli-service')
 const path = require('path')
 function resolve (dir) {
@@ -23,10 +32,10 @@ const assetsCDN = {
   css: [],
   // https://unpkg.com/browse/vue@2.6.10/
   js: [
-    '//yewu.tjwsrc.com/pluginJs/vue@2.6.10/vue.min.js',
-    '//yewu.tjwsrc.com/pluginJs/vue-router@3.1.3/vue-router.min.js',
-    '//yewu.tjwsrc.com/pluginJs/vuex@3.1.1/vuex.min.js',
-    '//yewu.tjwsrc.com/pluginJs/axios@0.19.0/axios.min.js'
+    '//unpkg.com/vue@3.2.13/dist/vue.global.js',
+    '//unpkg.com/vue-router@4.0.12/dist/vue-router.global.js',
+    '//unpkg.com/vuex@4.0.2/dist/vuex.global.js',
+    '//unpkg.com/axios@0.26.0/dist/axios.min.js'
   ]
 }
 module.exports = defineConfig({
@@ -50,7 +59,7 @@ module.exports = defineConfig({
     port: 8080,
     proxy: {
       '/api': {
-        target: process.env.VUE_APP_API_BASE_URL,
+        target: targetIp, // process.env.VUE_APP_API_BASE_URL,
         ws: false,
         changeOrigin: true,
         pathRewrite: {

@@ -1,31 +1,29 @@
 
-import login from './modules/login'
-
 import { createStore } from 'vuex'
-console.log('login', login)
+import user from './modules/user'
+import { getEnvs } from '@/api/user.js'
+import { setStaticData } from '@/utils/util'
+
 const store = createStore({
+  namespaced: true, // 命名空间
   modules: {
-    login
+    user
   },
   state () {
     return {
-      token: 'token:8888',
-      counter: 0,
-      name: 'kevin',
-      names: 'hhh'
+      envs: {}
     }
   },
   mutations: {
-    add (state) {
-      state.counter++
-    },
-    updown (state) {
-      state.counter--
+    changerEvet (state, envs) {
+      state.envs = envs
     }
   },
   actions: {
-    accoun ({ commit }, payload) {
-      console.log('first', payload)
+    async envsAction ({ commit }, payload) {
+      const envsRes = await getEnvs(payload)
+      commit('changerEvet', envsRes)
+      setStaticData('envs', envsRes)
     }
   },
   getters: {
