@@ -2,7 +2,7 @@
  * @Author: kevin
  * @Date: 2022-02-21 11:54:16
  * @LastEditors: kevin
- * @LastEditTime: 2022-02-28 17:26:45
+ * @LastEditTime: 2022-03-01 19:45:08
  * @Description: 配置文件
  */
 
@@ -10,7 +10,7 @@
 // const Components = require('unplugin-vue-components/webpack')
 // const { ElementPlusResolver } = require('unplugin-vue-components/resolvers')
 
-const targetIp = 'http://192.168.1.166:11006'
+// const targetIp = 'http://192.168.1.166:11006'
 const { defineConfig } = require('@vue/cli-service')
 const path = require('path')
 function resolve (dir) {
@@ -59,7 +59,7 @@ module.exports = defineConfig({
     port: 8080,
     proxy: {
       '/api': {
-        target: targetIp, // process.env.VUE_APP_API_BASE_URL,
+        target: process.env.VUE_APP_API_BASE_URL,
         ws: false,
         changeOrigin: true,
         pathRewrite: {

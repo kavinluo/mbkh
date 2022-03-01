@@ -1,8 +1,16 @@
+/*
+ * @Author: kevin
+ * @Date: 2022-02-21 12:47:56
+ * @LastEditors: kevin
+ * @LastEditTime: 2022-03-01 14:23:42
+ * @Description: Do not edit
+ */
 // import Vue from 'vue'
 import { createRouter, createWebHistory } from 'vue-router'
 import Index from '@/layout/index.vue'
 import { work } from './work'
 import { systemStaff, menuManagement } from './systemSetting'
+import { getStaticData } from '@/utils/util'
 
 const Login = {
   name: 'login',
@@ -24,7 +32,7 @@ const routes = [
   },
   {
     path: '/',
-    redirect: '/login'
+    redirect: '/manage'
   },
   {
     path: '/:pathMatch(.*)',
@@ -39,7 +47,7 @@ const router = createRouter({
   history: createWebHistory(),
   routes
 })
-const token = 'gggg'
+const token = getStaticData('token')
 router.beforeEach((to, from) => {
   if (to.path !== '/login') {
     if (!token) {

@@ -78,13 +78,26 @@ export function setStaticData (name, val) {
  */
 export function getStaticData (name) {
   const value = localStorage.getItem(name)
-    try {
-      return JSON.parse(value)
-    } catch (e) {
-      console.log(e)
-     return value
+  if (value) {
+    return JSON.parse(value)
   }
 }
+
+// function isJSON (str) {
+//   if (typeof str === 'string') {
+//     try {
+//       var obj = JSON.parse(str)
+//       if (typeof obj === 'object' && obj) {
+//         return true
+//       } else {
+//         return false
+//       }
+//     } catch (e) {
+//       console.log('error：' + str + '!!!' + e)
+//       return false
+//     }
+//   }
+// }
 
 /**
  * 删除缓存值

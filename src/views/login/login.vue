@@ -81,7 +81,7 @@ export default {
         if (valid) {
           form.key = rCodeData.value[1]
           console.log('form', form)
-          store.dispatch('user/accountLoginAction', { ...form })
+          store.dispatch('user/loginActions', { ...form })
           changeRcode()
           console.log('submit!')
         } else {

@@ -1,3 +1,10 @@
+/*
+ * @Author: kevin
+ * @Date: 2022-02-21 13:21:43
+ * @LastEditors: kevin
+ * @LastEditTime: 2022-03-01 18:12:42
+ * @Description: Do not edit
+ */
 module.exports = {
   root: true,
   env: {
@@ -20,7 +27,9 @@ module.exports = {
         'max': 1,
       }
     }],
+    'vue/no-v-for-template-key': 'off',
     'vue/multi-word-component-names': 0, // disable this rule just for views
+    'vue/no-multiple-template-root': 'off',
     'vue/attribute-hyphenation': 0,
     'vue/html-self-closing': 0,
     'vue/component-name-in-template-casing': 0,

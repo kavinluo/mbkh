@@ -1,3 +1,10 @@
+/*
+ * @Author: kevin
+ * @Date: 2022-02-28 09:09:17
+ * @LastEditors: kevin
+ * @LastEditTime: 2022-03-01 17:18:00
+ * @Description: Do not edit
+ */
 import 'element-plus/theme-chalk/base.css'
 import {
   ElButton,
@@ -13,13 +20,23 @@ import {
   ElMenuItemGroup,
   ElSubMenu,
   ElMenu,
-  ElMenuItem
+  ElMenuItem,
+  ElContainer,
+  ElAside,
+  ElHeader,
+  ElMain
 } from 'element-plus'
 
 // icon引入
 import {
   Avatar,
-  Lock
+  Lock,
+  Fold,
+  Expand,
+  Location,
+  Document,
+  Setting,
+  Menu
   } from '@element-plus/icons-vue'
 
 const components = [
@@ -33,7 +50,17 @@ const components = [
   ElMenuItem,
   ElIcon,
   Avatar,
-  Lock
+  ElContainer,
+  ElHeader,
+  ElAside,
+  ElMain,
+  Lock,
+  Fold,
+  Expand,
+  Location,
+  Document,
+  Setting,
+  Menu
 ]
 const plugins = [
   ElInfiniteScroll,
