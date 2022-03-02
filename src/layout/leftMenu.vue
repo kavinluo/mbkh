@@ -2,31 +2,28 @@
  * @Author: kevin
  * @Date: 2022-02-25 09:42:38
  * @LastEditors: kevin
- * @LastEditTime: 2022-03-01 19:42:26
+ * @LastEditTime: 2022-03-02 10:30:13
  * @Description: Do not edit
 -->
 <template>
-  <!-- <div class="menu-switch" :style="!isCollapse ?menuSwitchOff : menuSwitchOn" @click="changeMenu"></div> -->
   <el-menu
     default-active="2"
     class="el-menu-vertical-demo"
     :collapse="collapse"
     @open="handleOpen"
     @close="handleClose">
-    <div v-for="item in subMenus" :key="item.id">
+    <template v-for="item in subMenus" :key="item.id">
       <!-- 二级菜单 -->
-      <template v-if="item.depPath === 4">
+      <template v-if="item.children && item.children.length">
         <!-- 二级菜单的可以展开的标题 -->
         <el-sub-menu :index="item.id + ''">
           <template #title>
-            <i v-if="item.icon" :class="item.icon"></i>
+            <el-icon><location /></el-icon>
             <span>{{ item.title }}</span>
           </template>
           <!-- 遍历里面的item -->
-          <template v-for="subitem in item.passportMenuList" :key="subitem.id">
-            <el-menu-item
-              :index="subitem.id + ''"
-            >
+          <template v-for="subitem in item.children" :key="subitem.id">
+            <el-menu-item :index="subitem.id + ''" @click="handleMenuItemClick(subitem)">
               <i v-if="subitem.icon" :class="subitem.icon"></i>
               <span>{{ subitem.title }}</span>
             </el-menu-item>
@@ -34,13 +31,11 @@
         </el-sub-menu>
       </template>
       <!-- 一级菜单 -->
-      <div v-else-if="item.depPath === 2">
-        <el-menu-item :index="item.id + ''">
-          <i v-if="item.icon" :class="item.icon"></i>
-          <span>{{ item.title }}</span>
-        </el-menu-item>
-      </div>
-    </div>
+      <el-menu-item :index="item.id + ''" v-else-if="item.depPath === 2" @click="handleMenuItemClick(item)">
+        <el-icon><location /></el-icon>
+        <span>{{ item.title }}</span>
+      </el-menu-item>
+    </template>
 
   </el-menu>
 </template>
@@ -49,6 +44,8 @@
 import { computed } from 'vue'
 // import { Menu as IconMenus } from '@element-plus/icons-vue'
   import { useStore } from '@/store'
+  import { useRouter, useRoute } from 'vue-router'
+
     // import { useState } from '@/hooks/index'
 
  export default {
@@ -60,8 +57,21 @@ import { computed } from 'vue'
   },
   setup (props) {
     const store = useStore()
+        // router
+    const router = useRouter()
+    const route = useRoute()
+    const currentPath = route.path
+    console.log('currentPath', currentPath)
+
     const subMenus = computed(() => store.state.user.subMenus)
     console.log('left-subMenus', subMenus)
+
+    const handleMenuItemClick = (item) => {
+      console.log('--------', item)
+      router.push({
+        path: item.path ?? '/not-found'
+      })
+    }
 
     const handleOpen = (key, keyPath) => {
       console.log(key, keyPath)
@@ -72,7 +82,8 @@ import { computed } from 'vue'
     return {
       handleOpen,
       handleClose,
-      subMenus
+      subMenus,
+      handleMenuItemClick
       // IconMenus
     }
   }

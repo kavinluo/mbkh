@@ -2,7 +2,7 @@
  * @Author: kevin
  * @Date: 2022-02-28 09:09:17
  * @LastEditors: kevin
- * @LastEditTime: 2022-03-01 17:38:30
+ * @LastEditTime: 2022-03-02 10:56:26
  * @Description: 用户相关
  */
 import router from '@/router'
@@ -28,8 +28,14 @@ export default ({
       state.userInfo = userInfo
     },
     changeUserMenus (state, userMenus) {
+      menuList.forEach((item) => {
+        // router.addRoute('manage', item)
+        // if (item.children.length) {
+        //   item.redirect = item.children[0].path
+        // }
+      })
       state.userMenus = menuList
-      console.log('注册动态路由', userMenus)
+      console.log('注册动态路由', menuList)
       // userMenus = menuList
       console.log('userMenus', userMenus)
       // userMenus => routes
@@ -62,9 +68,11 @@ export default ({
     // 获得token
     async loginActions ({ commit, dispatch }, payload) {
       const loginRes = await login(payload)
-      commit('changeToken', loginRes)
-      setStaticData('token', loginRes)
-      dispatch('userInfoAction')
+      if (loginRes) {
+        commit('changeToken', loginRes)
+        setStaticData('token', loginRes)
+        dispatch('userInfoAction')
+      }
     },
      // 请求用户信息
     async userInfoAction ({ commit, dispatch }, payload) {
@@ -80,6 +88,7 @@ export default ({
       const userMenus = getUserMenusRes.data || []
       commit('changeUserMenus', userMenus)
       setStaticData('userMenus', userMenus)
+      router.push('/manage')
     },
 
     // 设置子菜单菜单

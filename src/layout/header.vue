@@ -2,7 +2,7 @@
  * @Author: kevin
  * @Date: 2022-02-25 09:42:38
  * @LastEditors: kevin
- * @LastEditTime: 2022-03-01 16:49:05
+ * @LastEditTime: 2022-03-02 10:13:37
  * @Description: Do not edit
 -->
 <template>
@@ -50,7 +50,7 @@
 
       const handleMenu = (item) => {
         router.push(item.path)
-        const subMenuList = item.passportMenuList || []
+        const subMenuList = item.children || []
         stroe.dispatch('user/changeSubMenusActions', subMenuList)
       }
 

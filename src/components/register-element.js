@@ -2,7 +2,7 @@
  * @Author: kevin
  * @Date: 2022-02-28 09:09:17
  * @LastEditors: kevin
- * @LastEditTime: 2022-03-01 17:18:00
+ * @LastEditTime: 2022-03-02 17:06:13
  * @Description: Do not edit
  */
 import 'element-plus/theme-chalk/base.css'
@@ -24,7 +24,14 @@ import {
   ElContainer,
   ElAside,
   ElHeader,
-  ElMain
+  ElMain,
+  ElDialog,
+  ElOption,
+  ElSelect,
+  ElRow,
+  ElCol,
+  ElSwitch,
+  ElCascader
 } from 'element-plus'
 
 // icon引入
@@ -37,7 +44,7 @@ import {
   Document,
   Setting,
   Menu
-  } from '@element-plus/icons-vue'
+} from '@element-plus/icons-vue'
 
 const components = [
   ElButton,
@@ -60,7 +67,14 @@ const components = [
   Location,
   Document,
   Setting,
-  Menu
+  Menu,
+  ElDialog,
+  ElOption,
+  ElSelect,
+  ElRow,
+  ElCol,
+  ElSwitch,
+  ElCascader
 ]
 const plugins = [
   ElInfiniteScroll,

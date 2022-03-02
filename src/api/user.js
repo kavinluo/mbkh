@@ -1,3 +1,10 @@
+/*
+ * @Author: kevin
+ * @Date: 2022-02-28 11:42:52
+ * @LastEditors: kevin
+ * @LastEditTime: 2022-03-02 18:11:14
+ * @Description: Do not edit
+ */
 import { axios } from '@/utils/request'
 /**
  * 获取配置信息
@@ -49,7 +56,8 @@ import { axios } from '@/utils/request'
   return axios({
     url: `/changePassword`,
     method: 'post',
-    params: parameter
+    params: parameter,
+    successTitle: '修改成功！'
   })
 }
 

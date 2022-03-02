@@ -2,7 +2,7 @@
  * @Author: kevin
  * @Date: 2022-02-21 13:45:02
  * @LastEditors: kevin
- * @LastEditTime: 2022-03-01 20:04:03
+ * @LastEditTime: 2022-03-02 18:01:51
  * @Description: Do not edit
  */
 
@@ -14,7 +14,6 @@ import { getStaticData } from '@/utils/util'
 import router from '@/router'
 import { useStore } from '@/store'
  const store = useStore()
- console.log('router', router)
 // import { message, Modal, notification } from 'ant-design-vue' /// es/notification
 
 // import { VueAxios } from './axios'
@@ -23,7 +22,9 @@ import { useStore } from '@/store'
 const service = axios.create({
   baseURL: '/api', // api base_url
   timeout: 300000, // 请求超时时间,
-  isLoading: true
+  isLoading: true, // 是否显示loading状态
+  successTitle: null, // 成功后需要提示的内容
+  errorTitle: null // 发生错误的提示
 })
 
 const err = (e) => {
@@ -86,18 +87,22 @@ service.interceptors.response.use((response) => {
 }, err)
 
 function errorCode (response) {
-  const { data } = response
+  console.log('response', response)
+  const { data, config } = response
   const code = (typeof data.status !== 'undefined') && (typeof data.status.code !== 'undefined') && data.status.code
   const msg = (typeof data.status !== 'undefined') && (typeof data.status.msg !== 'undefined') && data.status.msg
   let flag = true
   if (code === '4') {
     router.push('/login')
-    ElMessage.error(msg + '！')
+    ElMessage.error(msg)
     flag = false
   }
   if (code && code !== '0') {
-    ElMessage.error(msg + '！')
+    ElMessage.error(config.errorTitle || msg)
     flag = false
+  }
+  if (config.successTitle) { // 如果需要成功后提示
+    ElMessage.success(config.successTitle)
   }
   return flag
 }

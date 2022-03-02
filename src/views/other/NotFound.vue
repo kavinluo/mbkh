@@ -1,3 +1,10 @@
+<!--
+ * @Author: kevin
+ * @Date: 2022-02-24 09:12:57
+ * @LastEditors: kevin
+ * @LastEditTime: 2022-03-02 18:14:56
+ * @Description: NotFound
+-->
 <template>
   <div>
     <h2 style="text-align: center;">NotFound</h2>
@@ -10,8 +17,6 @@ import { useRoute } from 'vue-router'
 export default {
   setup () {
     const route = useRoute()
-    console.log(route)
-
     return {
       route
     }

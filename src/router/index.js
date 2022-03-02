@@ -2,7 +2,7 @@
  * @Author: kevin
  * @Date: 2022-02-21 12:47:56
  * @LastEditors: kevin
- * @LastEditTime: 2022-03-01 14:23:42
+ * @LastEditTime: 2022-03-02 10:53:55
  * @Description: Do not edit
  */
 // import Vue from 'vue'
@@ -42,7 +42,16 @@ const routes = [
 	},
   Login
 ]
-
+// routes.forEach(item => {
+//   if (item.name === 'manage' && item.children.length) {
+//     // if (item.children[0].children.length) {
+//     //   item.redirect = item.children[0].children[0].path
+//     // } else {
+//       item.redirect = item.children[0].path
+//     // }
+//   }
+// })
+console.log('routes', routes)
 const router = createRouter({
   history: createWebHistory(),
   routes

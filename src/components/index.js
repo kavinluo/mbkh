@@ -2,7 +2,7 @@
  * @Author: kevin
  * @Date: 2022-02-28 09:09:17
  * @LastEditors: kevin
- * @LastEditTime: 2022-03-01 17:18:39
+ * @LastEditTime: 2022-03-02 15:46:50
  * @Description: Do not edit
  */
 import { components, plugins } from './register-element'
