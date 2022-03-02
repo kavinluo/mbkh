@@ -2,7 +2,7 @@
  * @Author: kevin
  * @Date: 2022-02-21 13:45:02
  * @LastEditors: kevin
- * @LastEditTime: 2022-03-02 18:01:51
+ * @LastEditTime: 2022-03-02 18:17:00
  * @Description: Do not edit
  */
 
@@ -14,10 +14,7 @@ import { getStaticData } from '@/utils/util'
 import router from '@/router'
 import { useStore } from '@/store'
  const store = useStore()
-// import { message, Modal, notification } from 'ant-design-vue' /// es/notification
 
-// import { VueAxios } from './axios'
-// import { ACCESS_TOKEN } from '@/store/mutation-types'
 // 创建 axios 实例
 const service = axios.create({
   baseURL: '/api', // api base_url
