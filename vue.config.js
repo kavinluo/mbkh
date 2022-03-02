@@ -2,7 +2,7 @@
  * @Author: kevin
  * @Date: 2022-02-21 11:54:16
  * @LastEditors: kevin
- * @LastEditTime: 2022-03-02 14:45:14
+ * @LastEditTime: 2022-03-02 21:14:12
  * @Description: 配置文件
  */
 
@@ -24,19 +24,14 @@ if (isProd) {
 const assetsCDN = {
   // webpack build externals
   externals: {
-    vue: 'Vue',
-    'vue-router': 'VueRouter',
-    vuex: 'Vuex',
-    axios: 'axios'
+    // vue: 'Vue',
+    // 'vue-router': 'VueRouter',
+    // vuex: 'Vuex',
+    // axios: 'axios'
   },
   css: [],
   // https://unpkg.com/browse/vue@2.6.10/
-  js: [
-    '//unpkg.com/vue@3.2.13/dist/vue.global.js',
-    '//unpkg.com/vue-router@4.0.12/dist/vue-router.global.js',
-    '//unpkg.com/vuex@4.0.2/dist/vuex.global.js',
-    '//unpkg.com/axios@0.26.0/dist/axios.min.js'
-  ]
+  js: []
 }
 module.exports = defineConfig({
   transpileDependencies: true,
