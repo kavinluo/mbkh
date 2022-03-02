@@ -1,7 +1,10 @@
 {
   "name": "mbkh",
   "version": "0.1.0",
+  "author": "kavin",
   "private": true,
+  "license": "ISC",
+  "description": "目标考核",
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",

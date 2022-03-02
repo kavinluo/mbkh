@@ -5,7 +5,7 @@ import useMapper from './useMapper'
  * @param {string} moduleName
  * @returns function
  */
-//  useState('home', [])
+//  useState([], 'XX')
 export default function useState (mapper, moduleName) {
   let mapperFn = mapState
   if (typeof moduleName === 'string' && moduleName) {

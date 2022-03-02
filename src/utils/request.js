@@ -86,10 +86,10 @@ service.interceptors.response.use((response) => {
 function errorCode (response) {
   console.log('response', response)
   const { data, config } = response
-  const code = (typeof data.status !== 'undefined') && (typeof data.status.code !== 'undefined') && data.status.code
-  const msg = (typeof data.status !== 'undefined') && (typeof data.status.msg !== 'undefined') && data.status.msg
+  const code = data?.status?.code
+  const msg = data?.status?.msg
   let flag = true
-  if (code === '4') {
+  if (code === '4') { // 登录超时
     router.push('/login')
     ElMessage.error(msg)
     flag = false
@@ -98,7 +98,7 @@ function errorCode (response) {
     ElMessage.error(config.errorTitle || msg)
     flag = false
   }
-  if (config.successTitle) { // 如果需要成功后提示
+  if (code === '0' && config.successTitle) { // 如果需要成功后提示
     ElMessage.success(config.successTitle)
   }
   return flag
