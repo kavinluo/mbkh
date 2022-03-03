@@ -2,7 +2,7 @@
  * @Author: kevin
  * @Date: 2022-02-24 10:05:17
  * @LastEditors: kevin
- * @LastEditTime: 2022-03-03 18:08:03
+ * @LastEditTime: 2022-03-03 18:41:38
  * @Description: 菜单列表
 -->
 <template>
@@ -96,7 +96,8 @@
       // 编辑
       const heandleEdit = (row) => {
         rowData.value = row
-        addModel.value = true
+        testModel.value = true
+        // addModel.value = true
         inputType.value = 'edit'
       }
       const handleRemove = (row) => {
