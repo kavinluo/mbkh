@@ -2,7 +2,7 @@
  * @Author: kevin
  * @Date: 2022-03-02 11:17:17
  * @LastEditors: kevin
- * @LastEditTime: 2022-03-02 17:55:17
+ * @LastEditTime: 2022-03-03 15:08:49
  * @Description: 菜单相关
  */
 import { axios } from '@/utils/request'
@@ -22,16 +22,15 @@ import { axios } from '@/utils/request'
  */
  export function getMenu (parameter) {
   return axios({
-    url: `/menu/get`,
-    method: 'get',
-    params: parameter
+    url: `/menu/get/${parameter}`,
+    method: 'get'
   })
 }
 
 /**
  * 获得菜单列表
  */
- export function getListMenu (parameter) {
+ export function getMenuList (parameter) {
   return axios({
     url: `/menu/list`,
     method: 'get',
@@ -44,18 +43,20 @@ import { axios } from '@/utils/request'
  */
  export function editMenu (parameter) {
   return axios({
-    url: `/menu/modify/`, // {id}
+    url: `/menu/modify/${parameter.id}`, // {id}
     method: 'put',
-    params: parameter
+    data: parameter,
+    successTitle: '修改成功！'
   })
 }
 /**
  * 删除菜单
  */
- export function removeMenu (parameter) {
+ export function removeMenu (ids) {
   return axios({
-    url: `/menu/remove/`, // {ids}
+    url: `/menu/remove/${ids}`, // {ids}
     method: 'delete',
-    params: parameter
+    successTitle: '删除成功！',
+    errorTitle: '删除失败！'
   })
 }

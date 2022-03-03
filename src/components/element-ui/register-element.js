@@ -2,7 +2,7 @@
  * @Author: kevin
  * @Date: 2022-02-28 09:09:17
  * @LastEditors: kevin
- * @LastEditTime: 2022-03-02 17:06:13
+ * @LastEditTime: 2022-03-03 13:05:30
  * @Description: Do not edit
  */
 import 'element-plus/theme-chalk/base.css'
@@ -31,7 +31,10 @@ import {
   ElRow,
   ElCol,
   ElSwitch,
-  ElCascader
+  ElCascader,
+  ElTableColumn,
+  ElTable,
+  ElDatePicker
 } from 'element-plus'
 
 // icon引入
@@ -74,7 +77,10 @@ const components = [
   ElRow,
   ElCol,
   ElSwitch,
-  ElCascader
+  ElCascader,
+  ElTableColumn,
+  ElTable,
+  ElDatePicker
 ]
 const plugins = [
   ElInfiniteScroll,

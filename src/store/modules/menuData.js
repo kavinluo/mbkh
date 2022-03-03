@@ -2,7 +2,7 @@
  * @Author: kevin
  * @Date: 2022-03-01 14:38:06
  * @LastEditors: kevin
- * @LastEditTime: 2022-03-02 10:31:27
+ * @LastEditTime: 2022-03-03 10:01:07
  * @Description: Do not edit
  */
 const menuList = [
@@ -108,9 +108,9 @@ const menuList = [
         identity: 'system_apply',
         parentId: 1,
         depPath: 2,
-        component: '/views/systemSetting/menuManagement/menuManagementIndex',
+        component: '/views/systemSetting/menuManagement/menuManagementList',
         path: '/manage/menuManagement',
-        name: 'systemSetting',
+        name: 'menuManagement',
         icon: 'Histogram',
         sequence: 999,
         remark: null,

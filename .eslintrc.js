@@ -2,7 +2,7 @@
  * @Author: kevin
  * @Date: 2022-02-21 13:21:43
  * @LastEditors: kevin
- * @LastEditTime: 2022-03-01 18:12:42
+ * @LastEditTime: 2022-03-03 11:03:13
  * @Description: Do not edit
  */
 module.exports = {
@@ -30,6 +30,7 @@ module.exports = {
     'vue/no-v-for-template-key': 'off',
     'vue/multi-word-component-names': 0, // disable this rule just for views
     'vue/no-multiple-template-root': 'off',
+    'eslintno-unused-expressions': 'off',
     'vue/attribute-hyphenation': 0,
     'vue/html-self-closing': 0,
     'vue/component-name-in-template-casing': 0,

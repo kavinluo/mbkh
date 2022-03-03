@@ -1,3 +1,10 @@
+/*
+ * @Author: kevin
+ * @Date: 2022-02-24 09:48:49
+ * @LastEditors: kevin
+ * @LastEditTime: 2022-03-03 10:01:27
+ * @Description: Do not edit
+ */
 // 系统管理员
 
 export const systemStaff = {
@@ -9,5 +16,5 @@ export const systemStaff = {
 export const menuManagement = {
   name: 'menuManagement',
   path: '/manage/menuManagement',
-  component: () => import('@/views/systemSetting/menuManagement/menuManagementIndex.vue')
+  component: () => import('@/views/systemSetting/menuManagement/menuManagementList.vue')
 }

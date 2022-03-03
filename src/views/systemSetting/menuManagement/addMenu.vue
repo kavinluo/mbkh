@@ -2,7 +2,7 @@
  * @Author: kevin
  * @Date: 2022-03-02 10:46:03
  * @LastEditors: kevin
- * @LastEditTime: 2022-03-02 18:06:03
+ * @LastEditTime: 2022-03-03 17:20:55
  * @Description: 添加菜单
 -->
 <template>
@@ -41,7 +41,7 @@
         <el-form-item label="父级菜单">
           <el-cascader
             v-model="formData.parentId"
-            :options="listMenu"
+            :options="menuList"
             clearable
             placeholder="请选择父级菜单"
             :props="userProps" />
@@ -86,9 +86,28 @@
 
 <script>
 import { ref } from 'vue'
- import { addMenu, getListMenu } from '@/api/menu'
+import kevForm from '@/components/kvform'
+import formConfig from './formConfig'
+import { addMenu, getMenu, editMenu } from '@/api/menu'
 export default {
-  setup (props, { emit }) {
+  components: {
+    kevForm
+  },
+  props: {
+    menuList: {
+      type: Array,
+      default: () => []
+    },
+    rowData: {
+      type: Object,
+      default: null
+    },
+    inputType: {
+      type: String,
+      default: 'add'
+    }
+  },
+  setup ({ rowData, inputType }, { emit }) {
     const ruleFormRef = ref()
     const listMenu = ref()
     const userProps = ref({
@@ -108,18 +127,28 @@ export default {
       icon: '',
       parentId: null
     })
-    const getList = async () => {
-      const { data } = await getListMenu()
-      listMenu.value = data
+    if (inputType === 'edit') {
+      (async () => {
+        const dealit = await getMenu(rowData.id)
+        formData.value = dealit
+      })()
     }
-    getList()
     const onSubmit = () => {
-      addMenu(formData.value).then((res) => {
-        const { status } = res
-        if (status.code === '0') {
-          emit('cancel')
-        }
-      })
+      if (inputType === 'edit') {
+        editMenu(formData.value).then((res) => {
+          const { status } = res
+          if (status.code === '0') {
+            emit('callBack')
+          }
+        })
+      } else {
+        addMenu(formData.value).then((res) => {
+          const { status } = res
+          if (status.code === '0') {
+            emit('callBack')
+          }
+        })
+      }
     }
   return {
     formData,
@@ -127,7 +156,8 @@ export default {
     emit,
     userProps,
     listMenu,
-    ruleFormRef
+    ruleFormRef,
+    formConfig
   }
   }
 }

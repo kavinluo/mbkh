@@ -2,7 +2,7 @@
  * @Author: kevin
  * @Date: 2022-02-21 13:45:02
  * @LastEditors: kevin
- * @LastEditTime: 2022-03-02 18:17:00
+ * @LastEditTime: 2022-03-03 18:30:25
  * @Description: Do not edit
  */
 
@@ -49,6 +49,7 @@ const err = (e) => {
       }
     }
   }
+  console.log('error', error)
   return Promise.reject(error)
 }
 
@@ -73,6 +74,7 @@ service.interceptors.request.use(config => {
  * 所有请求统一返回
  */
 service.interceptors.response.use((response) => {
+  console.log('response', response)
   NProgress.done()
   // const code = response.data?.status?.code
   if (errorCode(response)) {
@@ -81,6 +83,7 @@ service.interceptors.response.use((response) => {
     }
     return response.data
   }
+  return response.data // 这里必须返回 免得报错
 }, err)
 
 function errorCode (response) {

@@ -2,7 +2,7 @@
  * @Author: kevin
  * @Date: 2022-02-28 09:09:17
  * @LastEditors: kevin
- * @LastEditTime: 2022-03-02 10:56:26
+ * @LastEditTime: 2022-03-03 17:39:46
  * @Description: 用户相关
  */
 import router from '@/router'
@@ -85,7 +85,7 @@ export default ({
      // 请求菜单
      async getUserMenusActions ({ commit }, payload) {
       const getUserMenusRes = await getUserMenu()
-      const userMenus = getUserMenusRes.data || []
+      const userMenus = getUserMenusRes?.data ?? []
       commit('changeUserMenus', userMenus)
       setStaticData('userMenus', userMenus)
       router.push('/manage')
