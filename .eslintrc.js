@@ -2,7 +2,7 @@
  * @Author: kevin
  * @Date: 2022-02-21 13:21:43
  * @LastEditors: kevin
- * @LastEditTime: 2022-03-03 11:03:13
+ * @LastEditTime: 2022-03-04 09:30:46
  * @Description: Do not edit
  */
 module.exports = {
@@ -21,7 +21,7 @@ module.exports = {
     'no-mixed-operators': 0,
     'vue/max-attributes-per-line': ['error', {
       'singleline': {
-        'max': 5
+        'max': 10
       },
       'multiline': {
         'max': 1,

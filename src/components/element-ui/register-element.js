@@ -2,7 +2,7 @@
  * @Author: kevin
  * @Date: 2022-02-28 09:09:17
  * @LastEditors: kevin
- * @LastEditTime: 2022-03-03 13:05:30
+ * @LastEditTime: 2022-03-04 17:53:05
  * @Description: Do not edit
  */
 import 'element-plus/theme-chalk/base.css'
@@ -34,7 +34,11 @@ import {
   ElCascader,
   ElTableColumn,
   ElTable,
-  ElDatePicker
+  ElDatePicker,
+  ElPagination,
+  ElDropdown,
+  ElDropdownItem,
+  ElDropdownMenu
 } from 'element-plus'
 
 // icon引入
@@ -46,7 +50,9 @@ import {
   Location,
   Document,
   Setting,
-  Menu
+  Menu,
+  Histogram,
+  Cherry
 } from '@element-plus/icons-vue'
 
 const components = [
@@ -80,7 +86,13 @@ const components = [
   ElCascader,
   ElTableColumn,
   ElTable,
-  ElDatePicker
+  ElDatePicker,
+  ElPagination,
+  Histogram,
+  ElDropdown,
+  ElDropdownItem,
+  ElDropdownMenu,
+  Cherry
 ]
 const plugins = [
   ElInfiniteScroll,

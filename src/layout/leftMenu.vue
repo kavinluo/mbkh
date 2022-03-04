@@ -2,7 +2,7 @@
  * @Author: kevin
  * @Date: 2022-02-25 09:42:38
  * @LastEditors: kevin
- * @LastEditTime: 2022-03-02 10:30:13
+ * @LastEditTime: 2022-03-04 18:01:55
  * @Description: Do not edit
 -->
 <template>
@@ -13,27 +13,39 @@
     @open="handleOpen"
     @close="handleClose">
     <template v-for="item in subMenus" :key="item.id">
-      <!-- 二级菜单 -->
-      <template v-if="item.children && item.children.length">
-        <!-- 二级菜单的可以展开的标题 -->
-        <el-sub-menu :index="item.id + ''">
-          <template #title>
-            <el-icon><location /></el-icon>
-            <span>{{ item.title }}</span>
-          </template>
-          <!-- 遍历里面的item -->
-          <template v-for="subitem in item.children" :key="subitem.id">
-            <el-menu-item :index="subitem.id + ''" @click="handleMenuItemClick(subitem)">
-              <i v-if="subitem.icon" :class="subitem.icon"></i>
-              <span>{{ subitem.title }}</span>
+      <el-sub-menu :index="item.id +''" v-if="item.children">
+        <template #title>
+          <el-icon v-if="item.meta.icon"><kvIcon :name="item.meta.icon"/></el-icon>
+          <span>{{ item.meta.title }}</span>
+        </template>
+        <!-- 遍历里面的item -->
+        <template v-for="subitem in item.children" :key="subitem.id">
+          <el-sub-menu v-for="sItem in subitem.children" :key="sItem.id" :index="`${sItem.id}`">
+            <template #title>
+              <el-icon v-if="sItem.meta.icon"><kvIcon :name="sItem.meta.icon"/></el-icon>
+              <span>{{ sItem.meta.title }}</span>
+            </template>
+            <el-sub-menu v-for="xsItem in sItem.children" :key="xsItem.id" :index="`${xsItem.id}`">
+              <template #title>
+                <el-icon v-if="xsItem.meta.icon"><kvIcon :name="xsItem.meta.icon"/></el-icon>
+                <span>{{ xsItem.meta.title }}</span>
+              </template>
+            </el-sub-menu>
+            <el-menu-item :index="`${xsItem.id}`" @click="handleMenuItemClick(xsItem)">
+              <el-icon v-if="xsItem.meta.icon"><kvIcon :name="xsItem.meta.icon"/></el-icon>
+              <span>{{ xsItem.meta.title }}</span>
             </el-menu-item>
-          </template>
-        </el-sub-menu>
-      </template>
-      <!-- 一级菜单 -->
-      <el-menu-item :index="item.id + ''" v-else-if="item.depPath === 2" @click="handleMenuItemClick(item)">
-        <el-icon><location /></el-icon>
-        <span>{{ item.title }}</span>
+
+          </el-sub-menu>
+          <el-menu-item :index="`${subitem.id}`" @click="handleMenuItemClick(subitem)">
+            <el-icon v-if="subitem.meta.icon"><kvIcon :name="subitem.meta.icon"/></el-icon>
+            <span>{{ subitem.meta.title }}</span>
+          </el-menu-item>
+        </template>
+      </el-sub-menu>
+      <el-menu-item v-else :index="item.id + ''" @click="handleMenuItemClick(item)">
+        <el-icon v-if="item.meta.icon"><kvIcon :name="item.meta.icon"/></el-icon>
+        <span>{{ item.meta.title }}</span>
       </el-menu-item>
     </template>
 
@@ -64,7 +76,6 @@ import { computed } from 'vue'
     console.log('currentPath', currentPath)
 
     const subMenus = computed(() => store.state.user.subMenus)
-    console.log('left-subMenus', subMenus)
 
     const handleMenuItemClick = (item) => {
       console.log('--------', item)

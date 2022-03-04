@@ -1,0 +1,20 @@
+<!--
+ * @Author: kevin
+ * @Date: 2022-03-04 11:04:13
+ * @LastEditors: kevin
+ * @LastEditTime: 2022-03-04 15:58:39
+ * @Description: 安全管理
+-->
+<template>
+  <div>
+    <router-view />
+  </div>
+</template>
+
+<script setup>
+
+</script>
+
+<style lang="scss" scoped>
+
+</style>

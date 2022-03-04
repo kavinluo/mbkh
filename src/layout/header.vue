@@ -2,7 +2,7 @@
  * @Author: kevin
  * @Date: 2022-02-25 09:42:38
  * @LastEditors: kevin
- * @LastEditTime: 2022-03-02 10:13:37
+ * @LastEditTime: 2022-03-04 15:14:31
  * @Description: Do not edit
 -->
 <template>
@@ -14,8 +14,8 @@
   </div>
   <div class="topbar-navigation topbar-left">
     <router-link v-for="item in userMenus" :key="item.id" :to="item.path" @click="handleMenu(item)" style="margin-right: 15px">
-      <el-button color="#ffffff1a" :icon="item.icon ? Histogram : ''" size="large" type="primary">
-        {{ item.title }}
+      <el-button color="#ffffff1a" size="large" type="primary">
+        <el-icon><kvIcon :name="item.meta.icon" /></el-icon> {{ item.meta.title }}
       </el-button>
     </router-link>
   </div>
@@ -23,15 +23,22 @@
     <div class="welcome-info">
       欢迎您，{{ userInfo.name }}
     </div>
-    <span class="use-name" @click="downOut" id="useName">{{ userInfo.name ? userInfo.name.substr(0,1) : '' }}</span>
-    <ul class="show-down" v-if="downStatus">
-      <li @click="logOut">退出</li>
-    </ul>
+    <el-dropdown class="use-name">
+      <span class="el-dropdown-link">
+        <span @click="downOut" id="useName">{{ userInfo.name ? userInfo.name.substr(0,1) : '' }}</span>
+      </span>
+      <template #dropdown>
+        <el-dropdown-menu>
+          <el-dropdown-item @click="logOut">退出</el-dropdown-item>
+        </el-dropdown-menu>
+      </template>
+    </el-dropdown>
+
   </div>
 </template>
 
 <script>
-  import { Monitor, Histogram, ReadingLamp, EditPen, Setting } from '@element-plus/icons-vue'
+  // import { Monitor, Histogram, ReadingLamp, EditPen, Setting } from '@element-plus/icons-vue'
   import { ref } from 'vue'
   import { useStore } from 'vuex'
   import { useState } from '@/hooks/index'
@@ -76,11 +83,6 @@
         downOut,
         logOut,
         downStatus,
-        Monitor,
-        Histogram,
-        ReadingLamp,
-        EditPen,
-        Setting,
         handleMenu,
         ...userInfo,
         ...userMenus

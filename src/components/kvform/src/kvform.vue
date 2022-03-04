@@ -2,7 +2,7 @@
  * @Author: kevin
  * @Date: 2022-03-03 09:40:43
  * @LastEditors: kevin
- * @LastEditTime: 2022-03-03 18:36:07
+ * @LastEditTime: 2022-03-04 16:43:00
  * @Description: form 表单
 -->
 <template>
@@ -12,7 +12,7 @@
     </div>
     <el-row>
       <template v-for="item in formItems" :key="item.labe">
-        <el-col v-bind="colLayout">
+        <el-col v-bind="item.span ? item.span : colLayout">
           <el-form-item
             v-if="!item.isHidden"
             :label="item.label"
@@ -38,7 +38,8 @@
                 <el-option
                   v-for="option in item.options"
                   :key="option.value"
-                  :value="option.value">{{ option.title }}</el-option>
+                  :value="option.value"
+                  :label="option.label"></el-option>
               </el-select>
             </template>
             <template v-else-if="item.type === 'datepicker'">
@@ -51,6 +52,7 @@
             <template v-else-if="item.type === 'slot'">
               <slot :name="item.slotName" :label="item.label"></slot>
             </template>
+            <p v-if="item.help" style="margin: 0; font-size:12px;color:#ccc;line-height:1.2">{{ item.help }}</p>
           </el-form-item>
         </el-col>
       </template>
@@ -94,7 +96,7 @@ export default {
   emits: ['update:modelValue', 'callBack'],
   setup (props, { emit }) {
     const handleValueChange = (value, field) => {
-      emit('update:modelValue', { ...props.modelValue, [field]: value })
+      emit('update:modelValue', { ...props.modelValue, [field]: value }) // 双向绑定需要同时更新
     }
 
     return {

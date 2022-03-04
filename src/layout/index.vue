@@ -2,7 +2,7 @@
  * @Author: kevin
  * @Date: 2022-02-25 09:42:38
  * @LastEditors: kevin
- * @LastEditTime: 2022-03-01 11:19:26
+ * @LastEditTime: 2022-03-04 15:41:04
  * @Description: Do not edit
 -->
 <template>
@@ -11,11 +11,11 @@
       <headers/>
     </el-header>
     <el-container class="mian">
-      <el-aside width="200px" :style="!isFold ? menuSwitchOff : menuSwitchOn">
+      <el-aside :width="'200px'" :style="!isFold ? menuSwitchOffStyle : menuSwitchOnStyle" v-if="hasSubMenus">
         <div class="menu-switch" @click="handleFoldClick">
-          <el-icon style="vertical-align: middle;">
-            <Fold v-if="isFold" />
-            <Expand v-else />
+          <el-icon style="vertical-align: middle;font-size:15px">
+            <Fold style="font-size:12px;margin-top: -5px;" v-if="isFold" />
+            <Expand style="font-size:12px;margin-top: -5px;" v-else />
           </el-icon>
         </div>
         <leftMenu :collapse="isFold" />
@@ -31,6 +31,7 @@
 <script>
 import headers from './header.vue'
 import leftMenu from './leftMenu.vue'
+import { useState } from '@/hooks/index'
 import { ref } from 'vue'
   export default {
     setup (props, { emit }) {
@@ -38,19 +39,21 @@ import { ref } from 'vue'
       const handleFoldClick = () => {
         isFold.value = !isFold.value
       }
-        const menuSwitchOff = {
-          width: '200px',
-          transition: 'all .3s ease-out'
-        }
-        const menuSwitchOn = {
-          width: '65px',
-          transition: 'all .5s ease-out'
-        }
+      const hasSubMenus = useState(['hasSubMenus'], 'user')
+      const menuSwitchOffStyle = {
+        width: '200px',
+        transition: 'all .3s ease-out'
+      }
+      const menuSwitchOnStyle = {
+        width: '65px',
+        transition: 'all .5s ease-out'
+      }
       return {
         handleFoldClick,
-        menuSwitchOff,
-        menuSwitchOn,
-        isFold
+        menuSwitchOffStyle,
+        menuSwitchOnStyle,
+        isFold,
+        ...hasSubMenus
       }
     },
     components: {
@@ -69,9 +72,10 @@ import { ref } from 'vue'
   .right-mian {
     flex: 1;
     background: #fff;
+    margin: 15px 0 0 12px;
   }
   .menu-switch {
-    height: 20px;
+    height: 15px;
     text-align: center;
     cursor: pointer;
   }
@@ -106,12 +110,14 @@ import { ref } from 'vue'
       position: relative;
       .use-name {
         margin-left: 15px;
+        display: block;
         width: 30px;
         height: 30px;
         border-radius: 50%;
         line-height: 30px;
         text-align: center;
         background: #2284b6;
+        color: #fff;
         cursor: pointer;
       }
       .show-down {

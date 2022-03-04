@@ -2,7 +2,7 @@
  * @Author: kevin
  * @Date: 2022-03-03 13:54:49
  * @LastEditors: kevin
- * @LastEditTime: 2022-03-03 18:18:20
+ * @LastEditTime: 2022-03-04 16:21:31
  * @Description: 确认弹框
 -->
 
@@ -10,8 +10,9 @@
   <el-dialog
     v-model="dialog"
     :title="title"
-    :draggable="true"
+    :draggable="draggable"
     :width="dialogWidth"
+    :close-on-click-modal="false"
     :before-close="handleClose">
     <span v-if="message">{{ message }}</span>
     <slot></slot>
@@ -50,6 +51,10 @@ export default {
       default: '400px'
     },
     isShowFooter: {
+      type: Boolean,
+      default: true
+    },
+    draggable: {
       type: Boolean,
       default: true
     }
