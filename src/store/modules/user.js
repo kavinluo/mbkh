@@ -2,7 +2,7 @@
  * @Author: kevin
  * @Date: 2022-02-28 09:09:17
  * @LastEditors: kevin
- * @LastEditTime: 2022-03-04 15:33:59
+ * @LastEditTime: 2022-03-08 14:58:36
  * @Description: 用户相关
  */
 import router from '@/router'
@@ -29,26 +29,29 @@ export default ({
       state.userInfo = userInfo
     },
     changeUserMenus (state, userMenus) {
-      // console.log('注册动态路由', menuList)
-      console.log('userMenus', userMenus)
       // userMenus => routes
-      const routes = mapMenusToRoutes(userMenus)
-      console.log('routes', routes)
-
-      // 将routes => router.main.children
-      routes.forEach((route) => {
+      const _routes = mapMenusToRoutes(userMenus)
+      // 将routes => router.manage.children
+      _routes.forEach((route) => {
         router.addRoute('manage', route)
       })
-      state.userMenus = routes
+      console.log('_routes', _routes)
+      state.userMenus = _routes
       router.push('/manage')
-      // 获取用户按钮的权限
-      // const permissions = mapMenusToPermissions(userMenus)
-      // state.permissions = permissions
+      // 刷新页面时先从本地获取
+      const hasSubMenus = getStaticData('hasSubMenus')
+      const subMenus = getStaticData('subMenus')
+      state.subMenus = subMenus || _routes[0].children
+      console.log(' state.subMenus', state.subMenus)
+      state.hasSubMenus = hasSubMenus || (state.subMenus.length > 1)
+      // router.push('/manage')
     },
     changeSubMenus (state, subMenus) {
-      console.log('subMenus', subMenus)
       state.subMenus = subMenus
       state.hasSubMenus = subMenus.length > 1
+      // 切换时候存储菜单状态
+      setStaticData('subMenus', subMenus)
+      setStaticData('hasSubMenus', subMenus.length > 1)
     },
     // 删除存储
     deleteUserInfo (state, logoutRes) {
@@ -58,6 +61,7 @@ export default ({
       delStaticData('userMenus')
       delStaticData('token')
       delStaticData('userInfo')
+      localStorage.clear()
     }
   },
   actions: {
@@ -79,12 +83,11 @@ export default ({
       dispatch('getUserMenusActions')
     },
      // 请求菜单
-     async getUserMenusActions ({ commit }, payload) {
+     async getUserMenusActions ({ commit, dispatch }, payload) {
       const getUserMenusRes = await getUserMenu()
       const userMenus = getUserMenusRes?.data ?? []
       commit('changeUserMenus', userMenus)
       setStaticData('userMenus', userMenus)
-      router.push('/manage')
     },
 
     // 设置子菜单菜单

@@ -185,3 +185,50 @@ export function getSex (idCard) {
   }
   return sexStr
 }
+
+export function pathMapBreadcrumbs (userMenus, currentPath) {
+  const breadcrumbs = []
+  pathMapToMenu(userMenus, currentPath, breadcrumbs)
+  return breadcrumbs
+}
+export function pathMapToMenu (userMenus, currentPath, breadcrumbs) {
+  console.log('userMenus', userMenus, currentPath)
+  for (const menu of userMenus) {
+    if (menu.path === currentPath) { // 匹配当前点击菜单
+      return menu
+    } else if (menu.children) {
+      console.log('menu', menu)
+      const findMenu = pathMapToMenu(menu.children, currentPath)
+      console.log('findMenu', findMenu)
+      if (findMenu) {
+        breadcrumbs?.push({ name: menu.meta.title })
+        breadcrumbs?.push({ name: findMenu.meta.title })
+        return findMenu
+      }
+    }
+
+    // if (menu.depath === 1 || menu.depath === 1) {
+    //   const findMenu = pathMapToMenu(menu.children ?? [], currentPath)
+    //   if (findMenu) {
+    //     breadcrumbs?.push({ name: menu.meta.title })
+    //     breadcrumbs?.push({ name: findMenu.meta.title })
+    //     return findMenu
+    //   }
+    // } else if (menu.depath === 3 && menu.path === currentPath) {
+    //   return menu
+    // }
+  }
+}
+// 匹配当前点击菜单
+export function currPath (userMenus, currentPath) {
+  for (const menu of userMenus) {
+    if (menu.path === currentPath) { // 匹配当前点击菜单
+      return menu
+    } else if (menu.children) {
+      const findMenu = currPath(menu.children, currentPath)
+      if (findMenu) {
+        return findMenu
+      }
+    }
+  }
+}

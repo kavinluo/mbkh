@@ -2,7 +2,7 @@
  * @Author: kevin
  * @Date: 2022-03-03 09:40:43
  * @LastEditors: kevin
- * @LastEditTime: 2022-03-04 16:43:00
+ * @LastEditTime: 2022-03-09 18:02:51
  * @Description: form 表单
 -->
 <template>
@@ -17,9 +17,11 @@
             v-if="!item.isHidden"
             :label="item.label"
             :rules="item.rules"
-            :style="itemStyle">
-            <template v-if="item.type === 'input' || item.type === 'password' || item.type === 'number'">
+            :style="item.formItemsStyle ? item.formItemsStyle : itemStyle"
+            :class="item.itemClassName">
+            <template v-if="item.type === 'input' || item.type === 'password' || item.type === 'number'"> <!--- to do -->
               <el-input
+                clearable
                 :type="item.type"
                 :placeholder="item.placeholder"
                 v-bind="item.otherOptions"
@@ -61,10 +63,12 @@
   <div class="footer">
     <slot name="footer"></slot>
   </div>
+  <div v-if="showLine" style="border-bottom: 9px solid rgb(220 233 244);margin: 0 -15px 16px;"></div>
 </template>
 
 <script>
 export default {
+  name: 'KvForm',
   props: {
     labelWidth: {
       type: String,
@@ -91,10 +95,15 @@ export default {
         sm: 24,
         xs: 24
       })
+    },
+    showLine: { // 显示页脚分割线
+      type: Boolean,
+      default: false
     }
   },
   emits: ['update:modelValue', 'callBack'],
   setup (props, { emit }) {
+    console.log('.showLine.showLine', props.showLine)
     const handleValueChange = (value, field) => {
       emit('update:modelValue', { ...props.modelValue, [field]: value }) // 双向绑定需要同时更新
     }
@@ -106,6 +115,10 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped>
-
+<style lang="less">
+  .searchBtn {
+    .el-form-item__label-wrap {
+      display: none;
+    }
+  }
 </style>

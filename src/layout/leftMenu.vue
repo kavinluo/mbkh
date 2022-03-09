@@ -2,21 +2,21 @@
  * @Author: kevin
  * @Date: 2022-02-25 09:42:38
  * @LastEditors: kevin
- * @LastEditTime: 2022-03-04 18:01:55
+ * @LastEditTime: 2022-03-08 18:06:05
  * @Description: Do not edit
 -->
 <template>
   <el-menu
-    default-active="2"
-    class="el-menu-vertical-demo"
+    :default-active="defaultValue"
+    class="el-menu-vertical"
     :collapse="collapse"
     @open="handleOpen"
     @close="handleClose">
     <template v-for="item in subMenus" :key="item.id">
       <el-sub-menu :index="item.id +''" v-if="item.children">
         <template #title>
-          <el-icon v-if="item.meta.icon"><kvIcon :name="item.meta.icon"/></el-icon>
-          <span>{{ item.meta.title }}</span>
+          <el-icon v-if="item.meta?.icon"><kvIcon :name="item.meta?.icon"/></el-icon>
+          <span>{{ item.meta?.title }}</span>
         </template>
         <!-- 遍历里面的item -->
         <template v-for="subitem in item.children" :key="subitem.id">
@@ -44,8 +44,8 @@
         </template>
       </el-sub-menu>
       <el-menu-item v-else :index="item.id + ''" @click="handleMenuItemClick(item)">
-        <el-icon v-if="item.meta.icon"><kvIcon :name="item.meta.icon"/></el-icon>
-        <span>{{ item.meta.title }}</span>
+        <el-icon v-if="item.meta?.icon"><kvIcon :name="item.meta?.icon"/></el-icon>
+        <span>{{ item.meta?.title }}</span>
       </el-menu-item>
     </template>
 
@@ -53,12 +53,10 @@
 </template>
 
 <script>
-import { computed } from 'vue'
-// import { Menu as IconMenus } from '@element-plus/icons-vue'
+  import { computed, ref } from 'vue'
   import { useStore } from '@/store'
   import { useRouter, useRoute } from 'vue-router'
-
-    // import { useState } from '@/hooks/index'
+  import { currPath } from '@/utils/util'
 
  export default {
    props: {
@@ -69,13 +67,16 @@ import { computed } from 'vue'
   },
   setup (props) {
     const store = useStore()
-        // router
     const router = useRouter()
     const route = useRoute()
     const currentPath = route.path
     console.log('currentPath', currentPath)
 
     const subMenus = computed(() => store.state.user.subMenus)
+    const userMenus = computed(() => store.state.user.userMenus)
+    console.log('userMenus', userMenus)
+    const menu = currPath(userMenus.value, currentPath)
+    const defaultValue = ref(menu?.id + '')
 
     const handleMenuItemClick = (item) => {
       console.log('--------', item)
@@ -94,8 +95,8 @@ import { computed } from 'vue'
       handleOpen,
       handleClose,
       subMenus,
-      handleMenuItemClick
-      // IconMenus
+      handleMenuItemClick,
+      defaultValue
     }
   }
  }

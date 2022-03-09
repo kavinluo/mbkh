@@ -2,7 +2,7 @@
  * @Author: kevin
  * @Date: 2022-03-04 14:29:18
  * @LastEditors: kevin
- * @LastEditTime: 2022-03-04 14:31:48
+ * @LastEditTime: 2022-03-07 12:36:34
  * @Description: Do not edit
  */
 import Index from '@/layout/index.vue'
@@ -17,8 +17,8 @@ const routes = [
     path: '/manage',
     name: 'manage',
     meta: {},
-    component: Index,
-    children: []
+    component: Index
+    // children: []
   },
   {
     path: '/',

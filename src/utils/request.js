@@ -2,7 +2,7 @@
  * @Author: kevin
  * @Date: 2022-02-21 13:45:02
  * @LastEditors: kevin
- * @LastEditTime: 2022-03-04 09:17:02
+ * @LastEditTime: 2022-03-08 14:56:27
  * @Description: Do not edit
  */
 
@@ -10,18 +10,22 @@ import axios from 'axios'
 import { ElMessage } from 'element-plus'
 import NProgress from 'nprogress' // progress bar
 import 'nprogress/nprogress.css' // progress bar custom style
-import { getStaticData } from '@/utils/util'
+import { delStaticData, getStaticData } from '@/utils/util'
 import router from '@/router'
-import { useStore } from '@/store'
- const store = useStore()
-
+import store from '@/store'
+// import { computed } from 'vue'
 // 创建 axios 实例
 const service = axios.create({
   baseURL: '/api', // api base_url
   timeout: 300000, // 请求超时时间,
   isLoading: true, // 是否显示loading状态
   successTitle: null, // 成功后需要提示的内容
-  errorTitle: null // 发生错误的提示
+  errorTitle: null, // 发生错误的提示
+  // hasPage: false, // 是否有分页
+   // parameter参数
+  params: {},
+  // post参数，使用axios.post(url,{},config);如果没有额外的也必须要用一个空对象，否则会报错
+  data: {}
 })
 
 const err = (e) => {
@@ -55,9 +59,14 @@ const err = (e) => {
 
 // request interceptor
 service.interceptors.request.use(config => {
-    if (config.isLoading) {
-      NProgress.start()
-    }
+  if (config.isLoading) {
+    NProgress.start()
+  }
+  // if (config.hasPage) { // 是否有分页
+  //   // const { curPage, pageSize } = computed(() => store.state.pagination)
+  //   config.params.curPage = computed(() => store.state.pagination.curPage)
+  //   config.params.pageSize = computed(() => store.state.pagination.pageSize)
+  // }
   const token = getStaticData('token') // Vue.ls.get(ACCESS_TOKEN)
   if (token) {
     // config.headers.Authorization = token // 'Bearer ' + token
@@ -74,7 +83,6 @@ service.interceptors.request.use(config => {
  * 所有请求统一返回
  */
 service.interceptors.response.use((response) => {
-  console.log('response', response)
   NProgress.done()
   // const code = response.data?.status?.code
   if (errorCode(response)) {
@@ -87,12 +95,12 @@ service.interceptors.response.use((response) => {
 }, err)
 
 function errorCode (response) {
-  console.log('response', response)
   const { data, config } = response
   const code = data?.status?.code
   const msg = data?.status?.msg
   let flag = true
   if (code === '4') { // 登录超时
+    delStaticData('token')
     router.push('/login')
     ElMessage.error(msg)
     flag = false

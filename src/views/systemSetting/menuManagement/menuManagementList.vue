@@ -2,41 +2,27 @@
  * @Author: kevin
  * @Date: 2022-02-24 10:05:17
  * @LastEditors: kevin
- * @LastEditTime: 2022-03-04 13:29:25
+ * @LastEditTime: 2022-03-08 14:08:23
  * @Description: 菜单列表
 -->
 <template>
   <el-button type="primary" @click="add">添加</el-button>
-  <el-table
-    ref="multipleTableRef"
-    :data="tableData"
-    style="width: 100%"
-    row-key="id"
-    @selection-change="handleSelectionChange"
-  >
-    <el-table-column type="selection" width="55" />
-    <el-table-column type="index" label="排序" width="120">
-      <template #default="scope">{{ scope.row.sequence }}</template>
-    </el-table-column>
-    <el-table-column property="title" label="菜单名称" show-overflow-tooltip />
-    <el-table-column property="name" label="路由name" show-overflow-tooltip />
-    <el-table-column property="path" label="路由地址" show-overflow-tooltip />
-    <el-table-column property="icon" label="icon" show-overflow-tooltip />
-    <el-table-column property="path" label="是否可见" show-overflow-tooltip>
-      <template #default="scope"> {{ scope.row.isSee ? '是' : '否' }}</template>
-    </el-table-column>
-    <el-table-column property="name" label="操作">
-      <template #default="scope">
-        <el-button type="warning" size="small" @click="heandleEdit(scope.row)">编辑</el-button>
-        <el-button type="warning" size="small" @click="handleRemove(scope.row)">删除</el-button>
-      </template>
-    </el-table-column>
-  </el-table>
+  <kv-table
+    :tableData="tableData"
+    :propList="propList"
+    :showIndexColumn="false"
+    :showFooter="false"
+    @handleSelectionChange="handleSelectionChange">
+    <template #isSee="scope">
+      {{ scope.row.isSee ? '是' : '否' }}
+    </template>
+    <template #handler="scope">
+      <el-link type="primary" size="small" @click="heandleEdit(scope.row)" underline icon="edit">编辑</el-link>&nbsp;&nbsp;&nbsp;
+      <el-link type="danger" size="small" @click="handleRemove(scope.row)" underline icon="delete">删除</el-link>
+    </template>
+  </kv-table>
 
   <div style="margin-top: 20px">
-    <!-- <el-dialog v-model="addModel" v-bind="modelConfig">
-      <add v-if="addModel" :inputType="inputType" :menuList="tableData" :rowData="rowData" @cancel="cancel" @callBack="callBack" />
-    </el-dialog> -->
     <kvDialog v-bind="modelConfig" v-model="addModel" v-if="addModel" @callBack="confirm" @cancel="cancel">
       <add v-if="addModel" :inputType="inputType" :menuList="tableData" :rowData="rowData" @cancel="cancel" @callBack="callBack" />
     </kvDialog>
@@ -51,11 +37,13 @@
   import add from './addMenu.vue'
   import { getMenuList, removeMenu } from '@/api/menu'
   import kvDialog from '@/components/kvDialog'
-
+  // import kvTable from '@/components/kvTable'
+  import propList from './tableConfig'
   export default {
     components: {
       add,
       kvDialog
+      // kvTable
     },
     emits: ['cancel'],
 
@@ -130,7 +118,8 @@
         kvDialogConfig,
         handleRemove,
         confirm,
-        callBack
+        callBack,
+        propList
 
       }
     }

@@ -2,7 +2,7 @@
  * @Author: kevin
  * @Date: 2022-02-25 09:42:38
  * @LastEditors: kevin
- * @LastEditTime: 2022-03-04 15:14:31
+ * @LastEditTime: 2022-03-07 14:00:40
  * @Description: Do not edit
 -->
 <template>
@@ -21,11 +21,11 @@
   </div>
   <div class="topbar-info topbar-right" ref="headline">
     <div class="welcome-info">
-      欢迎您，{{ userInfo.name }}
+      欢迎您，{{ userInfo?.name }}
     </div>
     <el-dropdown class="use-name">
       <span class="el-dropdown-link">
-        <span @click="downOut" id="useName">{{ userInfo.name ? userInfo.name.substr(0,1) : '' }}</span>
+        <span @click="downOut" id="useName">{{ userInfo?.name ? userInfo.name.substr(0,1) : '' }}</span>
       </span>
       <template #dropdown>
         <el-dropdown-menu>
@@ -50,7 +50,7 @@
       const router = useRouter()
       const downStatus = ref(false)
       const headline = ref(null) // $refs
-      stroe.dispatch('user/userInfoAction')
+      // stroe.dispatch('user/userInfoAction')
 
       const userInfo = useState(['userInfo'], 'user')
       const userMenus = useState(['userMenus'], 'user')

@@ -2,7 +2,7 @@
  * @Author: kevin
  * @Date: 2022-02-25 09:42:38
  * @LastEditors: kevin
- * @LastEditTime: 2022-03-04 15:41:04
+ * @LastEditTime: 2022-03-08 16:16:45
  * @Description: Do not edit
 -->
 <template>
@@ -21,7 +21,10 @@
         <leftMenu :collapse="isFold" />
       </el-aside>
       <el-main class="right-mian">
-        <router-view />
+        <div class="path"> <span v-for="item in breadcrumbs" :key="item.name"> {{ item.name }}> </span></div>
+        <div class="right-mian-content">
+          <router-view />
+        </div>
       </el-main>
     </el-container>
   </el-container>
@@ -32,7 +35,11 @@
 import headers from './header.vue'
 import leftMenu from './leftMenu.vue'
 import { useState } from '@/hooks/index'
-import { ref } from 'vue'
+import { useStore } from '@/store'
+import { useRoute } from 'vue-router'
+import { pathMapBreadcrumbs } from '@/utils/util'
+
+import { ref, computed } from 'vue'
   export default {
     setup (props, { emit }) {
       const isFold = ref(false)
@@ -48,12 +55,21 @@ import { ref } from 'vue'
         width: '65px',
         transition: 'all .5s ease-out'
       }
+      // 面包屑的数据: [{name: , path: }]
+      const store = useStore()
+      const breadcrumbs = computed(() => {
+        const userMenus = store.state.user.userMenus
+        const route = useRoute()
+        const currentPath = route.path
+        return pathMapBreadcrumbs(userMenus, currentPath)
+      })
       return {
         handleFoldClick,
         menuSwitchOffStyle,
         menuSwitchOnStyle,
         isFold,
-        ...hasSubMenus
+        ...hasSubMenus,
+        breadcrumbs
       }
     },
     components: {
@@ -70,9 +86,19 @@ import { ref } from 'vue'
     display: flex;
   }
   .right-mian {
-    flex: 1;
     background: #fff;
+    flex: 1;
     margin: 15px 0 0 12px;
+    .right-mian-content {
+      padding: 15px ;
+    }
+    .path {
+      height: 40px;
+      line-height:40px;
+      background: #fff;
+      padding: 0 15px;
+      border-bottom: 15px solid #dce9f4;
+    }
   }
   .menu-switch {
     height: 15px;

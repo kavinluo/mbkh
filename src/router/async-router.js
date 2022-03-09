@@ -2,7 +2,7 @@
  * @Author: kevin
  * @Date: 2022-02-28 15:57:13
  * @LastEditors: kevin
- * @LastEditTime: 2022-03-04 17:52:24
+ * @LastEditTime: 2022-03-08 15:28:30
  * @Description: 动态获取路由
  */
 
@@ -16,7 +16,7 @@
  export const mapMenusToRoutes = (routerMap, parent) => {
   return routerMap.map(item => {
     // eslint-disable-next-line no-unused-vars
-    const { title, show, hideChildren, target, icon, link } = item.meta || {}
+    const { title, show, hideChildren, target, icon, children, id, deppath } = item || {}
     const currentRouter = {
       // 如果路由设置了 path，则作为默认 path，否则 路由地址 动态拼接生成如 /dashboard/workplace
       path: item?.path || `${parent && parent.path || ''}/${item.key}`,
@@ -26,16 +26,17 @@
       // component: constantRouterComponents[item.component || item.key],
       // 该路由对应页面的 组件 :方案2 (动态加载)
       component: () => import(`@/views/${item.component}`),
-      // meta: 页面标题, 菜单图标, 页面权限(供指令权限用，可去掉)
+      // meta: 页面标题, 菜单图标,
       meta: {
-        title: item.title,
-        icon: item.icon || undefined,
+        title: title,
+        icon: icon || undefined,
         // hiddenHeaderContent: hiddenHeaderContent,
-        target: target,
-        link: link
+        target: target
+        // link: link
       },
-      id: item.id,
-      depath: item.deppath
+      id: id,
+      depath: deppath,
+      redirect: children && item.children.length ? item.children[0].path : ''
     }
     // 是否设置了隐藏菜单
     if (show === false) {
@@ -51,11 +52,14 @@
     }
     // 重定向
     item.redirect && (currentRouter.redirect = item.redirect)
+    // item.redirect = item.children.length > 0 item.children[0]
+
     // 是否有子菜单，并递归处理
     if (item.children && item.children.length > 0) {
       // Recursion
       currentRouter.children = mapMenusToRoutes(item.children, currentRouter)
     }
+
     return currentRouter
   })
 }

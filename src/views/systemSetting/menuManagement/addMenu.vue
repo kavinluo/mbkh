@@ -2,11 +2,11 @@
  * @Author: kevin
  * @Date: 2022-03-02 10:46:03
  * @LastEditors: kevin
- * @LastEditTime: 2022-03-04 10:46:30
+ * @LastEditTime: 2022-03-09 10:02:57
  * @Description: 添加菜单
 -->
 <template>
-  <kev-Form v-bind="formConfig" v-model="formData">
+  <kv-form v-bind="formConfig" v-model="formData">
     <template #isSee>
       <el-switch
         size="large"
@@ -31,19 +31,15 @@
         <el-button type="warning" @click="handleResetClick">关闭</el-button>
       </div>
     </template>
-  </kev-Form>
+  </kv-Form>
 
 </template>
 
 <script>
 import { ref } from 'vue'
-import kevForm from '@/components/kvform'
 import formConfig from './formConfig'
 import { addMenu, getMenu, editMenu } from '@/api/menu'
 export default {
-  components: {
-    kevForm
-  },
   props: {
     menuList: {
       type: Array,
@@ -85,8 +81,9 @@ export default {
     if (inputType === 'edit') {
       (async () => {
         const dealit = await getMenu(rowData?.id)
-        formData.value = dealit
+        formData.value = dealit.data
       })()
+      console.log('formData', formData)
     }
     const onSubmit = () => {
       if (inputType === 'edit') {
