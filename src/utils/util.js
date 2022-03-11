@@ -69,6 +69,11 @@ export function valDataType (obj, type) {
  */
 export function setStaticData (name, val) {
   localStorage.setItem(name, JSON.stringify(val))
+  if (!name) return
+  if (typeof val !== 'string') {
+    val = JSON.stringify(val)
+  }
+  window.localStorage.setItem(name, val)
 }
 
 /**
@@ -83,6 +88,40 @@ export function getStaticData (name) {
   }
 }
 
+/**
+ * 设置 cookie
+ * @param {String} cname
+ * @param {String} cvalue
+ * @param {Number} exdays
+ */
+export function setCookie (cname, cvalue, exdays) {
+  const d = new Date()
+  d.setTime(d.getTime() + (exdays * 24 * 60 * 60 * 1000))
+  const expires = 'expires=' + d.toUTCString()
+  document.cookie = cname + '=' + cvalue + ';' + expires + ';path=/'
+}
+
+/**
+ * 获得 cookie
+ * @param {String} cname
+ * @param {String} cvalue
+ * @param {Number} exdays
+ */
+
+export function getCookie (cname) {
+  const name = cname + '='
+  const ca = document.cookie.split(';')
+  for (let i = 0; i < ca.length; i++) {
+    let c = ca[i]
+    while (c.charAt(0) === ' ') {
+      c = c.substring(1)
+    }
+    if (c.indexOf(name) === 0) {
+      return c.substring(name.length, c.length)
+    }
+  }
+  return ''
+}
 // function isJSON (str) {
 //   if (typeof str === 'string') {
 //     try {
@@ -199,7 +238,6 @@ export function pathMapToMenu (userMenus, currentPath, breadcrumbs) {
     } else if (menu.children) {
       console.log('menu', menu)
       const findMenu = pathMapToMenu(menu.children, currentPath)
-      console.log('findMenu', findMenu)
       if (findMenu) {
         breadcrumbs?.push({ name: menu.meta.title })
         breadcrumbs?.push({ name: findMenu.meta.title })
@@ -230,5 +268,25 @@ export function currPath (userMenus, currentPath) {
         return findMenu
       }
     }
+  }
+}
+
+export function downloadHandle (res, name, type) {
+  const blob = new Blob([res.data], {
+    type: 'application/octet-stream;charset=UTF-8'
+  })
+  const filenameRes = res.headers['content-disposition']?.split('filename=')[1]?.split(';')[0]
+  const fileName = decodeURI(filenameRes) || name + (type || '.xls')
+
+  if (window.navigator.msSaveOrOpenBlob) {
+    navigator.msSaveBlob(blob)
+  } else {
+    const link = document.createElement('a')
+
+    link.href = window.URL.createObjectURL(blob)
+    link.download = fileName
+    link.click()
+    // 释放内存
+    window.URL.revokeObjectURL(link.href)
   }
 }

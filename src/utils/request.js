@@ -2,7 +2,7 @@
  * @Author: kevin
  * @Date: 2022-02-21 13:45:02
  * @LastEditors: kevin
- * @LastEditTime: 2022-03-08 14:56:27
+ * @LastEditTime: 2022-03-11 18:02:34
  * @Description: Do not edit
  */
 
@@ -10,7 +10,7 @@ import axios from 'axios'
 import { ElMessage } from 'element-plus'
 import NProgress from 'nprogress' // progress bar
 import 'nprogress/nprogress.css' // progress bar custom style
-import { delStaticData, getStaticData } from '@/utils/util'
+import { getCookie } from '@/utils/util'
 import router from '@/router'
 import store from '@/store'
 // import { computed } from 'vue'
@@ -21,10 +21,7 @@ const service = axios.create({
   isLoading: true, // 是否显示loading状态
   successTitle: null, // 成功后需要提示的内容
   errorTitle: null, // 发生错误的提示
-  // hasPage: false, // 是否有分页
-   // parameter参数
   params: {},
-  // post参数，使用axios.post(url,{},config);如果没有额外的也必须要用一个空对象，否则会报错
   data: {}
 })
 
@@ -62,12 +59,7 @@ service.interceptors.request.use(config => {
   if (config.isLoading) {
     NProgress.start()
   }
-  // if (config.hasPage) { // 是否有分页
-  //   // const { curPage, pageSize } = computed(() => store.state.pagination)
-  //   config.params.curPage = computed(() => store.state.pagination.curPage)
-  //   config.params.pageSize = computed(() => store.state.pagination.pageSize)
-  // }
-  const token = getStaticData('token') // Vue.ls.get(ACCESS_TOKEN)
+  const token = getCookie('token') // Vue.ls.get(ACCESS_TOKEN)
   if (token) {
     // config.headers.Authorization = token // 'Bearer ' + token
     config.headers.token = token // 'Bearer ' + token
@@ -85,6 +77,7 @@ service.interceptors.request.use(config => {
 service.interceptors.response.use((response) => {
   NProgress.done()
   // const code = response.data?.status?.code
+  console.log('response', response)
   if (errorCode(response)) {
     if (response.request.responseType === 'blob') {
       return response
@@ -100,7 +93,7 @@ function errorCode (response) {
   const msg = data?.status?.msg
   let flag = true
   if (code === '4') { // 登录超时
-    delStaticData('token')
+    // delStaticData('token')
     router.push('/login')
     ElMessage.error(msg)
     flag = false
@@ -110,6 +103,7 @@ function errorCode (response) {
     flag = false
   }
   if (code === '0' && config.successTitle) { // 如果需要成功后提示
+    console.log('777', 777)
     ElMessage.success(config.successTitle)
   }
   return flag

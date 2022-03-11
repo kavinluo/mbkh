@@ -2,18 +2,96 @@
  * @Author: kevin
  * @Date: 2022-03-08 16:19:37
  * @LastEditors: kevin
- * @LastEditTime: 2022-03-08 16:32:08
+ * @LastEditTime: 2022-03-11 17:03:33
  * @Description: 创建用户相关
  */
 import { axios } from '@/utils/request'
 /**
  * 系统管理-添加系统账户表
  */
- export function add (parameter) {
-  return axios({
-    url: `/account/add`,
-    method: 'post',
-    data: parameter,
-    successTitle: '提交成功！'
-  })
-}
+
+ const baseURL = '/account'
+
+ /**
+  *  添加
+  */
+  export function add (parameter) {
+   return axios({
+     url: `${baseURL}/add`,
+     method: 'post',
+     data: parameter,
+     successTitle: '添加成功！',
+     errorTitle: '添加失败！'
+   })
+ }
+
+ /**
+  * 获得单个
+  */
+ export function get (id) {
+   return axios({
+     url: `${baseURL}/get/${id}`, //
+     method: 'get'
+     // params: parameter
+   })
+ }
+
+ /**
+  * 查询
+  */
+  export function getRoleList (parameter) {
+   return axios({
+     url: `${baseURL}/list`, //
+     method: 'get'
+     // params: parameter
+   })
+ }
+
+ /**
+  * 分页查询
+  */
+  export function getAccountListPage (parameter) {
+   return axios({
+     url: `${baseURL}/listPage`, //
+     method: 'get',
+     params: parameter
+   })
+ }
+
+ /**
+  * 修改
+  */
+  export function modify (parameter) {
+   return axios({
+     url: `${baseURL}/modify/${ parameter.id }`, //
+     method: 'put',
+     data: parameter,
+     successTitle: '修改成功！',
+     errorTitle: '修改失败！'
+   })
+ }
+
+ /**
+  * 删除
+  */
+  export function remove (ids) {
+   return axios({
+     url: `${baseURL}/remove/${ ids }`, //
+     method: 'delete',
+     data: '',
+     successTitle: '删除成功！',
+     errorTitle: '删除失败！'
+   })
+ }
+ /**
+  * 导出
+  */
+  export function exportAccount (ids) {
+    return axios({
+      url: `${baseURL}/export`, //
+      method: 'post',
+      responseType: 'blob',
+      successTitle: '导出成功！',
+      errorTitle: '导出失败！'
+    })
+  }

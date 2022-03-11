@@ -48,7 +48,6 @@
 import { getVerificationCode } from '@/api/user.js'
 import { useStore } from 'vuex'
 import { ref, reactive } from 'vue'
-import { useRouter, useRoute } from 'vue-router'
 import { accountRules } from './rules'
 export default {
   name: 'Login',
@@ -59,9 +58,7 @@ export default {
     const getVerifCode = async () => await getVerificationCode().then((res) => {
       rCodeData.value = res
     })
-    const router = useRouter()
-    const route = useRoute()
-    console.log('router', router, route)
+
     const ruleFormRef = ref({})
     const form = reactive({
       username: '',
@@ -70,17 +67,9 @@ export default {
       reCode: ''
     })
     const onSubmit = (formEl) => {
-      // router.push('/manage')
-      // // router.push({
-      // //   name: 'manage',
-      // //   path: '/manage'
-      // // })
-      // // return
-      // if (!formEl) return
       formEl?.validate((valid) => {
         if (valid) {
           form.key = rCodeData.value[1]
-          console.log('form', form)
           store.dispatch('user/loginActions', { ...form })
           changeRcode()
           console.log('submit!')
@@ -103,8 +92,7 @@ export default {
       form,
       rules,
       ruleFormRef,
-      onSubmit,
-      route
+      onSubmit
     }
     /**
     // function getList() {

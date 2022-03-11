@@ -2,9 +2,11 @@
  * @Author: kevin
  * @Date: 2022-02-28 15:57:13
  * @LastEditors: kevin
- * @LastEditTime: 2022-03-08 15:28:30
+ * @LastEditTime: 2022-03-10 16:56:22
  * @Description: 动态获取路由
  */
+
+// let firstMenu = null
 
 /**
  * 格式化树形结构数据 生成 vue-router 层级路由表
@@ -14,7 +16,7 @@
  * @returns {*}
  */
  export const mapMenusToRoutes = (routerMap, parent) => {
-  return routerMap.map(item => {
+  const routers = routerMap.map(item => {
     // eslint-disable-next-line no-unused-vars
     const { title, show, hideChildren, target, icon, children, id, deppath } = item || {}
     const currentRouter = {
@@ -36,7 +38,7 @@
       },
       id: id,
       depath: deppath,
-      redirect: children && item.children.length ? item.children[0].path : ''
+      redirect: children && item.children?.length ? item.children[0].path : ''
     }
     // 是否设置了隐藏菜单
     if (show === false) {
@@ -59,9 +61,9 @@
       // Recursion
       currentRouter.children = mapMenusToRoutes(item.children, currentRouter)
     }
-
     return currentRouter
   })
+  return routers
 }
 
 export function mapMenusToPermissions (userMenus) {
@@ -97,4 +99,3 @@ export function menuMapLeafKeys (menuList) {
 
   return leftKeys
 }
-// export { firstMenu }

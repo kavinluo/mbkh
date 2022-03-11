@@ -2,7 +2,7 @@
  * @Author: kevin
  * @Date: 2022-02-25 09:42:38
  * @LastEditors: kevin
- * @LastEditTime: 2022-03-07 14:00:40
+ * @LastEditTime: 2022-03-10 15:09:33
  * @Description: Do not edit
 -->
 <template>
@@ -15,7 +15,7 @@
   <div class="topbar-navigation topbar-left">
     <router-link v-for="item in userMenus" :key="item.id" :to="item.path" @click="handleMenu(item)" style="margin-right: 15px">
       <el-button color="#ffffff1a" size="large" type="primary">
-        <el-icon><kvIcon :name="item.meta.icon" /></el-icon> {{ item.meta.title }}
+        <el-icon><kvIcon :name="item.meta?.icon" /></el-icon> {{ item.meta?.title }}
       </el-button>
     </router-link>
   </div>

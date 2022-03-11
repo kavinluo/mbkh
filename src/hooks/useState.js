@@ -1,3 +1,10 @@
+/*
+ * @Author: kevin
+ * @Date: 2022-02-24 09:12:57
+ * @LastEditors: kevin
+ * @LastEditTime: 2022-03-10 16:57:10
+ * @Description: Do not edit
+ */
 import { mapState, createNamespacedHelpers } from 'vuex'
 import useMapper from './useMapper'
 /**
@@ -9,7 +16,6 @@ import useMapper from './useMapper'
 export default function useState (mapper, moduleName) {
   let mapperFn = mapState
   if (typeof moduleName === 'string' && moduleName) {
-    console.log('moduleName', moduleName)
     mapperFn = createNamespacedHelpers(moduleName).mapState
   }
   return useMapper(mapper, mapperFn)

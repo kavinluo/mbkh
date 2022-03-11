@@ -2,7 +2,7 @@
  * @Author: kevin
  * @Date: 2022-03-02 10:20:05
  * @LastEditors: kevin
- * @LastEditTime: 2022-03-09 17:27:32
+ * @LastEditTime: 2022-03-10 09:15:00
  * @Description: 系统日志
 -->
 <template>
@@ -13,7 +13,6 @@
     :listTotal="listTotal"
     :showIndexColumn="true">
     <template #times="scope">
-      <!-- {{ scope.row.times }} -->
       {{ formatTimestamp(scope.row.times, 'YYYY-MM-DD HH:mm:ss') }}
     </template>
   </kv-table>
@@ -21,21 +20,20 @@
 
 <script>
 import { getlistPage } from '@/api/systemLogs'
-import propList from './tableConfig'
 import { ref, watch, computed } from 'vue'
 import { useStore } from '@/store'
 import { formatTimestamp } from '@/utils/formatDate.js'
+import propList from './tableConfig'
 export default {
  setup () {
-   const tableData = ref([])
+   const tableData = ref({})
    const listTotal = ref(0)
    const store = useStore()
 
-   // 双向绑定pageInfo
    const pagination = computed(() => store.state.pagination)
    watch(pagination.value, () => getList())
    const getList = async () => {
-     const { data } = await getlistPage(pagination.value)
+     const { data = {} } = await getlistPage(pagination.value)
      tableData.value = data?.list
      listTotal.value = data.total
    }

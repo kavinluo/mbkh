@@ -2,25 +2,24 @@
  * @Author: kevin
  * @Date: 2022-03-07 10:20:25
  * @LastEditors: kevin
- * @LastEditTime: 2022-03-09 17:40:03
+ * @LastEditTime: 2022-03-11 17:48:13
  * @Description: table 封装
 -->
 <template>
   <el-table
     ref="multipleTableRef"
     :data="tableData"
-    style="width: 100%"
     v-bind="tableOtherOption"
     row-key="id"
     @selection-change="handleSelectionChange">
     <el-table-column type="selection" width="55" v-if="showSelectColumn" />
-    <el-table-column type="index" label="序号" width="100" v-if="showIndexColumn">
+    <el-table-column type="index" label="序号" align="center" width="80" v-if="showIndexColumn">
       <template #default="scope">
         {{ (pageInfo.curPage - 1) * pageInfo.pageSize + scope.$index + 1 }}
       </template>
     </el-table-column>
     <template v-for="item in propList" :key="item.prop">
-      <el-table-column v-bind="item" align="center" show-overflow-tooltip>
+      <el-table-column v-bind="item" align="center">
         <template #default="scope">
           <slot :name="item.slotName" :row="scope.row">
             {{ scope.row[item.prop] }}

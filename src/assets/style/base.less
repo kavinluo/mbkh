@@ -17,3 +17,35 @@ ul, li {
 .el-main.right-mian {
   padding: 0;
 }
+
+
+@height: 30px;
+@sendHeight: 25px;
+
+// tree菜单
+.my-tree {
+  .el-tree-node__content {
+    height: @height;
+  }
+}
+// .el-menu.el-menu-user-side {
+//   --el-menu-item-height: @height;
+//   .el-sub-menu {
+//     --el-menu-item-height: @height;
+//     --el-menu-item-height: @height;
+//     .el-menu-item {
+//       --el-menu-item-height: @sendHeight;
+//       --el-menu-item-height: @sendHeight;
+//       height: @height;
+//       line-height: @height;
+//       padding-left: 30px !important;
+//     }
+//   }
+//   .el-sub-menu__title {
+//     --el-menu-item-height: @height;
+//     --el-menu-item-height: @height;
+//   }
+//   .el-menu.el-menu--inline {
+//     --el-menu-item-height: @height;
+//   }
+// }

@@ -2,7 +2,7 @@
  * @Author: kevin
  * @Date: 2022-02-28 09:09:17
  * @LastEditors: kevin
- * @LastEditTime: 2022-03-07 16:33:19
+ * @LastEditTime: 2022-03-11 15:51:45
  * @Description: Do not edit
  */
 import 'element-plus/theme-chalk/base.css'
@@ -39,7 +39,9 @@ import {
   ElDropdown,
   ElDropdownItem,
   ElDropdownMenu,
-  ElLink
+  ElLink,
+  ElTree,
+  ElUpload
 } from 'element-plus'
 
 // icon引入
@@ -55,7 +57,8 @@ import {
   Histogram,
   Cherry,
   Edit,
-  Delete
+  Delete,
+  CirclePlus
 } from '@element-plus/icons-vue'
 
 const components = [
@@ -98,7 +101,10 @@ const components = [
   Cherry,
   ElLink,
   Edit,
-  Delete
+  Delete,
+  ElTree,
+  CirclePlus,
+  ElUpload
 ]
 const plugins = [
   ElInfiniteScroll,

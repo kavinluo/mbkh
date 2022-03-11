@@ -2,12 +2,12 @@
  * @Author: kevin
  * @Date: 2022-02-28 09:09:17
  * @LastEditors: kevin
- * @LastEditTime: 2022-03-08 14:58:36
+ * @LastEditTime: 2022-03-10 16:40:11
  * @Description: 用户相关
  */
 import router from '@/router'
 import { login, getUserInfo, getUserMenu, logout } from '@/api/user.js'
-import { setStaticData, delStaticData, getStaticData } from '@/utils/util'
+import { setStaticData, delStaticData, getStaticData, setCookie, getCookie } from '@/utils/util'
 import { mapMenusToRoutes } from '@/router/async-router'
 // import menuList from './menuData'
 export default ({
@@ -28,23 +28,19 @@ export default ({
     changeUserInfo (state, userInfo) {
       state.userInfo = userInfo
     },
-    changeUserMenus (state, userMenus) {
-      // userMenus => routes
+    async changeUserMenus (state, userMenus) {
       const _routes = mapMenusToRoutes(userMenus)
       // 将routes => router.manage.children
       _routes.forEach((route) => {
         router.addRoute('manage', route)
       })
-      console.log('_routes', _routes)
       state.userMenus = _routes
-      router.push('/manage')
       // 刷新页面时先从本地获取
       const hasSubMenus = getStaticData('hasSubMenus')
       const subMenus = getStaticData('subMenus')
       state.subMenus = subMenus || _routes[0].children
-      console.log(' state.subMenus', state.subMenus)
       state.hasSubMenus = hasSubMenus || (state.subMenus.length > 1)
-      // router.push('/manage')
+      router.push('/manage')
     },
     changeSubMenus (state, subMenus) {
       state.subMenus = subMenus
@@ -59,7 +55,7 @@ export default ({
       state.token = null
       state.userInfo = null
       delStaticData('userMenus')
-      delStaticData('token')
+      // delStaticData('token')
       delStaticData('userInfo')
       localStorage.clear()
     }
@@ -68,30 +64,32 @@ export default ({
     // 获得token
     async loginActions ({ commit, dispatch }, payload) {
       const loginRes = await login(payload)
-      if (loginRes) {
+      if (loginRes && typeof loginRes === 'string') { // 这里如果登录用户密码第二次会返回验证码信息，我们不需要
         commit('changeToken', loginRes)
-        setStaticData('token', loginRes)
+        setCookie('token', loginRes, 1)
         dispatch('userInfoAction')
       }
     },
      // 请求用户信息
     async userInfoAction ({ commit, dispatch }, payload) {
       const userInfoRes = await getUserInfo()
+
       const userInfo = userInfoRes || {}
-      commit('changeUserInfo', userInfo)
       setStaticData('userInfo', userInfo)
+      commit('changeUserInfo', userInfo)
       dispatch('getUserMenusActions')
     },
      // 请求菜单
      async getUserMenusActions ({ commit, dispatch }, payload) {
       const getUserMenusRes = await getUserMenu()
       const userMenus = getUserMenusRes?.data ?? []
-      commit('changeUserMenus', userMenus)
       setStaticData('userMenus', userMenus)
+      commit('changeUserMenus', userMenus)
     },
 
     // 设置子菜单菜单
     changeSubMenusActions ({ commit }, payload) {
+      setStaticData('subMenus', payload)
       commit('changeSubMenus', payload)
     },
 
@@ -106,7 +104,7 @@ export default ({
 
     // 刷新后获取本地数据
     updatStore ({ commit, dispatch }) {
-      const token = getStaticData('token')
+      const token = getCookie('token')
       if (token) {
         commit('changeToken', token)
         // 此处如果需要更新根目录的 store

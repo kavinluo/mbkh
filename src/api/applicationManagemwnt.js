@@ -2,7 +2,7 @@
  * @Author: kevin
  * @Date: 2022-03-08 10:24:46
  * @LastEditors: kevin
- * @LastEditTime: 2022-03-08 14:42:36
+ * @LastEditTime: 2022-03-10 09:43:14
  * @Description: 应用管理
  */
 import { axios } from '@/utils/request'
@@ -62,6 +62,6 @@ import { axios } from '@/utils/request'
     method: 'put',
     params: parameter,
     successTitle: '修改成功！',
-    erroTitle: '修改成功！'
+    errorTitle: '修改失败！'
   })
 }
