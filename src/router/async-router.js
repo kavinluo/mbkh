@@ -2,7 +2,7 @@
  * @Author: kevin
  * @Date: 2022-02-28 15:57:13
  * @LastEditors: kevin
- * @LastEditTime: 2022-03-10 16:56:22
+ * @LastEditTime: 2022-03-14 14:14:04
  * @Description: 动态获取路由
  */
 
@@ -30,6 +30,7 @@
       component: () => import(`@/views/${item.component}`),
       // meta: 页面标题, 菜单图标,
       meta: {
+        id: id,
         title: title,
         icon: icon || undefined,
         // hiddenHeaderContent: hiddenHeaderContent,

@@ -2,7 +2,7 @@
  * @Author: kevin
  * @Date: 2022-03-07 10:35:00
  * @LastEditors: kevin
- * @LastEditTime: 2022-03-09 17:43:42
+ * @LastEditTime: 2022-03-15 17:45:16
  * @Description: table数据
  */
  export const propList = [
@@ -34,9 +34,12 @@
         placeholder: '请输入应用名称'
       },
       {
-        type: 'slot',
-        slotName: 'searchBtn',
-        itemClassName: 'searchBtn'
+        span: {
+          span: 1,
+          align: 'right'
+        },
+        type: 'colSlot',
+        slotName: 'searchBtn'
       }
     ]
   }

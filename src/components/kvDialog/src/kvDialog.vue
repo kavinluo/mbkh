@@ -2,7 +2,7 @@
  * @Author: kevin
  * @Date: 2022-03-03 13:54:49
  * @LastEditors: kevin
- * @LastEditTime: 2022-03-11 17:19:13
+ * @LastEditTime: 2022-03-14 11:36:14
  * @Description: 确认弹框
 -->
 
@@ -107,6 +107,7 @@ export default {
   },
   emits: ['cancel', 'callBack'],
   setup (props, { emit, slots }) {
+    console.log('props.isShowFooter', props.isShowFooter)
     const dialog = ref(props.dialogVisible)
     const confirm = () => {
        emit('callBack', props.modeType)

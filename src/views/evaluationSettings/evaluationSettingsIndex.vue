@@ -2,14 +2,12 @@
  * @Author: kevin
  * @Date: 2022-03-04 10:45:35
  * @LastEditors: kevin
- * @LastEditTime: 2022-03-04 14:48:39
+ * @LastEditTime: 2022-03-14 09:34:30
  * @Description: 评价设置
 -->
 
 <template>
-  <div>
-    评价设置
-  </div>
+  <router-view />
 </template>
 
 <script>

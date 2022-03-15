@@ -2,11 +2,13 @@
  * @Author: kevin
  * @Date: 2022-02-24 10:05:17
  * @LastEditors: kevin
- * @LastEditTime: 2022-03-08 14:08:23
+ * @LastEditTime: 2022-03-14 09:15:37
  * @Description: 菜单列表
 -->
 <template>
-  <el-button type="primary" @click="add">添加</el-button>
+  <div class="mb10">
+    <el-button type="primary" @click="add">添加</el-button>
+  </div>
   <kv-table
     :tableData="tableData"
     :propList="propList"

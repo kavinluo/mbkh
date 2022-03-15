@@ -2,7 +2,7 @@
  * @Author: kevin
  * @Date: 2022-02-28 09:09:17
  * @LastEditors: kevin
- * @LastEditTime: 2022-03-11 15:51:45
+ * @LastEditTime: 2022-03-15 15:12:28
  * @Description: Do not edit
  */
 import 'element-plus/theme-chalk/base.css'
@@ -41,7 +41,9 @@ import {
   ElDropdownMenu,
   ElLink,
   ElTree,
-  ElUpload
+  ElUpload,
+  ElTabs,
+  ElTabPane
 } from 'element-plus'
 
 // icon引入
@@ -104,7 +106,9 @@ const components = [
   Delete,
   ElTree,
   CirclePlus,
-  ElUpload
+  ElUpload,
+  ElTabs,
+  ElTabPane
 ]
 const plugins = [
   ElInfiniteScroll,

@@ -2,7 +2,7 @@
  * @Author: kevin
  * @Date: 2022-02-25 09:42:38
  * @LastEditors: kevin
- * @LastEditTime: 2022-03-08 16:16:45
+ * @LastEditTime: 2022-03-15 17:38:44
  * @Description: Do not edit
 -->
 <template>
@@ -21,7 +21,7 @@
         <leftMenu :collapse="isFold" />
       </el-aside>
       <el-main class="right-mian">
-        <div class="path"> <span v-for="item in breadcrumbs" :key="item.name"> {{ item.name }}> </span></div>
+        <div class="path"> {{ breadcrumbs }} </div>
         <div class="right-mian-content">
           <router-view />
         </div>
@@ -52,7 +52,7 @@ import { ref, computed } from 'vue'
         transition: 'all .3s ease-out'
       }
       const menuSwitchOnStyle = {
-        width: '65px',
+        width: '64px',
         transition: 'all .5s ease-out'
       }
       // 面包屑的数据: [{name: , path: }]
@@ -61,7 +61,7 @@ import { ref, computed } from 'vue'
         const userMenus = store.state.user.userMenus
         const route = useRoute()
         const currentPath = route.path
-        return pathMapBreadcrumbs(userMenus, currentPath)
+        return pathMapBreadcrumbs(userMenus, currentPath).map((item, index) => (index ? '>' : '') + item.name).join(' ')
       })
       return {
         handleFoldClick,
@@ -104,6 +104,7 @@ import { ref, computed } from 'vue'
     height: 15px;
     text-align: center;
     cursor: pointer;
+    background:#dce9f4 ;
   }
   #header {
     padding: 0 10px;

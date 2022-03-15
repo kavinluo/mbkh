@@ -2,7 +2,7 @@
  * @Author: kevin
  * @Date: 2022-03-02 10:20:05
  * @LastEditors: kevin
- * @LastEditTime: 2022-03-10 09:15:00
+ * @LastEditTime: 2022-03-14 09:19:21
  * @Description: 系统日志
 -->
 <template>
@@ -26,7 +26,7 @@ import { formatTimestamp } from '@/utils/formatDate.js'
 import propList from './tableConfig'
 export default {
  setup () {
-   const tableData = ref({})
+   const tableData = ref([])
    const listTotal = ref(0)
    const store = useStore()
 

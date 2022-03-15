@@ -2,7 +2,7 @@
  * @Author: kevin
  * @Date: 2022-02-25 09:42:38
  * @LastEditors: kevin
- * @LastEditTime: 2022-03-10 15:09:33
+ * @LastEditTime: 2022-03-14 16:35:00
  * @Description: Do not edit
 -->
 <template>
@@ -38,35 +38,34 @@
 </template>
 
 <script>
-  // import { Monitor, Histogram, ReadingLamp, EditPen, Setting } from '@element-plus/icons-vue'
   import { ref } from 'vue'
   import { useStore } from 'vuex'
   import { useState } from '@/hooks/index'
   import { useRouter } from 'vue-router'
+  import { setStaticData } from '@/utils/util'
 
   export default {
     setup () {
-      const stroe = useStore()
+      const store = useStore()
       const router = useRouter()
       const downStatus = ref(false)
       const headline = ref(null) // $refs
-      // stroe.dispatch('user/userInfoAction')
-
       const userInfo = useState(['userInfo'], 'user')
       const userMenus = useState(['userMenus'], 'user')
-
       const handleMenu = (item) => {
         router.push(item.path)
         const subMenuList = item.children || []
-        stroe.dispatch('user/changeSubMenusActions', subMenuList)
+        store.dispatch('user/changeSubMenusActions', subMenuList)
+        const currentPathId = (subMenuList.length > 0 && typeof subMenuList[0].children !== 'undefined' && subMenuList[0].children.length > 0) ? subMenuList[0].children[0].id : subMenuList.length > 0 ? subMenuList[0].id : ''
+        store.dispatch('changerCurrentValue', currentPathId)
+        setStaticData('defaultActiveValue', currentPathId)
       }
 
       const downOut = () => {
         downStatus.value = !downStatus.value
-        console.log('显示下拉', downStatus)
       }
       const logOut = () => {
-        stroe.dispatch('user/loginOut')
+        store.dispatch('user/loginOut')
       }
       // 点击任何区域关闭
       const handleBodyClick = (event) => {
@@ -90,3 +89,10 @@
     }
   }
 </script>
+<style lang="less" scoped>
+  .router-link-active {
+    button {
+      background: #3e95ef;
+    }
+  }
+</style>

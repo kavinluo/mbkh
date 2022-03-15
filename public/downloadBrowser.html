@@ -1,0 +1,52 @@
+<!--
+ * @Author: kevin
+ * @Date: 2022-03-15 11:41:31
+ * @LastEditors: kevin
+ * @LastEditTime: 2022-03-15 14:09:49
+ * @Description: 浏览器下载
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>浏览器下载</title>
+</head>
+<body>
+
+<script>
+    (function (window) {
+  // 浏览器版本过低
+   var divDOM = "<div class='down-tip'>系统检测您的浏览器不支持，请升级您的浏览器&nbsp;&nbsp;下载地址</div>" +
+      // 浏览器下载图标全部在这里
+     "<div class='down-link'><a target href='https://www.microsoft.com/zh-cn/edge#platform'><img src='../img/edge.jpg' />下载Microsoft Edge 浏览器</a><br/><a target='_blank' href='https://dl.google.com/tag/s/installdataindex/update2/installers/ChromeStandaloneSetup.exe'><img src='../img/chrome.jpg' />下载Chrome window 32位(x86)</a><br><a target='_blank' href='https://dl.google.com/tag/s/installdataindex/update2/installers/ChromeStandaloneSetup64.exe'><img src='../img/chrome.jpg' />下载Chrome window 64位(x64)</a>"
+     + "<br><a target='_blank' href='https://www.google.cn/chrome/?standalone=1&platform=mac'><img src='../img/chrome.jpg' />下载Chrome MacOS</a>"
+      "</div>";
+    document.body.innerHTML = divDOM
+})(window)
+</script>
+</body>
+</html>
+<style>
+  body,html{padding: 0;margin: 0;}
+  .down-tip {background-color:#FAFAD2;margin-bottom:30px;
+  border-bottom: 1px solid #DCDCDC;z-index:999999;font-family:Georgia,Serif;
+  width:100%;height:50px;line-height:50px;font-size:14px;text-align:center;}
+  .down-link {
+    text-align: center;
+  }
+  .down-link a{
+    border: none;
+    text-decoration: none;
+    border-radius: 5px;
+    padding: 10px 5px;
+    display: inline-block;
+    color: #1890FF;
+    width: 300px;
+    text-align: left;
+  }
+  .down-link img {
+    width: 30px;
+    border: none;
+    vertical-align: middle;
+  }
+ </style>

@@ -1,3 +1,10 @@
+<!--
+ * @Author: kevin
+ * @Date: 2022-02-21 11:54:16
+ * @LastEditors: kevin
+ * @LastEditTime: 2022-03-15 11:49:30
+ * @Description: Do not edit
+-->
 <!DOCTYPE html>
 <html lang="">
   <head>
@@ -19,3 +26,11 @@
     <% } %>
   </body>
 </html>
+
+<script>
+  if ((navigator.userAgent.toLowerCase().indexOf('chrome') === -1 &&
+      navigator.userAgent.toLowerCase().indexOf('firefox') === -1) || navigator.userAgent.toLowerCase().match(/MicroMessenger/i) === 'micromessenger') {
+      alert('检测到您使用的浏览器不支持，请使用我们推荐的浏览器，否则相关功能将不能正常使用！')
+      document.location.href = '/downloadBrowser.html'
+    }
+</script>

@@ -2,12 +2,12 @@
  * @Author: kevin
  * @Date: 2022-02-25 09:42:38
  * @LastEditors: kevin
- * @LastEditTime: 2022-03-08 18:06:05
+ * @LastEditTime: 2022-03-14 16:09:36
  * @Description: Do not edit
 -->
 <template>
   <el-menu
-    :default-active="defaultValue"
+    :default-active="defaultActiveValue+''"
     class="el-menu-vertical"
     :collapse="collapse"
     @open="handleOpen"
@@ -53,10 +53,10 @@
 </template>
 
 <script>
-  import { computed, ref } from 'vue'
+  import { computed } from 'vue'
   import { useStore } from '@/store'
-  import { useRouter, useRoute } from 'vue-router'
-  import { currPath } from '@/utils/util'
+  import { useRouter } from 'vue-router'
+  import { setStaticData } from '@/utils/util'
 
  export default {
    props: {
@@ -68,18 +68,13 @@
   setup (props) {
     const store = useStore()
     const router = useRouter()
-    const route = useRoute()
-    const currentPath = route.path
-    console.log('currentPath', currentPath)
 
     const subMenus = computed(() => store.state.user.subMenus)
-    const userMenus = computed(() => store.state.user.userMenus)
-    console.log('userMenus', userMenus)
-    const menu = currPath(userMenus.value, currentPath)
-    const defaultValue = ref(menu?.id + '')
+
+    const defaultActiveValue = computed(() => store.state.defaultActiveValue)
 
     const handleMenuItemClick = (item) => {
-      console.log('--------', item)
+      setStaticData('defaultActiveValue', item.id)
       router.push({
         path: item.path ?? '/not-found'
       })
@@ -96,7 +91,7 @@
       handleClose,
       subMenus,
       handleMenuItemClick,
-      defaultValue
+      defaultActiveValue
     }
   }
  }

@@ -2,11 +2,12 @@
  * @Author: kevin
  * @Date: 2022-03-07 10:20:25
  * @LastEditors: kevin
- * @LastEditTime: 2022-03-11 17:48:13
+ * @LastEditTime: 2022-03-14 09:12:10
  * @Description: table 封装
 -->
 <template>
   <el-table
+    class="kv-table"
     ref="multipleTableRef"
     :data="tableData"
     v-bind="tableOtherOption"
@@ -113,5 +114,8 @@
     .el-pagination {
       margin-left: auto
     }
+  }
+  .kv-table {
+    border-top: solid #ebeef5 1px;
   }
 </style>

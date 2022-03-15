@@ -231,12 +231,10 @@ export function pathMapBreadcrumbs (userMenus, currentPath) {
   return breadcrumbs
 }
 export function pathMapToMenu (userMenus, currentPath, breadcrumbs) {
-  console.log('userMenus', userMenus, currentPath)
   for (const menu of userMenus) {
     if (menu.path === currentPath) { // 匹配当前点击菜单
       return menu
     } else if (menu.children) {
-      console.log('menu', menu)
       const findMenu = pathMapToMenu(menu.children, currentPath)
       if (findMenu) {
         breadcrumbs?.push({ name: menu.meta.title })

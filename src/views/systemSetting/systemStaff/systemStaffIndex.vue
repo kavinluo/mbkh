@@ -2,7 +2,7 @@
  * @Author: kevin
  * @Date: 2022-02-24 09:58:32
  * @LastEditors: kevin
- * @LastEditTime: 2022-03-11 17:23:45
+ * @LastEditTime: 2022-03-15 09:26:45
  * @Description: 机构
 -->
 <template>
@@ -19,7 +19,7 @@
       />
     </el-col>
     <el-col :span="19">
-      <div>
+      <div class="mb10">
         <el-button @click="handleAdd('account')" type="primary">添加</el-button>
         <el-button @click="handleImport" type="primary">导入</el-button>
         <el-button @click="handleExprot" type="primary">导出</el-button>
@@ -57,8 +57,8 @@
   import kvDialog from '@/components/kvDialog'
   import { useStore } from '@/store'
   import propList from './tableConfig'
-  import { menuList } from './data'
-  import leftTree from './leftTree/leftside.vue'
+  import leftTree from '@/components/kvLeftTree'
+
   export default {
     components: {
       add,
@@ -68,7 +68,6 @@
     emits: ['cancel'],
 
     setup () {
-      console.log('menulist', menuList)
       const kvDialogConfig = ref({
         dialogVisible: false,
         message: '您确定要删除吗？',
@@ -173,7 +172,7 @@
       }
 
       const handleRemove = (row, type) => {
-        rowData.value = row
+        rowData.value = type === 'account' ? row : rowData.value
         addType.value = type
         modeType.value = 'remove'
         kvDialogConfig.value.dialogVisible = true

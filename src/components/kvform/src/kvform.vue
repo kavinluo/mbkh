@@ -2,11 +2,11 @@
  * @Author: kevin
  * @Date: 2022-03-03 09:40:43
  * @LastEditors: kevin
- * @LastEditTime: 2022-03-09 18:02:51
+ * @LastEditTime: 2022-03-15 17:18:12
  * @Description: form 表单
 -->
 <template>
-  <el-form :label-width="labelWidth">
+  <el-form :label-width="labelWidth" :model="isVerify ? modelValue : null" ref="ruleFormRef">
     <div class="header">
       <slot name="header"></slot>
     </div>
@@ -14,9 +14,10 @@
       <template v-for="item in formItems" :key="item.labe">
         <el-col v-bind="item.span ? item.span : colLayout">
           <el-form-item
-            v-if="!item.isHidden"
+            v-if="!item.isHidden && item.type !== 'colSlot'"
             :label="item.label"
             :rules="item.rules"
+            :prop="item.field"
             :style="item.formItemsStyle ? item.formItemsStyle : itemStyle"
             :class="item.itemClassName">
             <template v-if="item.type === 'input' || item.type === 'password' || item.type === 'number'"> <!--- to do -->
@@ -52,10 +53,13 @@
                 @update:modelValue="handleValueChange($event, item.field)"></el-date-picker>
             </template>
             <template v-else-if="item.type === 'slot'">
-              <slot :name="item.slotName" :label="item.label"></slot>
+              <slot :name="item.slotName" :label="item.label">999</slot>
             </template>
             <p v-if="item.help" style="margin: 0; font-size:12px;color:#ccc;line-height:1.2">{{ item.help }}</p>
           </el-form-item>
+          <template v-if="item.type === 'colSlot'">
+            <slot :name="item.slotName" :label="item.label"></slot>
+          </template>
         </el-col>
       </template>
     </el-row>
@@ -67,6 +71,7 @@
 </template>
 
 <script>
+// import { ref } from 'vue'
 export default {
   name: 'KvForm',
   props: {
@@ -74,6 +79,7 @@ export default {
       type: String,
       default: '100px'
     },
+    // item.type: 是关于插槽需要显示的位置 slot（显示在el-form-item里面） | colSlot（显示在el-col里面）
     formItems: {
       type: Array,
       default: () => []
@@ -99,11 +105,15 @@ export default {
     showLine: { // 显示页脚分割线
       type: Boolean,
       default: false
+    },
+    isVerify: { // 表单是否需要验证
+      type: Boolean,
+      default: false
     }
+
   },
   emits: ['update:modelValue', 'callBack'],
   setup (props, { emit }) {
-    console.log('.showLine.showLine', props.showLine)
     const handleValueChange = (value, field) => {
       emit('update:modelValue', { ...props.modelValue, [field]: value }) // 双向绑定需要同时更新
     }
