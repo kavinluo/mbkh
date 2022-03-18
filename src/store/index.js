@@ -2,7 +2,7 @@
  * @Author: kevin
  * @Date: 2022-02-21 13:55:23
  * @LastEditors: kevin
- * @LastEditTime: 2022-03-15 09:28:27
+ * @LastEditTime: 2022-03-18 15:12:14
  * @Description: Do not edit
  */
 
@@ -23,6 +23,8 @@ const store = createStore({
         pageSize: 10,
         curPage: 1
       },
+      tableData: [], // 表格数据
+      total: 0, // 总条数
       defaultActiveValue: null, // 菜单默认选中的值
       breadcrumbs: [] // 面包屑
 
@@ -40,6 +42,10 @@ const store = createStore({
     },
     defaultActiveValue (state, value) {
       state.defaultActiveValue = value
+    },
+    setTableData (state, data) {
+      state.tableData = data?.list ?? (Array.isArray(data) ? data : [])
+      state.total = data?.total ?? 0
     }
   },
   actions: {
@@ -58,8 +64,16 @@ const store = createStore({
     changerCurrentPage ({ commit }, payload) {
       commit('changerCurrentPage', payload)
     },
-    changerCurrentValue ({ commit }, payload) {
+    changerCurrentValue ({ commit, state }, payload) {
       commit('defaultActiveValue', payload)
+    },
+    async getListPage ({ commit, state }, { fn, params }) {
+      const param = Object.assign({}, state.pagination, params)
+      const { data = {} } = await fn(param)
+      commit('setTableData', data)
+    },
+    changeListPage ({ dispatch }) {
+      dispatch('getListPage')
     }
 
   },

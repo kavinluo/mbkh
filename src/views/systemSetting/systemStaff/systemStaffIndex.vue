@@ -2,7 +2,7 @@
  * @Author: kevin
  * @Date: 2022-02-24 09:58:32
  * @LastEditors: kevin
- * @LastEditTime: 2022-03-15 09:26:45
+ * @LastEditTime: 2022-03-18 14:12:02
  * @Description: 机构
 -->
 <template>
@@ -25,10 +25,9 @@
         <el-button @click="handleExprot" type="primary">导出</el-button>
       </div>
       <kv-table
-        :tableData="tableData"
+        :getDataFn="getAccountListPage"
         :propList="propList"
         :showIndexColumn="true"
-        :listTotal="total"
         @handleSelectionChange="handleSelectionChange">
         <template #enable="scope">
           {{ !scope.row.enable ? '是' : '否' }}
@@ -45,14 +44,14 @@
   <kvDialog v-bind="modelConfig" v-model="addModel" v-if="addModel" @callBack="confirm" @cancel="cancel">
     <add v-if="addModel" :addType="addType" :inputType="inputType" :rowData="rowData" @cancel="cancel" @callBack="callBack" />
   </kvDialog>
-  <kvDialog v-bind="kvDialogConfig" :modeType="modeType" v-if="kvDialogConfig.dialogVisible" @callBack="confirm" @cancel="cancel"/>
+  <kvDialog v-bind="kvDialogConfig" v-model="kvDialogConfig.dialogVisible" :modeType="modeType" @callBack="confirm" @cancel="cancel"/>
 </template>
 
 <script>
-  import { ref, computed, watch } from 'vue'
+  import { ref, computed } from 'vue'
   import add from './add.vue'
   import { downloadHandle } from '@/utils/util'
-  import { getListPage, remove } from '@/api/organization.js'
+  import { getListTreePage, remove } from '@/api/organization.js'
   import { getAccountListPage, exportAccount } from '@/api/account'
   import kvDialog from '@/components/kvDialog'
   import { useStore } from '@/store'
@@ -70,6 +69,7 @@
     setup () {
       const kvDialogConfig = ref({
         dialogVisible: false,
+        isShowFooter: true,
         message: '您确定要删除吗？',
         dialogWidth: '400px',
         templateLInk: 'http://192.168.1.202:9090/res/template/%E5%9F%BA%E5%B1%82/%E5%9F%BA%E5%B1%82-%E5%87%86%E8%80%83%E8%AF%81.xlsx'
@@ -77,15 +77,13 @@
       const modelConfig = ref({
         title: '编辑机构',
         width: '600px',
-        draggable: true,
-        isShowFooter: false
+        draggable: true
       })
       const modeType = ref('remove')
       const total = ref(0)
       const addType = ref('account') // 机构: organization;添加用户：account
       const store = useStore()
       const inputType = ref('add')
-      const tableData = ref([])
       const treeData = ref([])
       const addModel = ref(false)
       const isSelect = ref(true)
@@ -96,7 +94,7 @@
       //  tree
       const pagination = computed(() => store.state.pagination)
       const getTreeList = async () => {
-        const { data = {} } = await getListPage(pagination.value)
+        const { data = {} } = await getListTreePage(pagination.value)
         treeData.value = data.list
       }
       getTreeList()
@@ -113,18 +111,14 @@
         }
         callBack()
       }
-
       // table
-      watch(pagination.value, () => getAccuntList())
-      const getAccuntList = async (organization) => {
-        const { data = {} } = await getAccountListPage({ ...pagination.value, organization })
-        tableData.value = data.list
-        total.value = data.total
+      const getAccunt = (organization) => {
+        store.dispatch('getListPage', { fn: getAccountListPage, params: { id: organization } })
       }
-      getAccuntList()
+      getAccunt()
 
       const callBack = () => {
-        addType.value === 'account' ? getAccuntList() : getTreeList()
+        addType.value === 'account' ? getAccunt() : getTreeList()
         cancel()
       }
 
@@ -133,6 +127,7 @@
       }
       // 导入导出
       const handleImport = () => {
+        console.log('666', 666)
         modeType.value = 'import'
         kvDialogConfig.value.dialogVisible = true
         kvDialogConfig.value.isImport = true
@@ -152,7 +147,7 @@
         kvDialogConfig.value.dialogVisible = false
       }
       const nodeClick = (row) => {
-        getAccuntList(row.id)
+        getAccunt(row.id)
         rowData.value = row
         isSelect.value = false
       }
@@ -177,6 +172,7 @@
         modeType.value = 'remove'
         kvDialogConfig.value.dialogVisible = true
         kvDialogConfig.value.isImport = false
+        kvDialogConfig.value.message = '你确定要删除吗？'
       }
 
       return {
@@ -197,9 +193,9 @@
         handleEdit,
         handleRemove,
         isSelect,
+        getAccountListPage,
 
         addType,
-        tableData,
         total,
         handleExprot,
         modeType,

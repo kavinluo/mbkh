@@ -2,7 +2,7 @@
  * @Author: kevin
  * @Date: 2022-02-25 09:42:38
  * @LastEditors: kevin
- * @LastEditTime: 2022-03-14 16:35:00
+ * @LastEditTime: 2022-03-18 14:56:44
  * @Description: Do not edit
 -->
 <template>
@@ -53,6 +53,9 @@
       const userInfo = useState(['userInfo'], 'user')
       const userMenus = useState(['userMenus'], 'user')
       const handleMenu = (item) => {
+        // 却换时重置分页信息to do...
+        store.commit('changerpageSize', 10)
+        store.commit('changerCurrentPage', 1)
         router.push(item.path)
         const subMenuList = item.children || []
         store.dispatch('user/changeSubMenusActions', subMenuList)

@@ -2,7 +2,7 @@
  * @Author: kevin
  * @Date: 2022-02-21 13:21:43
  * @LastEditors: kevin
- * @LastEditTime: 2022-03-08 14:02:15
+ * @LastEditTime: 2022-03-17 11:30:43
  * @Description: Do not edit
  */
 module.exports = {
@@ -34,6 +34,7 @@ module.exports = {
     'vue/no-v-model-argument': 'off',
     'vue/attribute-hyphenation': 0,
     'vue/html-self-closing': 0,
+    'vue/no-useless-template-attributes': 'off',
     'vue/component-name-in-template-casing': 0,
     'vue/html-closing-bracket-spacing': 0,
     'vue/singleline-html-element-content-newline': 0,

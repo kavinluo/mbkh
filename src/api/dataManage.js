@@ -1,16 +1,16 @@
 /*
  * @Author: kevin
- * @Date: 2022-03-10 10:14:05
+ * @Date: 2022-03-18 15:01:31
  * @LastEditors: kevin
- * @LastEditTime: 2022-03-18 14:09:35
- * @Description: 机构管理
+ * @LastEditTime: 2022-03-18 15:05:15
+ * @Description: 数据管理
  */
 import { axios } from '@/utils/request'
 
-const baseURL = '/organization'
+const baseURL = '/data'
 
 /**
- *  添加机构
+ *  添加
  */
  export function add (parameter, useUrl = baseURL) {
   return axios({
@@ -22,7 +22,7 @@ const baseURL = '/organization'
 }
 
 /**
- * 获得单个机构
+ * 获得
  */
 export function get (id, useUrl = baseURL) {
   return axios({
@@ -33,9 +33,9 @@ export function get (id, useUrl = baseURL) {
 }
 
 /**
- * 查询机构
+ * 查询
  */
- export function getRoleList (parameter, useUrl = baseURL) {
+ export function getList (parameter, useUrl = baseURL) {
   return axios({
     url: `${useUrl}/list`, //
     method: 'get'
@@ -44,9 +44,9 @@ export function get (id, useUrl = baseURL) {
 }
 
 /**
- * 分页查询机构
+ * 分页查询
  */
- export function getListTreePage (parameter, useUrl = baseURL) {
+ export function getListPage (parameter, useUrl = baseURL) {
   return axios({
     url: `${useUrl}/listPage`, //
     method: 'get',
@@ -55,7 +55,7 @@ export function get (id, useUrl = baseURL) {
 }
 
 /**
- * 修改机构
+ * 修改
  */
  export function modify (parameter, useUrl = baseURL) {
   return axios({
@@ -64,18 +64,5 @@ export function get (id, useUrl = baseURL) {
     data: parameter,
     successTitle: '修改成功！',
     errorTitle: '修改失败！'
-  })
-}
-
-/**
- * 删除机构
- */
- export function remove (ids, useUrl = baseURL) {
-  return axios({
-    url: `${useUrl}/remove/${ ids }`, //
-    method: 'delete',
-    data: '',
-    successTitle: '删除成功！',
-    errorTitle: '删除失败！'
   })
 }

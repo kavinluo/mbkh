@@ -2,7 +2,7 @@
  * @Author: kevin
  * @Date: 2022-03-03 13:54:49
  * @LastEditors: kevin
- * @LastEditTime: 2022-03-14 11:36:14
+ * @LastEditTime: 2022-03-17 14:08:04
  * @Description: 确认弹框
 -->
 
@@ -12,8 +12,7 @@
     :title="title"
     :draggable="draggable"
     :width="dialogWidth"
-    :close-on-click-modal="false"
-    :before-close="handleClose">
+    :close-on-click-modal="false">
     <span v-if="message && !isImport">{{ message }}</span>
     <slot></slot>
     <template v-if="isImport">
@@ -40,7 +39,7 @@
       </el-row>
     </template>
     <template #footer v-if="isShowFooter">
-      <span class="dialog-footer">
+      <span class="dialog-footer" style="padding: 10px 20px; display:block;">
         <el-button @click="handleClose" v-if="isShowCancelBtn">Cancel</el-button>
         <el-button type="primary" @click="confirm">确定</el-button>
       </span>
@@ -77,7 +76,7 @@ export default {
     },
     isShowFooter: {
       type: Boolean,
-      default: true
+      default: false
     },
     draggable: {
       type: Boolean,
@@ -107,7 +106,7 @@ export default {
   },
   emits: ['cancel', 'callBack'],
   setup (props, { emit, slots }) {
-    console.log('props.isShowFooter', props.isShowFooter)
+    console.log('slots', slots)
     const dialog = ref(props.dialogVisible)
     const confirm = () => {
        emit('callBack', props.modeType)
@@ -134,6 +133,9 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped>
+<style lang="less">
+  .el-dialog__footer {
+    padding: 0
+  }
 
 </style>

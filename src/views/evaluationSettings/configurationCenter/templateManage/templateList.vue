@@ -2,24 +2,22 @@
  * @Author: kevin
  * @Date: 2022-03-15 15:15:26
  * @LastEditors: kevin
- * @LastEditTime: 2022-03-15 18:08:18
+ * @LastEditTime: 2022-03-18 16:13:33
  * @Description: 模板管理
 -->
 <template>
-  <kv-form v-bind="searchConfig" v-model="formData">
+  <kv-form v-bind="templateSearch" v-model="formData">
     <template #searchBtn>
       <el-button type="primary" @click.prevent="onSubmit">搜索</el-button>
     </template>
     <template #handler>
-      <el-button type="primary" @click.prevent="handleAddTemplate">添加</el-button>
-      <el-button type="primary" @click.prevent="onSubmit">添加</el-button>
+      <el-button type="primary" @click.prevent="handleAddTemplate"><el-icon style="vertical-align: middle"> <plus /> </el-icon>添加模板</el-button>
     </template>
   </kv-Form>
   <kv-table
-    :tableData="tableData"
-    :propList="tableConfig"
+    :propList="templateList"
     :showIndexColumn="false"
-    :listTotal="total"
+    :getDataFn="getListPage"
     @handleSelectionChange="handleSelectionChange">
     <template #handler="scope">
       <el-link type="primary" size="small" @click="handleEdit(scope.row, 'account')" underline icon="edit">编辑</el-link>&nbsp;&nbsp;&nbsp;
@@ -28,57 +26,67 @@
   </kv-table>
 
   <!-- 模态框 -->
-  <kvDialog v-bind="modelConfig" v-model="addModel" v-if="addModel" @callBack="confirm" @cancel="cancel">
+  <kvDialog v-bind="modelConfig" v-model="addModel" v-if="addModel" @cancel="cancel">
+    <create-template v-if="addModel" @callBack="confirm" />
   </kvDialog>
 </template>
 
 <script>
   import { ref } from 'vue'
-
   import kvDialog from '@/components/kvDialog'
-  import { tableConfig, searchConfig } from './dataConfig'
+  import createTemplate from './createTemplate'
+  import { templateList, templateSearch } from './config/dataConfig'
+  import { getListPage } from '@/api/template'
+  // import { useStore } from '@/store'
   export default {
     components: {
-      kvDialog
+      kvDialog,
+      createTemplate
     },
-  emits: ['change'],
-  setup (props, { emit }) {
+    emits: ['change'],
+    setup (props, { emit }) {
       const addModel = ref(false)
       const modelConfig = ref({})
-      const tableData = ref([])
-      const total = ref(0)
-      const formItems = searchConfig?.formItems ?? []
+      const formItems = templateSearch?.formItems ?? []
       const formOriginData = {}
       for (const item of formItems) {
         formOriginData[item.field] = ''
       }
       const formData = ref(formOriginData)
       const cancel = () => { }
-      const confirm = () => {}
+      const confirm = () => {
+        addModel.value = false
+      }
+
       const onSubmit = () => {}
       const handleSelectionChange = () => {}
       const handleClick = () => {}
 
       // 添加模板
       const handleAddTemplate = () => {
+        addModel.value = true
+      }
+      // 编辑
+      const handleEditTemplate = () => {
         emit('change', 'add')
       }
 
         return {
           cancel,
-          tableData,
+          // tableData,
           modelConfig,
           addModel,
           confirm,
-          tableConfig,
-          total,
-          searchConfig,
+          templateList,
+          // total,
+          templateSearch,
           formData,
           onSubmit,
           handleSelectionChange,
           handleClick,
-          handleAddTemplate
-
+          handleAddTemplate,
+          handleEditTemplate,
+          getListPage
         }
   }
 }

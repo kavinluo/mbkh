@@ -2,13 +2,13 @@
  * @Author: kevin
  * @Date: 2022-03-04 10:55:07
  * @LastEditors: kevin
- * @LastEditTime: 2022-03-11 16:32:57
+ * @LastEditTime: 2022-03-18 14:50:17
  * @Description: systemAdministratorIndex.vue
 -->
 <template>
   <el-button type="primary" @click="add">添加</el-button>
   <kv-table
-    :tableData="tableData"
+    :getDataFn="getListPage"
     :propList="propList"
     :showIndexColumn="false"
     :showFooter="false"
@@ -33,11 +33,10 @@
 </template>
 
 <script>
-  import { ref, computed, watch } from 'vue'
+  import { ref } from 'vue'
   import add from './addRole.vue'
   import { getListPage, remove } from '@/api/role'
   import kvDialog from '@/components/kvDialog'
-  import { useStore } from '@/store'
   import propList from './tableConfig'
   export default {
     components: {
@@ -59,20 +58,11 @@
         draggable: true,
         isShowFooter: false
       })
-      const store = useStore()
       const inputType = ref('add')
-      const tableData = ref([])
       const addModel = ref(false)
       const rowData = ref({})
       const multipleTableRef = ref({})
       const multipleSelection = ref({})
-      const pagination = computed(() => store.state.pagination)
-      watch(pagination.value, () => getList())
-      const getList = async () => {
-        const { data = {} } = await getListPage(pagination.value)
-        tableData.value = data.list
-      }
-      getList()
 
       // 编辑
       const heandleEdit = (row) => {
@@ -89,7 +79,6 @@
         callBack()
       }
       const callBack = () => {
-        getList()
         cancel()
       }
 
@@ -109,7 +98,7 @@
       return {
         handleSelectionChange,
         multipleTableRef,
-        tableData,
+        getListPage,
         modelConfig,
         addModel,
         rowData,

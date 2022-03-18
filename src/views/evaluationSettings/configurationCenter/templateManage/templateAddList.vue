@@ -2,29 +2,21 @@
  * @Author: kevin
  * @Date: 2022-03-15 15:55:22
  * @LastEditors: kevin
- * @LastEditTime: 2022-03-15 18:08:56
+ * @LastEditTime: 2022-03-18 10:13:05
  * @Description: 添加模板
 -->
 <template>
-  <!-- <kv-form v-bind="searchConfig" v-model="formData">
-    <template #searchBtn>
-      <el-button type="primary" @click.prevent="onSubmit">搜索</el-button>
-    </template>
-    <template #handler>
-      <el-button type="primary" @click.prevent="handleAddTemplate">添加</el-button>
-      <el-button type="primary" @click.prevent="onSubmit">添加</el-button>
-    </template>
-  </kv-Form> -->
   <el-row>
-    <el-col>
+    <el-col style="margin-bottom: 20px">
       <el-button type="warning" @click.prevent="handleAddTemplate">返回</el-button>
       <el-button type="primary" @click.prevent="onSubmit">添加属性</el-button>
+      <el-button type="primary" @click.prevent="createAttr">创建属性</el-button>
     </el-col>
   </el-row>
-  <div style="border-bottom: 9px solid rgb(220, 233, 244); margin: 0px -15px 16px;"></div>
+  <div class="blank10"></div>
   <kv-table
     :tableData="tableData"
-    :propList="tableConfig"
+    :propList="attrList"
     :showIndexColumn="false"
     :listTotal="total"
     @handleSelectionChange="handleSelectionChange">
@@ -35,7 +27,8 @@
   </kv-table>
 
   <!-- 模态框 -->
-  <kvDialog v-bind="modelConfig" v-model="addModel" v-if="addModel" @callBack="confirm" @cancel="cancel">
+  <kvDialog v-bind="modelConfig" v-model="addModel" @callBack="confirm">
+    <createAttrs v-if="addModel" />
   </kvDialog>
 </template>
 
@@ -43,15 +36,23 @@
   import { ref } from 'vue'
 
   import kvDialog from '@/components/kvDialog'
-  import { tableConfig, searchConfig } from './dataConfig'
+  import createAttrs from './createAttr'
+  import { attrList, searchConfig } from './config/dataConfig'
   export default {
     components: {
-      kvDialog
+      kvDialog,
+      createAttrs
     },
     emits: ['change'],
     setup (props, { emit }) {
       const addModel = ref(false)
-      const modelConfig = ref({})
+      const modelConfig = ref({
+        title: '创建属性字段',
+        width: '600px',
+        draggable: true,
+        // showLine: false,
+        isShowFooter: false
+      })
       const tableData = ref([])
       const total = ref(0)
       const formItems = searchConfig?.formItems ?? []
@@ -66,6 +67,11 @@
       const handleSelectionChange = () => {}
       const handleClick = () => {}
 
+      // 创建属性
+      const createAttr = () => {
+        addModel.value = true
+      }
+
       // 添加模板
       const handleAddTemplate = () => {
         emit('change', 'list')
@@ -77,14 +83,15 @@
           modelConfig,
           addModel,
           confirm,
-          tableConfig,
+          attrList,
           total,
           searchConfig,
           formData,
           onSubmit,
           handleSelectionChange,
           handleClick,
-          handleAddTemplate
+          handleAddTemplate,
+          createAttr
 
         }
   }

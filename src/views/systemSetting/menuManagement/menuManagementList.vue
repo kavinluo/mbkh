@@ -2,7 +2,7 @@
  * @Author: kevin
  * @Date: 2022-02-24 10:05:17
  * @LastEditors: kevin
- * @LastEditTime: 2022-03-14 09:15:37
+ * @LastEditTime: 2022-03-18 14:53:28
  * @Description: 菜单列表
 -->
 <template>
@@ -10,7 +10,7 @@
     <el-button type="primary" @click="add">添加</el-button>
   </div>
   <kv-table
-    :tableData="tableData"
+    :getDataFn="getMenuList"
     :propList="propList"
     :showIndexColumn="false"
     :showFooter="false"
@@ -35,12 +35,12 @@
 </template>
 
 <script>
-  import { ref } from 'vue'
+  import { ref, computed } from 'vue'
   import add from './addMenu.vue'
   import { getMenuList, removeMenu } from '@/api/menu'
   import kvDialog from '@/components/kvDialog'
-  // import kvTable from '@/components/kvTable'
   import propList from './tableConfig'
+  import { useStore } from '@/store'
   export default {
     components: {
       add,
@@ -61,18 +61,19 @@
         draggable: true,
         isShowFooter: false
       })
+      const store = useStore()
       const inputType = ref('add')
-      const tableData = ref([])
+      const tableData = computed(() => store.state.tableData)
       const addModel = ref(false)
       const rowData = ref({})
       const multipleTableRef = ref({})
       const multipleSelection = ref({})
 
-      const getList = async () => {
-        const { data } = await getMenuList()
-        tableData.value = data
-      }
-      getList()
+      // const getList = async () => {
+      //   const { data } = await getMenuList()
+      //   tableData.value = data
+      // }
+      // getList()
 
       // 编辑
       const heandleEdit = (row) => {
@@ -89,7 +90,7 @@
         callBack()
       }
       const callBack = () => {
-        getList()
+        // getList()
         cancel()
       }
 
@@ -109,7 +110,7 @@
       return {
         handleSelectionChange,
         multipleTableRef,
-        tableData,
+        getMenuList,
         modelConfig,
         addModel,
         rowData,
@@ -121,7 +122,8 @@
         handleRemove,
         confirm,
         callBack,
-        propList
+        propList,
+        tableData
 
       }
     }

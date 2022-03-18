@@ -2,7 +2,7 @@
  * @Author: kevin
  * @Date: 2022-03-07 16:21:25
  * @LastEditors: kevin
- * @LastEditTime: 2022-03-15 16:26:26
+ * @LastEditTime: 2022-03-18 13:37:07
  * @Description: Do not edit
 -->
 <template>
@@ -12,10 +12,9 @@
     </template>
   </kv-Form>
   <kv-table
-    :tableData="tableData"
     :propList="propList"
-    v-model:pageInfo="pagination"
-    :listTotal="listTotal"
+    :formData="formData"
+    :getDataFn="getListPageApplication"
     :showIndexColumn="false">
     <template #isOpen="scope">
       {{ scope.row.isOpen ? '否' : '是' }}
@@ -42,40 +41,24 @@
 <script>
 import { getListPageApplication, changeOpen } from '@/api/applicationManagemwnt'
 import { propList, formConfig } from './tableConfig'
-import { ref, watch, computed } from 'vue'
+import { ref } from 'vue'
 import { useStore } from '@/store'
 export default {
  setup () {
-    const tableData = ref([])
-    const listTotal = ref(0)
     const formData = ref({ title: '' })
     const store = useStore()
 
     const onSubmit = () => {
-      getList(formData.value)
+      store.dispatch('getListPage', { fn: getListPageApplication, params: formData.value })
     }
 
-   // 双向绑定pageInfo
-   const pagination = computed(() => store.state.pagination)
-   watch(pagination.value, () => getList())
-
-   const getList = async (param) => {
-     const { data } = await getListPageApplication({ ...pagination.value, ...param })
-     tableData.value = data?.list
-     listTotal.value = data.total
-   }
-   getList()
-
    const changeIsOpen = (row) => {
-     console.log('row', row)
      changeOpen({ isOpen: row.isOpen, ids: row.id })
    }
 
    return {
-     tableData,
      propList,
-     pagination,
-     listTotal,
+     getListPageApplication,
      changeIsOpen,
      onSubmit,
      formConfig,

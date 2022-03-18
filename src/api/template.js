@@ -1,13 +1,13 @@
 /*
  * @Author: kevin
- * @Date: 2022-03-14 11:12:47
+ * @Date: 2022-03-17 14:15:09
  * @LastEditors: kevin
- * @LastEditTime: 2022-03-15 11:19:08
- * @Description: 指标库
+ * @LastEditTime: 2022-03-18 16:44:23
+ * @Description: 模板相关
  */
 import { axios } from '@/utils/request'
 
-const baseURL = '/quota'
+const baseURL = '/template'
 
  /**
   *  添加
@@ -36,7 +36,7 @@ const baseURL = '/quota'
   /**
    * 查询
    */
-   export function getRoleList (parameter, useUrl = baseURL) {
+   export function getList (parameter, useUrl = baseURL) {
     return axios({
       url: `${useUrl}/list`, //
       method: 'get'
@@ -47,7 +47,7 @@ const baseURL = '/quota'
   /**
    * 分页查询
    */
-   export function getQuotaListPage (parameter, useUrl = baseURL) {
+   export function getListPage (parameter, useUrl = baseURL) {
     return axios({
       url: `${useUrl}/listPage`, //
       method: 'get',
