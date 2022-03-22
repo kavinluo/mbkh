@@ -2,7 +2,7 @@
  * @Author: kevin
  * @Date: 2022-03-03 13:54:49
  * @LastEditors: kevin
- * @LastEditTime: 2022-03-17 14:08:04
+ * @LastEditTime: 2022-03-21 15:37:34
  * @Description: 确认弹框
 -->
 
@@ -51,8 +51,10 @@
 import { ref } from 'vue'
 import { getCookie } from '@/utils/util'
 import { ElMessage } from 'element-plus'
+import { remove } from '@/api/commAPI'
 
 export default {
+  name: 'KvDialog',
   props: {
     dialogVisible: { // 是否显示
       type: Boolean,
@@ -78,7 +80,7 @@ export default {
       type: Boolean,
       default: false
     },
-    draggable: {
+    draggable: { // 是否拖拽
       type: Boolean,
       default: true
     },
@@ -101,18 +103,32 @@ export default {
     importAPI: {
       type: String,
       default: ''
+    },
+    // handleType: {
+    //   type: String,
+    //   default: 'remove'
+    // },
+    baseURL: {
+      type: String,
+      default: ''
+    },
+    params: {
+      type: [String, Number],
+      default: ''
     }
 
   },
   emits: ['cancel', 'callBack'],
   setup (props, { emit, slots }) {
-    console.log('slots', slots)
     const dialog = ref(props.dialogVisible)
     const confirm = () => {
+      if (props.modeType === 'remove') {
+        remove(props.baseURL, props.params)
+      }
        emit('callBack', props.modeType)
+       dialog.value = false
     }
     const onSuccess = (res) => {
-      console.log('res', res)
       if (res.status.code !== '0') {
         ElMessage.error(res.status.msg)
       }

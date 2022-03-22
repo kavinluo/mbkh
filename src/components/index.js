@@ -2,14 +2,15 @@
  * @Author: kevin
  * @Date: 2022-02-28 09:09:17
  * @LastEditors: kevin
- * @LastEditTime: 2022-03-08 13:28:10
+ * @LastEditTime: 2022-03-21 13:35:05
  * @Description: 组件注册
  */
 import { components, plugins } from './element-ui/register-element'
 import UserIcon from '@/components/kvIcon/kvIcon.js'
 import keTable from '@/components/kvTable'
 import KvFrom from '@/components/kvform'
-const userComponentlist = [keTable, KvFrom]
+import kvDialog from '@/components/kvDialog'
+const userComponentlist = [keTable, KvFrom, kvDialog]
 const concatComponent = components.concat(userComponentlist)
 
 function globalRegisterComponent (app) {

@@ -1,24 +1,23 @@
 <!--
  * @Author: kevin
- * @Date: 2022-03-15 15:55:22
+ * @Date: 2022-03-21 11:46:11
  * @LastEditors: kevin
- * @LastEditTime: 2022-03-18 10:13:05
- * @Description: 添加模板
+ * @LastEditTime: 2022-03-21 11:49:19
+ * @Description: 机构管理
 -->
 <template>
-  <el-row>
-    <el-col style="margin-bottom: 20px">
-      <el-button type="warning" @click.prevent="handleAddTemplate">返回</el-button>
-      <el-button type="primary" @click.prevent="onSubmit">添加属性</el-button>
-      <el-button type="primary" @click.prevent="createAttr">创建属性</el-button>
-    </el-col>
-  </el-row>
-  <div class="blank10"></div>
+  <kv-form v-bind="templateSearch" v-model="formData">
+    <template #searchBtn>
+      <el-button type="primary" @click.prevent="onSubmit">搜索</el-button>
+    </template>
+    <template #handler>
+      <el-button type="primary" @click.prevent="handleAddTemplate"><el-icon style="vertical-align: middle"> <plus /> </el-icon>添加模板</el-button>
+    </template>
+  </kv-Form>
   <kv-table
-    :tableData="tableData"
-    :propList="attrList"
+    :propList="templateList"
     :showIndexColumn="false"
-    :listTotal="total"
+    :getDataFn="getListPage"
     @handleSelectionChange="handleSelectionChange">
     <template #handler="scope">
       <el-link type="primary" size="small" @click="handleEdit(scope.row, 'account')" underline icon="edit">编辑</el-link>&nbsp;&nbsp;&nbsp;
@@ -27,75 +26,71 @@
   </kv-table>
 
   <!-- 模态框 -->
-  <kvDialog v-bind="modelConfig" v-model="addModel" @callBack="confirm">
-    <createAttrs v-if="addModel" />
+  <kvDialog v-bind="modelConfig" v-model="addModel" v-if="addModel" @cancel="cancel">
+    <add-institutiona v-if="addModel" @callBack="confirm" />
   </kvDialog>
 </template>
 
 <script>
   import { ref } from 'vue'
-
   import kvDialog from '@/components/kvDialog'
-  import createAttrs from './createAttr'
-  import { attrList, searchConfig } from './config/dataConfig'
+  import addInstitutiona from './addInstitutiona.vue'
+  import { templateList, templateSearch } from './config/dataConfig'
+  import { getListPage } from '@/api/template'
+  // import { useStore } from '@/store'
   export default {
     components: {
       kvDialog,
-      createAttrs
+      addInstitutiona
     },
     emits: ['change'],
     setup (props, { emit }) {
       const addModel = ref(false)
-      const modelConfig = ref({
-        title: '创建属性字段',
-        width: '600px',
-        draggable: true,
-        // showLine: false,
-        isShowFooter: false
-      })
-      const tableData = ref([])
-      const total = ref(0)
-      const formItems = searchConfig?.formItems ?? []
+      const modelConfig = ref({})
+      const formItems = templateSearch?.formItems ?? []
       const formOriginData = {}
       for (const item of formItems) {
         formOriginData[item.field] = ''
       }
       const formData = ref(formOriginData)
       const cancel = () => { }
-      const confirm = () => {}
+      const confirm = () => {
+        addModel.value = false
+      }
+
       const onSubmit = () => {}
       const handleSelectionChange = () => {}
       const handleClick = () => {}
 
-      // 创建属性
-      const createAttr = () => {
-        addModel.value = true
-      }
-
       // 添加模板
       const handleAddTemplate = () => {
-        emit('change', 'list')
+        addModel.value = true
+      }
+      // 编辑
+      const handleEditTemplate = () => {
+        emit('change', 'add')
       }
 
         return {
           cancel,
-          tableData,
+          // tableData,
           modelConfig,
           addModel,
           confirm,
-          attrList,
-          total,
-          searchConfig,
+          templateList,
+          // total,
+          templateSearch,
           formData,
           onSubmit,
           handleSelectionChange,
           handleClick,
           handleAddTemplate,
-          createAttr
-
+          handleEditTemplate,
+          getListPage
         }
   }
 }
+
 </script>
 
 <style lang="scss" scoped>

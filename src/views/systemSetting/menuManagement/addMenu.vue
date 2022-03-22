@@ -2,7 +2,7 @@
  * @Author: kevin
  * @Date: 2022-03-02 10:46:03
  * @LastEditors: kevin
- * @LastEditTime: 2022-03-09 10:02:57
+ * @LastEditTime: 2022-03-22 17:25:36
  * @Description: 添加菜单
 -->
 <template>
@@ -83,25 +83,15 @@ export default {
         const dealit = await getMenu(rowData?.id)
         formData.value = dealit.data
       })()
-      console.log('formData', formData)
     }
+    const fn = inputType === 'edit' ? editMenu : addMenu
     const onSubmit = () => {
-      if (inputType === 'edit') {
-        editMenu(formData.value).then((res) => {
-          const { status } = res
-          if (status?.code === '0') {
-             emit('callBack')
-          }
-        })
-      } else {
-        addMenu(formData.value).then((res) => {
-          const { status } = res
-          if (status?.code === '0') {
+      fn(formData.value).then((res) => {
+        const { status } = res
+        if (status?.code === '0') {
             emit('callBack')
-            console.log('ggg')
-          }
-        })
-      }
+        }
+      })
     }
   return {
     formData,

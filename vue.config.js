@@ -2,7 +2,7 @@
  * @Author: kevin
  * @Date: 2022-02-21 11:54:16
  * @LastEditors: kevin
- * @LastEditTime: 2022-03-04 09:33:53
+ * @LastEditTime: 2022-03-22 10:43:22
  * @Description: 配置文件
  */
 
@@ -51,7 +51,7 @@ module.exports = defineConfig({
     externals: isProd ? assetsCDN.externals : {}
   },
   devServer: {
-    port: 8080,
+    port: 8081,
     proxy: {
       '/api': {
         target: process.env.VUE_APP_API_BASE_URL,

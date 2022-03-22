@@ -2,11 +2,11 @@
  * @Author: kevin
  * @Date: 2022-03-17 14:03:23
  * @LastEditors: kevin
- * @LastEditTime: 2022-03-22 17:27:46
- * @Description: 创建模板
+ * @LastEditTime: 2022-03-22 15:07:18
+ * @Description: 新增机构
 -->
 <template>
-  <kv-form v-bind="createTemplate" v-model="formData" ref="ruleFormRef">
+  <kv-form v-bind="addInstitution" v-model="formData" ref="ruleFormRef">
     <template #footer>
       <div style="margin-top: 20px;text-align: right">
         <el-button type="primary" @click.prevent="handleAddTemplate(ruleFormRef)">确定</el-button>
@@ -17,40 +17,52 @@
 
 <script>
 import { ref } from 'vue'
-import { createTemplate } from './config/dataConfig'
-import { add, modify } from '@/api/template'
+import { addInstitution } from './config/dataConfig'
+import { add, modify, get } from '@/api/organization'
   export default {
+    components: {
+      // createAttrs
+    },
     props: {
       rowData: {
         type: Object,
-        default: null
+        default: () => ({})
       }
     },
     setup (props, { emit }) {
       const ruleFormRef = ref({})
       const formOriginData = {}
-      for (const item of createTemplate.formItems) {
+      for (const item of addInstitution.formItems) {
         formOriginData[item.field] = ''
       }
       const formData = ref(formOriginData)
       if (props.rowData) {
-        formData.value = props.rowData
+        (async () => {
+          const dealit = await get(props.rowData?.id)
+          formData.value = dealit.data
+        })()
       }
-      const fn = !props.rowData ? add : modify
+
       const handleAddTemplate = (formEL) => {
        formEL.$refs.ruleFormRef?.validate((valid) => {
          if (valid) {
-            fn(formData.value).then(res => {
-              const { status } = res
-              if (status?.code === '0') {
-                emit('callBack')
-              }
-            })
-          }
-        })
+           if (!props.rowData) {
+             add(formData.value).then(res => {
+                const { status } = res
+                if (status?.code === '0') {
+                  emit('callBack')
+                }
+             })
+           } else {
+             modify(formData.value).then(() => {
+               emit('callBack')
+             })
+           }
+         }
+       })
       }
       return {
-        createTemplate,
+        addInstitution,
         formData,
         handleAddTemplate,
         ruleFormRef

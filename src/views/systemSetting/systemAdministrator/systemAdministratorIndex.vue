@@ -2,7 +2,7 @@
  * @Author: kevin
  * @Date: 2022-03-04 10:55:07
  * @LastEditors: kevin
- * @LastEditTime: 2022-03-18 14:50:17
+ * @LastEditTime: 2022-03-21 16:05:47
  * @Description: systemAdministratorIndex.vue
 -->
 <template>
@@ -35,14 +35,13 @@
 <script>
   import { ref } from 'vue'
   import add from './addRole.vue'
-  import { getListPage, remove } from '@/api/role'
+  import { getListPage } from '@/api/role'
   import kvDialog from '@/components/kvDialog'
   import propList from './tableConfig'
   export default {
     components: {
       add,
       kvDialog
-      // kvTable
     },
     emits: ['cancel'],
 
@@ -50,7 +49,10 @@
       const kvDialogConfig = ref({
         dialogVisible: false,
         message: '您确定要删除吗？',
-        dialogWidth: '400px'
+        dialogWidth: '400px',
+        modeType: 'remove',
+        baseURL: '/organization',
+        params: ''
       })
       const modelConfig = ref({
         title: '添加菜单',
@@ -71,11 +73,10 @@
         inputType.value = 'edit'
       }
       const handleRemove = (row) => {
-        rowData.value = row
+        kvDialogConfig.value.params = row.id
         kvDialogConfig.value.dialogVisible = true
       }
       const confirm = () => {
-        remove(rowData.value.id)
         callBack()
       }
       const callBack = () => {

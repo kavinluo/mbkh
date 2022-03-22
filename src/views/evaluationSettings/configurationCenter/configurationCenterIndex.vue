@@ -2,19 +2,25 @@
  * @Author: kevin
  * @Date: 2022-03-14 09:49:04
  * @LastEditors: kevin
- * @LastEditTime: 2022-03-18 15:08:35
+ * @LastEditTime: 2022-03-22 13:41:55
  * @Description: 配置中心
 -->
 <template>
   <el-tabs v-model="activeName" class="use-tabs" @tab-click="handleClick">
-    <el-tab-pane label="模板管理" name="first">
-      <template-manage v-if="activeName === 'first'"/>
+    <el-tab-pane label="机构管理" name="institutional">
+      <institutional-manage v-if="activeName === 'institutional'"/>
     </el-tab-pane>
-    <el-tab-pane label="周期管理" name="second">
-      <cycle-list v-if="activeName === 'second'" />
+    <el-tab-pane label="模板管理" name="template">
+      <template-manage v-if="activeName === 'template'"/>
     </el-tab-pane>
-    <el-tab-pane label="数据管理" name="third">
-      <data-list v-if="activeName === 'third'" />
+    <el-tab-pane label="目标管理" name="target">
+      <target-manage v-if="activeName === 'target'"/>
+    </el-tab-pane>
+    <el-tab-pane label="周期管理" name="cycle">
+      <cycle-list v-if="activeName === 'cycle'" />
+    </el-tab-pane>
+    <el-tab-pane label="数据管理" name="data">
+      <data-list v-if="activeName === 'data'" />
     </el-tab-pane>
   </el-tabs>
 
@@ -22,20 +28,29 @@
 
 <script>
   import { ref } from 'vue'
+  import { useStore } from '@/store'
+  import institutionalManage from './institutionalManage/InstitutionalIndex.vue'
   import templateManage from './templateManage/templateIndex.vue'
+  import targetManage from './targetManage/targetIndex.vue'
   import cycleList from './cycleManage/cycleList.vue'
   import dataList from './DataManage/DataList.vue'
   export default {
     components: {
+      institutionalManage,
       templateManage,
+      targetManage,
       cycleList,
       dataList
     },
-    // emits: ['cancel'],
 
     setup () {
-      const activeName = ref('first')
-      const handleClick = () => {}
+      const store = useStore()
+      const activeName = ref('institutional')
+      const handleClick = () => {
+        // 却换时重置分页信息to do...
+        store.commit('changerpageSize', 10)
+        store.commit('changerCurrentPage', 1)
+      }
         return {
           handleClick,
           activeName

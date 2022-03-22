@@ -2,22 +2,46 @@
  * @Author: kevin
  * @Date: 2022-03-15 15:09:08
  * @LastEditors: kevin
- * @LastEditTime: 2022-03-18 10:26:22
+ * @LastEditTime: 2022-03-22 15:41:29
  * @Description: Do not edit
  */
+
+ const options = [{
+  value: 'input',
+  label: '文本输入'
+}, {
+  value: 'teartext',
+  label: '多行输入'
+}, {
+  value: 'file',
+  label: '文件上传'
+}, {
+  value: 'select',
+  label: '下拉选项'
+}, {
+  value: 'date',
+  label: '日期'
+}, {
+  value: 'number',
+  label: '数字'
+}]
+
+const optionsObj = {
+  input: '文本输入',
+  teartext: '多行输入',
+  file: '文件上传',
+  select: '下拉选项',
+  date: '日期',
+  number: '数字'
+}
+
 export const templateList = [
-  {
-    label: '序号',
-    prop: 'account'
-  }, {
-    label: '状态',
+ {
+    label: '模板名称',
     prop: 'name'
   }, {
-    label: '模板',
-    prop: 'name'
-  }, {
-    label: '最近更新',
-    prop: 'email'
+    label: '备注',
+    prop: 'remarks'
   }, {
     label: '操作',
     slotName: 'handler'
@@ -32,7 +56,7 @@ export const templateSearch = {
       span: {
         span: 4
       },
-      field: 'title',
+      field: 'name',
       type: 'input',
       label: '模板名称',
       placeholder: '请输入模板名称',
@@ -61,20 +85,19 @@ export const templateSearch = {
 // 属性列表
 export const attrList = [
   {
-    label: '序号',
-    prop: 'account'
-  }, {
-    label: '属性',
-    prop: 'name'
-  }, {
-    label: '默认值',
-    prop: 'telephone'
+    label: '属性名称',
+    prop: 'attributeName'
   }, {
     label: '属性类型',
-    prop: 'email'
+    prop: 'attributeType',
+    slotName: 'attributeType'
+  }, {
+    label: '默认值',
+    prop: 'defaultValue'
   }, {
     label: '是否必填',
-    prop: 'email'
+    prop: 'required',
+    slotName: 'required'
   }, {
     label: '操作',
     slotName: 'handler'
@@ -84,39 +107,67 @@ export const attrList = [
 // createAttrs
 export const createAttrs = {
   labelWidth: '120px',
+  isVerify: true,
   colLayout: {
     span: 23
   },
   formItems: [
     {
-      field: 'title',
+      field: 'attributeName',
       type: 'input',
       label: '字段名称',
       placeholder: '字段名称',
-      align: 'right'
+      align: 'right',
+      prop: 'attributeName',
+      rules: {
+        required: true,
+        trigger: 'blur',
+        message: '模板名称'
+      }
     },
     {
-      field: 'title',
-      type: 'input',
-      label: '字段提示',
-      placeholder: '字段提示',
-      align: 'right'
-    },
-    {
-      field: 'title',
+      field: 'attributeType',
+      prop: 'attributeType',
       type: 'select',
       label: '字段类型',
+      rules: {
+        required: true,
+        trigger: 'blur',
+        message: '请选择字段类型'
+      },
       placeholder: '请选择',
       align: 'right',
-      options: []
+      options: options
+    },
+    {
+      field: 'defaultValue',
+      prop: 'defaultValue',
+      type: 'input',
+      label: '默认值',
+      placeholder: '默认值',
+      align: 'right'
+    },
+    {
+      field: 'required',
+      type: 'slot',
+      slotName: 'required',
+      label: '是否必填'
+    },
+    {
+      field: 'tips',
+      prop: 'tips',
+      type: 'input',
+      label: '提示',
+      placeholder: '提示',
+      align: 'right'
     }
   ]
 }
 
-export const addTemplate = {
+export const createTemplate = {
   labelWidth: '120px',
   colLayout: {
-    span: 23
+    span: 22
   },
   isVerify: true,
   formItems: [
@@ -129,8 +180,17 @@ export const addTemplate = {
       rules: {
         required: true,
         trigger: 'blur',
-        message: '请输入模板名称'
+        message: '模板名称'
       }
+    },
+    {
+      field: 'remarks',
+      type: 'input',
+      label: '备注',
+      placeholder: '备注',
+      align: 'right'
     }
   ]
 }
+
+export { optionsObj }

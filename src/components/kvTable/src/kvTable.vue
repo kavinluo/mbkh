@@ -2,7 +2,7 @@
  * @Author: kevin
  * @Date: 2022-03-07 10:20:25
  * @LastEditors: kevin
- * @LastEditTime: 2022-03-18 15:24:29
+ * @LastEditTime: 2022-03-22 14:55:05
  * @Description: table 封装
 -->
 <template>
@@ -88,7 +88,7 @@
       type: Function,
       default: () => {}
     },
-    formData: { // 默认需要的参数
+    defaultParam: { // 默认需要的参数
       type: Object,
       default: () => ({})
     }
@@ -106,7 +106,7 @@
       }
     })
     const getList = async () => {
-      store.dispatch('getListPage', { fn: props.getDataFn, params: props.formData })
+      store.dispatch('getListPage', { fn: props.getDataFn, params: props.defaultParam })
     }
     getList()
 

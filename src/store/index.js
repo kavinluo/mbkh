@@ -2,7 +2,7 @@
  * @Author: kevin
  * @Date: 2022-02-21 13:55:23
  * @LastEditors: kevin
- * @LastEditTime: 2022-03-18 15:12:14
+ * @LastEditTime: 2022-03-21 14:47:12
  * @Description: Do not edit
  */
 
@@ -89,6 +89,16 @@ export function setupStore () {
 }
 export function useStore () {
   return useVuexStore()
+}
+
+/**
+ * 更新列表
+ * @param {Function} getListFn
+ * @param {Object} params
+ */
+
+export function updateList (getListFn, params) {
+ store.dispatch('getListPage', { fn: getListFn, params })
 }
 
 export default store

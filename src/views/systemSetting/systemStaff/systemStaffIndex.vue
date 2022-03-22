@@ -2,7 +2,7 @@
  * @Author: kevin
  * @Date: 2022-02-24 09:58:32
  * @LastEditors: kevin
- * @LastEditTime: 2022-03-18 14:12:02
+ * @LastEditTime: 2022-03-21 17:46:17
  * @Description: 机构
 -->
 <template>
@@ -44,24 +44,22 @@
   <kvDialog v-bind="modelConfig" v-model="addModel" v-if="addModel" @callBack="confirm" @cancel="cancel">
     <add v-if="addModel" :addType="addType" :inputType="inputType" :rowData="rowData" @cancel="cancel" @callBack="callBack" />
   </kvDialog>
-  <kvDialog v-bind="kvDialogConfig" v-model="kvDialogConfig.dialogVisible" :modeType="modeType" @callBack="confirm" @cancel="cancel"/>
+  <kvDialog v-bind="kvDialogConfig" v-model="kvDialogConfig.dialogVisible" @callBack="confirm" @cancel="cancel"/>
 </template>
 
 <script>
   import { ref, computed } from 'vue'
   import add from './add.vue'
   import { downloadHandle } from '@/utils/util'
-  import { getListTreePage, remove } from '@/api/organization.js'
+  import { getListTreePage } from '@/api/organization.js'
   import { getAccountListPage, exportAccount } from '@/api/account'
-  import kvDialog from '@/components/kvDialog'
-  import { useStore } from '@/store'
+  import { useStore, updateList } from '@/store'
   import propList from './tableConfig'
   import leftTree from '@/components/kvLeftTree'
 
   export default {
     components: {
       add,
-      kvDialog,
       leftTree
     },
     emits: ['cancel'],
@@ -71,7 +69,10 @@
         dialogVisible: false,
         isShowFooter: true,
         message: '您确定要删除吗？',
+        modeType: 'remove',
+        params: '',
         dialogWidth: '400px',
+        baseURL: '',
         templateLInk: 'http://192.168.1.202:9090/res/template/%E5%9F%BA%E5%B1%82/%E5%9F%BA%E5%B1%82-%E5%87%86%E8%80%83%E8%AF%81.xlsx'
       })
       const modelConfig = ref({
@@ -79,7 +80,6 @@
         width: '600px',
         draggable: true
       })
-      const modeType = ref('remove')
       const total = ref(0)
       const addType = ref('account') // 机构: organization;添加用户：account
       const store = useStore()
@@ -98,13 +98,9 @@
         treeData.value = data.list
       }
       getTreeList()
-      // 机构删除
+      // 导出人员列表
       const confirm = (modeType) => {
-        console.log('modeType', modeType)
-        if (modeType === 'remove') {
-          remove(rowData.value.id, addType.value)
-        }
-        if (modeType === 'exprot') {
+        if (kvDialogConfig.value.modeType === 'exprot') {
           exportAccount().then((res) => {
             downloadHandle(res, '人员列表')
           })
@@ -112,8 +108,8 @@
         callBack()
       }
       // table
-      const getAccunt = (organization) => {
-        store.dispatch('getListPage', { fn: getAccountListPage, params: { id: organization } })
+      const getAccunt = (id) => {
+        updateList(getAccountListPage, { id })
       }
       getAccunt()
 
@@ -127,8 +123,7 @@
       }
       // 导入导出
       const handleImport = () => {
-        console.log('666', 666)
-        modeType.value = 'import'
+        kvDialogConfig.value.modeType = 'import'
         kvDialogConfig.value.dialogVisible = true
         kvDialogConfig.value.isImport = true
         kvDialogConfig.value.importAPI = '/api/account/import'
@@ -136,7 +131,7 @@
       const handleExprot = () => {
          kvDialogConfig.value.dialogVisible = true
          kvDialogConfig.value.isImport = false
-         modeType.value = 'exprot'
+        kvDialogConfig.value.modeType = 'exprot'
          kvDialogConfig.value.message = '你确定要导出吗？'
       }
      const cancel = () => {
@@ -149,6 +144,7 @@
       const nodeClick = (row) => {
         getAccunt(row.id)
         rowData.value = row
+        kvDialogConfig.value.baseURL = '/account'
         isSelect.value = false
       }
       const handleAdd = (type) => {
@@ -167,9 +163,10 @@
       }
 
       const handleRemove = (row, type) => {
-        rowData.value = type === 'account' ? row : rowData.value
+        kvDialogConfig.value.params = type === 'account' ? row.id : rowData.value.id
         addType.value = type
-        modeType.value = 'remove'
+        kvDialogConfig.value.modeType = 'remove'
+        kvDialogConfig.value.baseURL = '/' + type
         kvDialogConfig.value.dialogVisible = true
         kvDialogConfig.value.isImport = false
         kvDialogConfig.value.message = '你确定要删除吗？'
@@ -198,7 +195,6 @@
         addType,
         total,
         handleExprot,
-        modeType,
         handleImport
       }
     }

@@ -2,6 +2,19 @@
  * @Author: kevin
  * @Date: 2022-03-18 10:41:55
  * @LastEditors: kevin
- * @LastEditTime: 2022-03-18 10:41:56
+ * @LastEditTime: 2022-03-21 15:17:41
  * @Description: 公用
  */
+import { axios } from '@/utils/request'
+ /**
+  * 删除
+  */
+  export function remove (baseURL, ids) {
+    return axios({
+      url: `${baseURL}/remove/${ ids }`, //
+      method: 'delete',
+      data: '',
+      successTitle: '删除成功！',
+      errorTitle: '删除失败！'
+    })
+  }

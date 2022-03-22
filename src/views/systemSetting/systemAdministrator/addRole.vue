@@ -2,7 +2,7 @@
  * @Author: kevin
  * @Date: 2022-03-02 10:46:03
  * @LastEditors: kevin
- * @LastEditTime: 2022-03-09 10:02:57
+ * @LastEditTime: 2022-03-22 17:24:10
  * @Description: 添加菜单
 -->
 <template>
@@ -85,35 +85,25 @@ export default {
       })()
       console.log('formData', formData)
     }
+    const fn = inputType === 'edit' ? editMenu : addMenu
     const onSubmit = () => {
-      if (inputType === 'edit') {
-        editMenu(formData.value).then((res) => {
-          const { status } = res
-          if (status?.code === '0') {
-             emit('callBack')
-          }
-        })
-      } else {
-        addMenu(formData.value).then((res) => {
-          const { status } = res
-          if (status?.code === '0') {
+      fn(formData.value).then((res) => {
+        const { status } = res
+        if (status?.code === '0') {
             emit('callBack')
-            console.log('ggg')
-          }
-        })
-      }
+        }
+      })
     }
-  return {
-    formData,
-    onSubmit,
-    emit,
-    userProps,
-    listMenu,
-    ruleFormRef,
-    formConfig,
-    // 组件
-    handleResetClick
-  }
+    return {
+      formData,
+      onSubmit,
+      emit,
+      userProps,
+      listMenu,
+      ruleFormRef,
+      formConfig,
+      handleResetClick
+    }
   }
 }
 </script>

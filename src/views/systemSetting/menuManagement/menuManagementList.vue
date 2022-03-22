@@ -2,7 +2,7 @@
  * @Author: kevin
  * @Date: 2022-02-24 10:05:17
  * @LastEditors: kevin
- * @LastEditTime: 2022-03-18 14:53:28
+ * @LastEditTime: 2022-03-21 15:50:14
  * @Description: 菜单列表
 -->
 <template>
@@ -37,15 +37,13 @@
 <script>
   import { ref, computed } from 'vue'
   import add from './addMenu.vue'
-  import { getMenuList, removeMenu } from '@/api/menu'
-  import kvDialog from '@/components/kvDialog'
+  import { getMenuList } from '@/api/menu'
   import propList from './tableConfig'
-  import { useStore } from '@/store'
+  import { useStore, updateList } from '@/store'
+
   export default {
     components: {
-      add,
-      kvDialog
-      // kvTable
+      add
     },
     emits: ['cancel'],
 
@@ -53,7 +51,11 @@
       const kvDialogConfig = ref({
         dialogVisible: false,
         message: '您确定要删除吗？',
-        dialogWidth: '400px'
+        dialogWidth: '400px',
+        isShowFooter: true,
+        modeType: 'remove',
+        baseURL: '/menu',
+        params: ''
       })
       const modelConfig = ref({
         title: '添加菜单',
@@ -69,12 +71,6 @@
       const multipleTableRef = ref({})
       const multipleSelection = ref({})
 
-      // const getList = async () => {
-      //   const { data } = await getMenuList()
-      //   tableData.value = data
-      // }
-      // getList()
-
       // 编辑
       const heandleEdit = (row) => {
         rowData.value = row
@@ -82,15 +78,16 @@
         inputType.value = 'edit'
       }
       const handleRemove = (row) => {
-        rowData.value = row
         kvDialogConfig.value.dialogVisible = true
+        kvDialogConfig.value.params = row.id
       }
       const confirm = () => {
-        removeMenu(rowData.value.id)
         callBack()
       }
       const callBack = () => {
         // getList()
+        kvDialogConfig.value.dialogVisible = false
+        updateList(getMenuList)
         cancel()
       }
 

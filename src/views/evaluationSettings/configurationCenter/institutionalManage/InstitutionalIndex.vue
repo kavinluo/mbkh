@@ -1,63 +1,60 @@
 <!--
  * @Author: kevin
- * @Date: 2022-03-15 15:15:26
+ * @Date: 2022-03-21 11:46:11
  * @LastEditors: kevin
- * @LastEditTime: 2022-03-22 15:08:37
- * @Description: 模板管理
+ * @LastEditTime: 2022-03-22 11:19:47
+ * @Description: 机构管理
 -->
 <template>
-  <kv-form v-bind="templateSearch" v-model="formData">
+  <kv-form v-bind="institutionSearch" v-model="formData">
     <template #searchBtn>
       <el-button type="primary" @click.prevent="onSubmit">搜索</el-button>
     </template>
     <template #handler>
-      <el-button type="primary" @click.prevent="handleAddTemplate(null)"><el-icon style="vertical-align: middle"> <plus /> </el-icon>添加模板</el-button>
+      <el-button type="primary" @click.prevent="handleAddTemplate(null)"><el-icon style="vertical-align: middle"> <plus /> </el-icon>创建机构</el-button>
     </template>
   </kv-Form>
   <kv-table
-    :propList="templateList"
-    :getDataFn="getListPage"
+    :propList="institutionList"
+    :showIndexColumn="true"
+    :getDataFn="getListTreePage"
     @handleSelectionChange="handleSelectionChange">
     <template #handler="scope">
-      <el-link type="primary" size="small" @click="handleAddTemplate(scope.row)" underline icon="edit">修改</el-link>&nbsp;&nbsp;&nbsp;
-      <el-link type="primary" size="small" @click="handleSetting(scope.row)" underline icon="setting">设置</el-link>&nbsp;&nbsp;&nbsp;
+      <el-link type="primary" size="small" @click="handleAddTemplate(scope.row)" underline icon="edit">编辑</el-link>&nbsp;&nbsp;&nbsp;
       <el-link type="danger" size="small" @click="handleRemove(scope.row)" underline icon="delete">删除</el-link>
     </template>
   </kv-table>
 
   <!-- 模态框 -->
-  <kvDialog v-bind="modelConfig" v-model="addModel" v-if="addModel" @cancel="cancel">
-    <create-template v-if="addModel" @callBack="confirm" :rowData="rowData" />
-  </kvDialog>
+  <kv-dialog v-model="addModel" v-if="addModel">
+    <add-institutiona v-if="addModel" @callBack="confirm" :rowData="rowData" />
+  </kv-dialog>
   <kv-dialog v-bind="kvDialogConfig" v-model="kvDialogConfig.dialogVisible" @callBack="confirm"/>
 </template>
 
 <script>
   import { ref } from 'vue'
-  import createTemplate from './createTemplate'
-  import { templateList, templateSearch } from './config/dataConfig'
-  import { getListPage } from '@/api/template'
+  import addInstitutiona from './addInstitutiona.vue'
+  import { institutionList, institutionSearch } from './config/dataConfig'
+  import { getListTreePage } from '@/api/organization'
   import { updateList } from '@/store'
   export default {
     components: {
-      createTemplate
+      addInstitutiona
     },
     emits: ['change'],
     setup (props, { emit }) {
       const addModel = ref(false)
-      const rowData = ref(null)
-      const modelConfig = ref({
-        dialogWidth: '600px'
-      })
+      const rowData = ref({})
       const kvDialogConfig = ref({
         modeType: 'remove',
         params: '',
         isShowFooter: true,
         dialogVisible: false,
         message: '您确定要删除吗？',
-        baseURL: '/template'
+        baseURL: '/organization'
       })
-      const formItems = templateSearch?.formItems ?? []
+      const formItems = institutionSearch?.formItems ?? []
       const formOriginData = {}
       for (const item of formItems) {
         if (item?.field) {
@@ -65,11 +62,10 @@
         }
       }
       const formData = ref(formOriginData)
-      const cancel = () => { }
       const confirm = () => {
         addModel.value = false
         kvDialogConfig.value.dialogVisible = false
-        updateList(getListPage, formData.value)
+        updateList(getListTreePage, formData.value)
       }
       const handleRemove = (row) => {
         kvDialogConfig.value.dialogVisible = true
@@ -77,38 +73,29 @@
       }
 
       const onSubmit = () => {
-        updateList(getListPage, formData.value)
+        updateList(getListTreePage, formData.value)
       }
       const handleSelectionChange = () => {}
-      const handleClick = () => {}
 
-      // 添加模板
+      // 添加
       const handleAddTemplate = (row) => {
         rowData.value = row
         addModel.value = true
       }
-      // 编辑
-      const handleSetting = (row) => {
-        emit('change', 'attr', row)
-      }
 
         return {
-          cancel,
-          modelConfig,
           addModel,
           confirm,
-          templateList,
-          templateSearch,
+          institutionSearch,
+          institutionList,
           formData,
           onSubmit,
+          rowData,
           handleSelectionChange,
-          handleClick,
           handleAddTemplate,
-          handleSetting,
-          getListPage,
-          handleRemove,
+          getListTreePage,
           kvDialogConfig,
-          rowData
+          handleRemove
         }
   }
 }
