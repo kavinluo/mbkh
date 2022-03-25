@@ -2,7 +2,7 @@
  * @Author: kevin
  * @Date: 2022-02-21 11:54:16
  * @LastEditors: kevin
- * @LastEditTime: 2022-03-15 14:18:36
+ * @LastEditTime: 2022-03-24 09:53:33
  * @Description: Do not edit
  */
 
@@ -10,6 +10,7 @@ import { createApp } from 'vue'
 
 import './assets/style/index.less'
 import 'element-plus/dist/index.css' // 按需引入css 有误暂未解决
+import { ElMessage } from 'element-plus'
 
 import App from './App.vue'
 import router from './router/index.js'
@@ -29,3 +30,5 @@ app.use(globalRegisterComponent) // 注册element-plus | 其他
 app.mount('#app')
 
 app.config.globalProperties.$axios = axios
+
+app.config.globalProperties.$message = ElMessage // 注册提示

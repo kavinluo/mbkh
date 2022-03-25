@@ -2,7 +2,7 @@
  * @Author: kevin
  * @Date: 2022-03-07 16:21:25
  * @LastEditors: kevin
- * @LastEditTime: 2022-03-18 13:37:07
+ * @LastEditTime: 2022-03-24 17:36:32
  * @Description: Do not edit
 -->
 <template>
@@ -13,7 +13,6 @@
   </kv-Form>
   <kv-table
     :propList="propList"
-    :formData="formData"
     :getDataFn="getListPageApplication"
     :showIndexColumn="false">
     <template #isOpen="scope">

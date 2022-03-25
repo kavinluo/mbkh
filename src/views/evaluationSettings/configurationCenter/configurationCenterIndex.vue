@@ -2,7 +2,7 @@
  * @Author: kevin
  * @Date: 2022-03-14 09:49:04
  * @LastEditors: kevin
- * @LastEditTime: 2022-03-22 13:41:55
+ * @LastEditTime: 2022-03-25 10:07:33
  * @Description: 配置中心
 -->
 <template>
@@ -33,7 +33,7 @@
   import templateManage from './templateManage/templateIndex.vue'
   import targetManage from './targetManage/targetIndex.vue'
   import cycleList from './cycleManage/cycleList.vue'
-  import dataList from './DataManage/DataList.vue'
+  import dataList from './DataManage/dataList.vue'
   export default {
     components: {
       institutionalManage,
@@ -50,6 +50,7 @@
         // 却换时重置分页信息to do...
         store.commit('changerpageSize', 10)
         store.commit('changerCurrentPage', 1)
+        store.commit('changerPageSizeStatus', false)
       }
         return {
           handleClick,

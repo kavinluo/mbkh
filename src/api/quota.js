@@ -2,7 +2,7 @@
  * @Author: kevin
  * @Date: 2022-03-14 11:12:47
  * @LastEditors: kevin
- * @LastEditTime: 2022-03-15 11:19:08
+ * @LastEditTime: 2022-03-24 15:49:10
  * @Description: 指标库
  */
 import { axios } from '@/utils/request'
@@ -80,3 +80,12 @@ const baseURL = '/quota'
       errorTitle: '删除失败！'
     })
   }
+
+ const target = '/target'
+export function targetListPage (parameter, useUrl = target) {
+  return axios({
+    url: `${useUrl}/listPage`, //
+    method: 'get',
+    params: parameter
+  })
+}

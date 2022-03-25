@@ -2,7 +2,7 @@
  * @Author: kevin
  * @Date: 2022-03-15 15:20:12
  * @LastEditors: kevin
- * @LastEditTime: 2022-03-18 15:03:10
+ * @LastEditTime: 2022-03-24 14:04:41
  * @Description: 周期管理
 -->
 <template>
@@ -11,7 +11,7 @@
       <el-button type="primary" @click.prevent="onSubmit">搜索</el-button>
     </template>
     <template #handler>
-      <el-button type="primary" @click.prevent="handleAddCycle">
+      <el-button type="primary" @click.prevent="handleAddCycle(null)">
         <el-icon style="vertical-align: middle"> <plus /> </el-icon>新建周期</el-button>
     </template>
   </kv-form>
@@ -19,41 +19,54 @@
   <kv-table
     :getDataFn="getListPage"
     :propList="tableConfig"
-    :showIndexColumn="false"
     @handleSelectionChange="handleSelectionChange">
+    <template #startTime="scope">
+      {{ scope.row.startTime ? formatTimestamp(scope.row.startTime, "YYYY-MM-DD HH:mm:ss") : '-' }}
+    </template>
+    <template #endTime="scope">
+      {{ scope.row.endTime ? formatTimestamp(scope.row.endTime, "YYYY-MM-DD HH:mm:ss") : '-' }}
+    </template>
     <template #handler="scope">
-      <el-link type="primary" size="small" @click="handleEdit(scope.row)" underline icon="edit">编辑</el-link>&nbsp;&nbsp;&nbsp;
-      <el-link type="danger" size="small" @click="handleRemove(scope.rowData)" underline icon="delete">删除</el-link>
+      <el-link type="primary" size="small" @click="handleAddCycle(scope.row)" underline icon="edit">编辑</el-link>&nbsp;&nbsp;&nbsp;
+      <el-link type="danger" size="small" @click="handleRemove(scope.row)" underline icon="delete">删除</el-link>
     </template>
   </kv-table>
 
   <kvDialog v-bind="modelConfig" v-model="addModel">
-    <addCycle v-if="addModel" @callBack="confirm" />
+    <addCycle v-if="addModel" :inuptType="inuptType" @callBack="confirm" :rowData="rowData" />
   </kvDialog>
+  <kv-dialog v-bind="kvDialogConfig" v-model="kvDialogConfig.dialogVisible" @callBack="confirm"/>
 
 </template>
 
 <script>
   import { ref } from 'vue'
-  import kvDialog from '@/components/kvDialog'
-  import { tableConfig, searchConfig } from './dataConfig'
+  import { tableConfig, searchConfig } from './config/dataConfig'
   import addCycle from './cycleAdd.vue'
   import { getListPage } from '@/api/cycle'
+  import { updateList } from '@/store'
+import { formatTimestamp } from '@/utils/formatDate'
 
   export default {
     components: {
-      kvDialog,
       addCycle
     },
     setup () {
       const addModel = ref(false)
+      const rowData = ref(null)
       const modelConfig = ref({
-        title: '新建周期',
-        width: '600px',
+        width: '700px',
         draggable: true,
         isShowFooter: false
       })
-      const tableData = ref([])
+      const kvDialogConfig = ref({
+        modeType: 'remove',
+        params: '',
+        isShowFooter: true,
+        dialogVisible: false,
+        message: '您确定要删除吗？',
+        baseURL: '/cycle'
+      })
       const formItems = searchConfig?.formItems ?? []
       const formOriginData = {}
       for (const item of formItems) {
@@ -61,35 +74,37 @@
       }
       const formData = ref(formOriginData)
       const onSubmit = () => {
-
+        updateList(getListPage, formData.value)
       }
-      const handleAddCycle = () => {
+      const handleAddCycle = (row) => {
+        rowData.value = row
         addModel.value = true
       }
-      const handleEdit = () => {
-
-      }
-      const handleRemove = () => {
-
+      const handleRemove = (row) => {
+        kvDialogConfig.value.dialogVisible = true
+        kvDialogConfig.value.params = row.id
       }
       const handleSelectionChange = () => {
 
       }
       const confirm = () => {
-
+        addModel.value = false
+        kvDialogConfig.value.dialogVisible = false
+        updateList(getListPage, formData.value)
       }
       return {
         searchConfig,
         tableConfig,
-        tableData,
         getListPage,
         onSubmit,
         handleAddCycle,
-        handleEdit,
+        formatTimestamp,
         handleRemove,
         handleSelectionChange,
         formData,
+        rowData,
         addModel,
+        kvDialogConfig,
         modelConfig,
         confirm
       }

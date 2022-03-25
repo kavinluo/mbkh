@@ -2,7 +2,7 @@
  * @Author: kevin
  * @Date: 2022-02-21 13:55:23
  * @LastEditors: kevin
- * @LastEditTime: 2022-03-21 14:47:12
+ * @LastEditTime: 2022-03-25 09:59:34
  * @Description: Do not edit
  */
 
@@ -23,6 +23,7 @@ const store = createStore({
         pageSize: 10,
         curPage: 1
       },
+      changerPageSizeStatus: true, // 监听切换菜单时候重置分页数据状态
       tableData: [], // 表格数据
       total: 0, // 总条数
       defaultActiveValue: null, // 菜单默认选中的值
@@ -36,6 +37,9 @@ const store = createStore({
     },
     changerpageSize (state, pageSize) {
       state.pagination.pageSize = pageSize
+    },
+    changerPageSizeStatus (state, current) {
+      state.changerPageSizeStatus = current
     },
     changerCurrentPage (state, current) {
       state.pagination.curPage = current

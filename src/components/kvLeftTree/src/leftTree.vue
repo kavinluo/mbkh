@@ -2,7 +2,7 @@
  * @Author: kevin
  * @Date: 2022-03-10 17:13:09
  * @LastEditors: kevin
- * @LastEditTime: 2022-03-14 10:56:01
+ * @LastEditTime: 2022-03-24 15:58:55
  * @Description: 左侧
 -->
 <template>
@@ -62,13 +62,13 @@
       console.log('treeData', props)
 
       const handleAdd = () => {
-        emit('add', treeRef.value.getCurrentNode())
+        emit('add', treeRef.value.getCurrentNode(), 'add')
       }
       const heandleEdit = () => {
-        emit('edit', treeRef.value.getCurrentNode())
+        emit('edit', treeRef.value.getCurrentNode(), 'edit')
       }
       const handleRemove = () => {
-        emit('remove', treeRef.value.getCurrentNode())
+        emit('remove', treeRef.value.getCurrentNode(), 'remove')
       }
 
       const nodeClick = () => {

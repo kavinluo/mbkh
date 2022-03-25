@@ -2,7 +2,7 @@
  * @Author: kevin
  * @Date: 2022-03-14 09:39:40
  * @LastEditors: kevin
- * @LastEditTime: 2022-03-18 16:04:53
+ * @LastEditTime: 2022-03-24 11:37:54
  * @Description: 目标设置
 -->
 <template>
@@ -11,14 +11,28 @@
       <el-button type="primary" @click.prevent="onSubmit">搜索</el-button>
     </template>
     <template #handler>
-      <el-button type="primary" @click.prevent="handleAdd"><el-icon style="vertical-align: middle"> <plus /> </el-icon>添加模板</el-button>
+      <el-button type="primary" @click.prevent="handleAdd(null)"><el-icon style="vertical-align: middle"> <plus /> </el-icon>新建目标</el-button>
+      &nbsp; &nbsp;
+      <el-select v-model="useSelect.parentId" class="m-2" placeholder="选择目标" @change="changeUseId">
+        <el-option
+          v-for="item in selectDataList"
+          :key="item.id"
+          :label="item.title"
+          :value="item.id"
+        />
+      </el-select>
     </template>
   </kv-Form>
   <kv-table
     :getDataFn="getListPage"
-    :propList="tableConfig"
+    :propList="indexTableConfig"
+    :isAwait="isAwait"
+    :params="useSelect"
     :showIndexColumn="false"
     @handleSelectionChange="handleSelectionChange">
+    <template #status="scope">
+      {{ scope.row.status ? '已开始' : '未开始' }}
+    </template>
     <template #handler="scope">
       <el-link type="primary" size="small" @click="handleEdit(scope.row, 'account')" underline icon="edit">编辑</el-link>&nbsp;&nbsp;&nbsp;
       <el-link type="danger" size="small" @click="handleRemove(scope.row, 'account')" underline icon="delete">删除</el-link>
@@ -26,28 +40,47 @@
   </kv-table>
 
   <!-- 模态框 -->
-  <kvDialog v-bind="modelConfig" v-model="addModel" v-if="addModel" @callBack="confirm" @cancel="cancel">
-    <!-- <add v-if="addModel" :addType="addType" :inputType="inputType" :rowData="rowData" @cancel="cancel" @callBack="callBack" /> -->
+  <kvDialog v-bind="modelConfig" v-model="addModel" v-if="addModel">
+    <add v-if="addModel" :rowData="rowData" :params="useSelect" @cancel="cancel" @callBack="confirm" />
   </kvDialog>
 </template>
 
 <script>
-  import { ref } from 'vue'
+  import { ref, computed } from 'vue'
 
-  import kvDialog from '@/components/kvDialog'
-  import { tableConfig, searchConfig } from './config/tableConfig'
+  import { indexTableConfig, searchConfig } from './config/tableConfig'
   import { getListPage } from '@/api/target'
+  import add from './addTarget.vue'
+  import { useStore, updateList } from '@/store'
   export default {
     components: {
-      kvDialog
+      add
     },
     emits: ['cancel'],
-
     setup () {
+      const store = useStore()
       const addModel = ref(false)
-      const modelConfig = ref({})
-      const tableData = ref([])
-      const total = ref(0)
+      const modelConfig = ref({
+        width: '600px'
+      })
+      const rowData = ref(null)
+      const selectDataList = ref({})
+      const isAwait = ref(true)
+      const useSelect = ref({
+        parentId: ''
+      })
+      const pagination = computed(() => store.state.pagination)
+      const getSelectData = async () => {
+      const { data = {} } = await getListPage(pagination.value)
+        selectDataList.value = data.list
+        useSelect.value.parentId = data.list[0].id
+        isAwait.value = false
+      }
+      getSelectData()
+
+      const changeUseId = (val) => {
+        updateList(getListPage, useSelect.value)
+      }
       const formItems = searchConfig?.formItems ?? []
       const formOriginData = {}
       for (const item of formItems) {
@@ -58,22 +91,27 @@
       const confirm = () => {}
       const onSubmit = () => {}
       const handleSelectionChange = () => {}
-      const handleAdd = () => {}
+      const handleAdd = () => {
+        addModel.value = true
+      }
 
         return {
           cancel,
-          tableData,
           modelConfig,
           addModel,
           confirm,
-          tableConfig,
-          total,
+          indexTableConfig,
           searchConfig,
           formData,
           onSubmit,
           getListPage,
           handleSelectionChange,
-          handleAdd
+          handleAdd,
+          selectDataList,
+          useSelect,
+          isAwait,
+          changeUseId,
+          rowData
 
         }
     }

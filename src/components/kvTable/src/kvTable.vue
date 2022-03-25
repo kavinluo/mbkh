@@ -2,18 +2,25 @@
  * @Author: kevin
  * @Date: 2022-03-07 10:20:25
  * @LastEditors: kevin
- * @LastEditTime: 2022-03-22 14:55:05
+ * @LastEditTime: 2022-03-25 17:28:46
  * @Description: table 封装
 -->
 <template>
   <el-table
-    class="kv-table"
+    :class="['kv-table',isRadio ? 'handle-tr' : '']"
     ref="multipleTableRef"
     :data="tableData"
     v-bind="tableOtherOption"
     row-key="id"
+    @current-change="handleCurrentChangeRadio"
+    :highlight-current-row="isRadio"
     @selection-change="handleSelectionChange">
     <el-table-column type="selection" width="55" v-if="showSelectColumn" />
+    <el-table-column label="选择" align="center" width="65" v-if="isRadio">
+      <template #default="scope">
+        <el-radio :label="scope.row.id" v-model="radio">&nbsp;</el-radio>
+      </template>
+    </el-table-column>
     <el-table-column type="index" label="序号" align="center" width="80" v-if="showIndexColumn">
       <template #default="scope">
         {{ (pagination.curPage - 1) * pagination.pageSize + scope.$index + 1 }}
@@ -36,7 +43,7 @@
         @current-change="handleCurrentChange"
         :current-page="pagination.curPage"
         :page-size="pagination.pageSize"
-        :page-sizes="[10, 20, 30]"
+        :page-sizes="useSize"
         layout="total, sizes, prev, pager, next, jumper"
         :total="total"
       >
@@ -47,18 +54,21 @@
  <script>
 //  import store from '@/store'
  import { useStore } from '@/store'
- import { computed, watch } from 'vue'
+ import { computed, ref, watch } from 'vue'
  export default {
   name: 'KvTable',
   props: {
-    //  tableData: {
-    //    type: Array,
-    //    default: () => ([]),
-    //    required: true
-    //  },
+     useTableData: {
+       type: Array,
+       default: () => ([])
+     },
      propList: {
        type: Array,
        required: true
+     },
+     isRadio: { // 表格是否是单选
+       type: Boolean,
+       default: false
      },
      showIndexColumn: { // /是否显示 序号列
        type: Boolean,
@@ -72,14 +82,18 @@
        type: Boolean,
        default: true
      },
-    //  pageInfo: {
-    //   type: Object,
-    //   default: () => ({ curPage: 1, pageSize: 10 })
-    // },
-    // listTotal: {
-    //   type: Number,
-    //   default: 0
-    // },
+     pageInfo: {
+      type: Object,
+      default: () => ({ curPage: 1, pageSize: 10 })
+    },
+    useSize: {
+       type: Array,
+      default: () => ([10, 20, 30])
+    },
+    listTotal: {
+      type: Number,
+      default: 0
+    },
     tableOtherOption: {
       type: Object,
       default: () => ({})
@@ -88,47 +102,96 @@
       type: Function,
       default: () => {}
     },
-    defaultParam: { // 默认需要的参数
+    params: { // 默认需要的参数
       type: Object,
       default: () => ({})
+    },
+    isAwait: { // 是否需要等待
+      type: Boolean,
+      default: false
+    },
+    isUseStoreData: { // 是否需要使用store里面的数据, 如果不使用自己请求后传递
+      type: Boolean,
+      default: true
     }
   },
-  emits: ['handleSelectionChange'],
-  setup (props) {
+  emits: ['handleSelectionChange', 'update:pageInfo'],
+  setup (props, { emit }) {
     const store = useStore()
-    const tableData = computed(() => store.state.tableData)
-    const total = computed(() => store.state.total)
-    const pagination = computed(() => store.state.pagination)
-    watch(pagination.value, () => {
-      // 阻止点击菜单重置时再次请求
-      if (pagination.value.curPage !== 1 || pagination.value.pageSize !== 10) {
+    let tableData = ref([])
+    let total = ref(0)
+    const radio = ref(false)
+    let pagination = ref({})
+    if (!props.isUseStoreData) {
+      console.log(' props.listTotal-不使用store数据', props.listTotal)
+      tableData.value = props.useTableData
+      total.value = props.listTotal
+      pagination.value = props.pageInfo
+      watch(() => [props.pageInfo, props.useTableData, props.listTotal],
+        ([pageInfo, useTableData, listTotal], [oldPageInfo, oldOuseTableData, oldOlistTotal]) => {
+          pagination.value = pageInfo
+          tableData.value = useTableData
+          total.value = listTotal
+      }, { deep: true })
+    } else {
+      tableData = computed(() => store.state.tableData)
+      total = computed(() => store.state.total)
+      pagination = computed(() => store.state.pagination)
+      const changerPageSizeStatus = computed(() => store.state.changerPageSizeStatus)
+      const getList = async () => {
+        store.dispatch('getListPage', { fn: props.getDataFn, params: props.params })
+      }
+      watch(pagination.value, (newVal, oldVal) => {
+        // 阻止点击菜单重置时再次请求
+        if (changerPageSizeStatus.value) {
+          getList()
+        }
+      }, { deep: true })
+      // 需要等待 如：同一个页面需要等待其他接口请求完成后在更新列表
+      const isAwait = computed(() => props.isAwait)
+        watch(isAwait, () => {
+          getList()
+        })
+      // 不需要等待
+      if (!props.isAwait) {
         getList()
       }
-    })
-    const getList = async () => {
-      store.dispatch('getListPage', { fn: props.getDataFn, params: props.defaultParam })
     }
-    getList()
-
-    const handleSelectionChange = () => {
-
+    const handleSelectionChange = (val) => {
+      emit('handleSelectionChange', val)
     }
-     const handleSizeChange = (pageSize) => {
-       store.dispatch('changerPageSize', pageSize)
-      // emit('update:pageInfo', { ...props.pageInfo, pageSize })
-     }
-     const handleCurrentChange = (curPage) => {
-       console.log('currentPage', curPage)
-       store.dispatch('changerCurrentPage', curPage)
-      // emit('update:pageInfo', { ...props.pageInfo, curPage })
-     }
+    const handleSizeChange = (pageSize) => {
+      if (!props.isUseStoreData) {
+        emit('update:pageInfo', { ...props.pageInfo, pageSize })
+      } else {
+        store.commit('changerPageSizeStatus', true)
+        store.dispatch('changerPageSize', pageSize)
+      }
+    }
+    const handleCurrentChange = (curPage) => {
+      if (!props.isUseStoreData) {
+        emit('update:pageInfo', { ...props.pageInfo, curPage })
+      } else {
+        store.commit('changerPageSizeStatus', true)
+        store.dispatch('changerCurrentPage', curPage)
+      }
+    }
+
+    // 单选
+    const handleCurrentChangeRadio = (val) => {
+      if (!props.isRadio) return
+      emit('handleSelectionChange', val)
+      radio.value = val.id
+    }
      return {
        handleSelectionChange,
        handleSizeChange,
        handleCurrentChange,
+       handleCurrentChangeRadio,
        tableData,
        total,
-       pagination
+       pagination,
+       radio
      }
   }
  }
@@ -145,4 +208,14 @@
   .kv-table {
     border-top: solid #ebeef5 1px;
   }
+ .handle-tr{
+   .el-table__body {
+     .el-table__row {
+       cursor: pointer;
+     }
+     .current-row td {
+       background-color: #c0deff !important
+     }
+   }
+ }
 </style>

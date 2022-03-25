@@ -2,7 +2,7 @@
  * @Author: kevin
  * @Date: 2022-03-03 09:40:43
  * @LastEditors: kevin
- * @LastEditTime: 2022-03-18 15:47:45
+ * @LastEditTime: 2022-03-25 13:45:55
  * @Description: form 表单
 -->
 <template>
@@ -31,11 +31,22 @@
                 @update:modelValue="handleValueChange($event, item.field)"
               />
             </template>
+            <template v-else-if="item.type === 'textarea'">
+              <el-input
+                :model-value="modelValue[`${item.field}`]"
+                v-bind="item.otherOptions"
+                @update:modelValue="handleValueChange($event, item.field)"
+                :autosize="item.autosize"
+                :type="item.type"
+                :placeholder="item.placeholder"
+              />
+            </template>
             <template v-else-if="item.type === 'select'">
               <el-select
                 :placeholder="item.placeholder"
                 v-bind="item.otherOptions"
                 style="width: 100%"
+                @change="handleSelect"
                 :model-value="modelValue[`${item.field}`]"
                 @update:modelValue="handleValueChange($event, item.field)">
                 <el-option
@@ -48,12 +59,16 @@
             <template v-else-if="item.type === 'datepicker'">
               <el-date-picker
                 style="width: 100%"
+                :type="item.dateType"
+                start-placeholder="开始时间"
+                end-placeholder="结束时间"
+                :format="item.format"
                 v-bind="item.otherOptions"
                 :model-value="modelValue[`${item.field}`]"
                 @update:modelValue="handleValueChange($event, item.field)"></el-date-picker>
             </template>
             <template v-else-if="item.type === 'slot'">
-              <slot :name="item.slotName" :label="item.label">999</slot>
+              <slot :name="item.slotName" :label="item.label"></slot>
             </template>
             <p v-if="item.help" style="margin: 0; font-size:12px;color:#ccc;line-height:1.2">{{ item.help }}</p>
           </el-form-item>
@@ -112,14 +127,20 @@ export default {
     }
 
   },
-  emits: ['update:modelValue', 'callBack'],
+  emits: ['update:modelValue', 'callBack', 'call'],
   setup (props, { emit }) {
     const handleValueChange = (value, field) => {
       emit('update:modelValue', { ...props.modelValue, [field]: value }) // 双向绑定需要同时更新
     }
 
+    const handleSelect = (val) => {
+      console.log('val', val)
+      emit('call', val)
+    }
+
     return {
-      handleValueChange
+      handleValueChange,
+      handleSelect
     }
   }
 }

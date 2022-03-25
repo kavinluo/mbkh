@@ -2,7 +2,7 @@
  * @Author: kevin
  * @Date: 2022-03-15 15:55:22
  * @LastEditors: kevin
- * @LastEditTime: 2022-03-22 17:34:03
+ * @LastEditTime: 2022-03-24 10:44:11
  * @Description: 添加模板
 -->
 <template>
@@ -16,7 +16,7 @@
   <kv-table
     :getDataFn="getAttrListPage"
     :propList="attrList"
-    :defaultParam="formData"
+    :params="formData"
     @handleSelectionChange="handleSelectionChange">
     <template #required="scope">
       {{ scope.row.required ? '是' : '否' }}
@@ -42,7 +42,7 @@
 
   import kvDialog from '@/components/kvDialog'
   import createAttrs from './createAttr'
-  import { attrList, searchConfig, optionsObj } from './config/dataConfig'
+  import { attrList, optionsObj } from './config/dataConfig'
   import { getAttrListPage } from '@/api/template'
   import { updateList } from '@/store'
 
@@ -77,13 +77,13 @@
       })
       const tableData = ref([])
       const total = ref(0)
-      const formItems = searchConfig?.formItems ?? []
+      // const formItems = searchConfig?.formItems ?? []
       const formOriginData = {
         templateId: props.rowData.id
       }
-      for (const item of formItems) {
-        formOriginData[item.field] = ''
-      }
+      // for (const item of formItems) {
+      //   formOriginData[item.field] = ''
+      // }
       const formData = ref(formOriginData)
       const cancel = () => {
         addModel.value = false
@@ -118,7 +118,7 @@
           confirm,
           attrList,
           total,
-          searchConfig,
+          // searchConfig,
           formData,
           handleRemove,
           handleSelectionChange,

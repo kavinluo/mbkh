@@ -2,7 +2,7 @@
  * @Author: kevin
  * @Date: 2022-03-03 13:54:49
  * @LastEditors: kevin
- * @LastEditTime: 2022-03-21 15:37:34
+ * @LastEditTime: 2022-03-25 10:55:56
  * @Description: 确认弹框
 -->
 
@@ -38,9 +38,9 @@
         </el-col>
       </el-row>
     </template>
-    <template #footer v-if="isShowFooter">
+    <template #footer v-if="isShowFooterStatus">
       <span class="dialog-footer" style="padding: 10px 20px; display:block;">
-        <el-button @click="handleClose" v-if="isShowCancelBtn">Cancel</el-button>
+        <el-button @click="handleClose" type="warning" v-if="isShowCancelBtn">关闭</el-button>
         <el-button type="primary" @click="confirm">确定</el-button>
       </span>
     </template>
@@ -121,6 +121,8 @@ export default {
   emits: ['cancel', 'callBack'],
   setup (props, { emit, slots }) {
     const dialog = ref(props.dialogVisible)
+    const isShowFooterStatus = ref(false)
+    isShowFooterStatus.value = props.modeType === 'remove' ? true : props.isShowFooter
     const confirm = () => {
       if (props.modeType === 'remove') {
         remove(props.baseURL, props.params)
@@ -136,14 +138,15 @@ export default {
     }
     const handleClose = (done) => {
       dialog.value = false
-      emit('cancel')
+      emit('cancel', false)
     }
     return {
       dialog,
       handleClose,
       confirm,
       getCookie,
-      onSuccess
+      onSuccess,
+      isShowFooterStatus
     }
   }
 }

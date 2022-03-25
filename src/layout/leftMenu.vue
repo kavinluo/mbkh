@@ -2,7 +2,7 @@
  * @Author: kevin
  * @Date: 2022-02-25 09:42:38
  * @LastEditors: kevin
- * @LastEditTime: 2022-03-18 14:18:18
+ * @LastEditTime: 2022-03-25 09:59:48
  * @Description: Do not edit
 -->
 <template>
@@ -77,6 +77,7 @@
       // 却换时重置分页信息to do...
       store.commit('changerpageSize', 10)
       store.commit('changerCurrentPage', 1)
+      store.commit('changerPageSizeStatus', false)
 
       setStaticData('defaultActiveValue', item.id)
       router.push({

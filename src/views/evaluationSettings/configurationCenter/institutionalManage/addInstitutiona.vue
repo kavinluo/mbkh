@@ -2,7 +2,7 @@
  * @Author: kevin
  * @Date: 2022-03-17 14:03:23
  * @LastEditors: kevin
- * @LastEditTime: 2022-03-22 15:07:18
+ * @LastEditTime: 2022-03-23 14:46:09
  * @Description: 新增机构
 -->
 <template>
@@ -43,21 +43,17 @@ import { add, modify, get } from '@/api/organization'
         })()
       }
 
+     const fn = !props.rowData ? add : modify
+
       const handleAddTemplate = (formEL) => {
        formEL.$refs.ruleFormRef?.validate((valid) => {
          if (valid) {
-           if (!props.rowData) {
-             add(formData.value).then(res => {
-                const { status } = res
-                if (status?.code === '0') {
-                  emit('callBack')
-                }
-             })
-           } else {
-             modify(formData.value).then(() => {
-               emit('callBack')
-             })
-           }
+            fn(formData.value).then(res => {
+              const { status } = res
+              if (status?.code === '0') {
+                emit('callBack')
+              }
+            })
          }
        })
       }

@@ -2,7 +2,7 @@
  * @Author: kevin
  * @Date: 2022-03-15 15:09:08
  * @LastEditors: kevin
- * @LastEditTime: 2022-03-22 15:41:29
+ * @LastEditTime: 2022-03-25 15:14:40
  * @Description: Do not edit
  */
 
@@ -10,7 +10,7 @@
   value: 'input',
   label: '文本输入'
 }, {
-  value: 'teartext',
+  value: 'textarea',
   label: '多行输入'
 }, {
   value: 'file',
@@ -28,7 +28,7 @@
 
 const optionsObj = {
   input: '文本输入',
-  teartext: '多行输入',
+  textarea: '多行输入',
   file: '文件上传',
   select: '下拉选项',
   date: '日期',
@@ -140,10 +140,9 @@ export const createAttrs = {
       options: options
     },
     {
-      field: 'defaultValue',
-      prop: 'defaultValue',
-      type: 'input',
+      type: 'colSlot',
       label: '默认值',
+      slotName: 'defaultValue',
       placeholder: '默认值',
       align: 'right'
     },
@@ -185,7 +184,7 @@ export const createTemplate = {
     },
     {
       field: 'remarks',
-      type: 'input',
+      type: 'textarea',
       label: '备注',
       placeholder: '备注',
       align: 'right'

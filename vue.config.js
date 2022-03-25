@@ -2,13 +2,14 @@
  * @Author: kevin
  * @Date: 2022-02-21 11:54:16
  * @LastEditors: kevin
- * @LastEditTime: 2022-03-22 10:43:22
+ * @LastEditTime: 2022-03-23 17:32:33
  * @Description: 配置文件
  */
 
 // const AutoImport = require('unplugin-auto-import/webpack')
 // const Components = require('unplugin-vue-components/webpack')
 // const { ElementPlusResolver } = require('unplugin-vue-components/resolvers')
+  const NodePolyfillPlugin = require('node-polyfill-webpack-plugin') // 针对webpack5 的设置
 
 // const targetIp = 'http://192.168.1.166:11006'
 const { defineConfig } = require('@vue/cli-service')
@@ -46,12 +47,17 @@ module.exports = defineConfig({
       // Components({
       //   resolvers: [ElementPlusResolver()]
       // })
+      new NodePolyfillPlugin()
     ],
     // if prod, add externals
-    externals: isProd ? assetsCDN.externals : {}
+    externals: isProd ? assetsCDN.externals : {},
+    resolve: {
+      fallback: { path: require.resolve('path-browserify') }
+    }
+    // target: 'node'
   },
   devServer: {
-    port: 8081,
+    port: 8080,
     proxy: {
       '/api': {
         target: process.env.VUE_APP_API_BASE_URL,
@@ -94,7 +100,6 @@ module.exports = defineConfig({
   },
   // disable source map in production
   productionSourceMap: false,
-  lintOnSave: undefined,
+  lintOnSave: undefined
   // babel-loader no-ignore node_modules/*
-  transpileDependencies: []
 })

@@ -2,11 +2,11 @@
  * @Author: kevin
  * @Date: 2022-03-17 10:44:31
  * @LastEditors: kevin
- * @LastEditTime: 2022-03-22 16:10:39
+ * @LastEditTime: 2022-03-25 14:00:58
  * @Description: 添加属性
 -->
 <template>
-  <kv-form v-bind="createAttrs" v-model="formData" ref="ruleFormRef">
+  <kv-form v-bind="createAttrs" v-model="formData" ref="ruleFormRef" @call="handleChange">
     <template #required>
       <el-switch
         size="large"
@@ -16,6 +16,11 @@
         :inactive-value="0"
         active-text="是"
         inactive-text="否"/>
+    </template>
+    <template #defaultValue>
+      <el-form-item :label="defaultValueType==='select' ? '下拉选项' : '默认值'">
+        <el-input v-model="formData.defaultValue" :placeholder="defaultValueType==='select' ? '输入下拉选项，多个请用;号隔开' : '默认值'" />
+      </el-form-item>
     </template>
     <template #footer>
       <div style="margin-top: 20px;text-align: right">
@@ -42,9 +47,20 @@ import { addAttr, modifyAttr } from '@/api/template'
     },
     setup (props, { emit }) {
       const ruleFormRef = ref({})
+      const defaultValueType = ref('')
       const formOriginData = {
-        templateId: props.rowData.id
+        templateId: props.rowData.id,
+        newList: ['77']
       }
+
+      const handleChange = (val) => {
+        console.log('val', val)
+        defaultValueType.value = val
+        if (val === 'select') {
+
+        }
+      }
+
       for (const item of createAttrs.formItems) {
         formOriginData[item.field] = ''
       }
@@ -65,11 +81,20 @@ import { addAttr, modifyAttr } from '@/api/template'
           }
         })
       }
+      // watch(() => formData.value,
+      // (newValue, oldValue) => {
+      //   console.log('newValue', newValue)
+      //   formData.value = newValue
+      // },
+      // { deep: true }
+      // )
       return {
         createAttrs,
         formData,
         handleAddTemplate,
-        ruleFormRef
+        ruleFormRef,
+        handleChange,
+        defaultValueType
       }
     }
   }

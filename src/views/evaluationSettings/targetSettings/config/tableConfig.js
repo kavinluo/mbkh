@@ -2,19 +2,20 @@
  * @Author: kevin
  * @Date: 2022-03-07 10:35:00
  * @LastEditors: kevin
- * @LastEditTime: 2022-03-18 16:06:51
+ * @LastEditTime: 2022-03-24 10:20:00
  * @Description: table数据
  */
- export const tableConfig = [
+ export const indexTableConfig = [
     {
       label: '序号',
-      prop: 'account'
+      prop: 'number'
     }, {
       label: '状态',
-      prop: 'name'
+      prop: 'status',
+      slotName: 'status'
     }, {
-      label: '目标',
-      prop: 'telephone'
+      label: '目标名称',
+      prop: 'title'
     }, {
       label: '最近更新',
       prop: 'email'

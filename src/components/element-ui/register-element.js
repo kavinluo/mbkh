@@ -2,7 +2,7 @@
  * @Author: kevin
  * @Date: 2022-02-28 09:09:17
  * @LastEditors: kevin
- * @LastEditTime: 2022-03-17 11:43:29
+ * @LastEditTime: 2022-03-25 10:29:51
  * @Description: Do not edit
  */
 import 'element-plus/theme-chalk/base.css'
@@ -43,7 +43,8 @@ import {
   ElTree,
   ElUpload,
   ElTabs,
-  ElTabPane
+  ElTabPane,
+  ElRadio
 } from 'element-plus'
 
 // icon引入
@@ -110,7 +111,8 @@ const components = [
   ElUpload,
   ElTabs,
   ElTabPane,
-  Plus
+  Plus,
+  ElRadio
 ]
 const plugins = [
   ElInfiniteScroll,

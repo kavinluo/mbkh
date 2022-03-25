@@ -2,15 +2,15 @@
  * @Author: kevin
  * @Date: 2022-03-14 10:13:59
  * @LastEditors: kevin
- * @LastEditTime: 2022-03-14 11:26:20
+ * @LastEditTime: 2022-03-25 16:53:44
  * @Description: 添加指标库
 -->
 
 <template>
-  <kv-form v-bind="select[addType]" v-model="formData">
-    <template #typeId>
+  <kv-form v-bind="selectQuota" v-model="formData" ref="ruleFormRef">
+    <template #parentId>
       <el-cascader
-        v-model="formData.typeId"
+        v-model="formData.parentId"
         :options="menuList"
         clearable
         :props="userProps" />
@@ -18,7 +18,7 @@
     <template #footer>
       <div class="handle-btns" style="text-align: center">
         <el-button type="primary" @click.prevent="onSubmit(ruleFormRef)">提交</el-button>
-        <el-button type="warning" @click="handleResetClick">关闭</el-button>
+        <!-- <el-button type="warning" @click="handleResetClick">关闭</el-button> -->
       </div>
     </template>
   </kv-Form>
@@ -27,37 +27,31 @@
 
 <script>
 import { ref } from 'vue'
-import { quota, account } from './quotaFormConfig'
-import { add, get, modify } from '@/api/organization'
+import { selectQuota, account } from './config/config'
+import { add, modify } from '@/api/quota'
 export default {
   props: {
     menuList: {
       type: Array,
       default: () => []
     },
-    rowData: {
+    targetData: {
       type: Object,
       default: null
     },
-    inputType: {
+    inuptType: {
       type: String,
       default: 'add'
-    },
-    addType: {
-      type: String,
-      default: 'quota'
     }
-  },
+   },
   //  组件相关
   emits: ['resetBtnClick', 'queryBtnClick', 'cancel', 'callBack'],
 
-  setup ({ rowData, inputType, addType }, { emit }) {
-    const select = ref({
-      account,
-      quota
-    })
-    const formItems = select.value[addType]?.formItems ?? []
-    const formOriginData = {}
+  setup ({ targetData, inuptType }, { emit }) {
+    const formItems = selectQuota?.formItems ?? []
+    const formOriginData = {
+      parentId: 0 // 默认添加是0
+    }
     for (const item of formItems) {
       formOriginData[item.field] = ''
     }
@@ -66,49 +60,41 @@ export default {
       emit('cancel')
       formData.value = formData
     }
+      if (inuptType === 'edit') {
+        formData.value = targetData
+      }
 
     const ruleFormRef = ref()
     const userProps = ref({
       value: 'id',
-      label: 'name',
+      label: 'title',
       checkStrictly: true,
       emitPath: false // 只保留当前选中的id
     })
-    if (inputType === 'edit') {
-      (async () => {
-        const dealit = await get(rowData?.id, addType)
-        formData.value = dealit.data
-      })()
+    const fn = inuptType === 'add' ? add : modify
+    const onSubmit = (formEL) => {
+      formEL.$refs.ruleFormRef?.validate((valid) => {
+        if (valid) {
+          fn(formData.value).then((res) => {
+            const { status } = res
+            if (status?.code === '0') {
+              emit('callBack')
+            }
+          })
+        }
+      })
     }
-    const onSubmit = () => {
-      if (inputType === 'edit') {
-        modify(formData.value, addType).then((res) => {
-          const { status } = res
-          if (status?.code === '0') {
-            emit('callBack', addType)
-          }
-        })
-      } else {
-        add(formData.value, addType).then((res) => {
-          const { status } = res
-          if (status?.code === '0') {
-            emit('callBack', addType)
-          }
-        })
-      }
+    return {
+      formData,
+      onSubmit,
+      emit,
+      userProps,
+      ruleFormRef,
+      account,
+      // 组件
+      handleResetClick,
+      selectQuota
     }
-  return {
-    formData,
-    onSubmit,
-    emit,
-    userProps,
-    ruleFormRef,
-    quota,
-    account,
-    // 组件
-    handleResetClick,
-    select
-  }
   }
 }
 </script>
