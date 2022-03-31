@@ -2,7 +2,7 @@
  * @Author: kevin
  * @Date: 2022-03-10 10:46:03
  * @LastEditors: kevin
- * @LastEditTime: 2022-03-15 17:03:25
+ * @LastEditTime: 2022-03-29 15:19:29
  * @Description: 添加机构
 -->
 <template>
@@ -14,6 +14,16 @@
         clearable
         placeholder="请选择父级菜单"
         :props="userProps" />
+    </template>
+    <template #enable>
+      <el-switch
+        size="large"
+        v-model="formData.enable"
+        inline-prompt
+        :active-value="0"
+        :inactive-value="1"
+        active-text="是"
+        inactive-text="否"/>
     </template>
     <template #footer>
       <div class="handle-btns" style="text-align: center">
@@ -76,7 +86,9 @@ export default {
       organization
     })
     const formItems = select.value[addType]?.formItems ?? []
-    const formOriginData = {}
+    const formOriginData = {
+      [addType === 'account' ? 'userType' : '']: 2
+    }
     for (const item of formItems) {
       formOriginData[item.field] = ''
     }

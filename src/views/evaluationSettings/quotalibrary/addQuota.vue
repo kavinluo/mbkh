@@ -1,0 +1,327 @@
+<!--
+ * @Author: kevin
+ * @Date: 2022-03-24 15:52:07
+ * @LastEditors: kevin
+ * @LastEditTime: 2022-03-30 19:13:06
+ * @Description: 添加指标信息
+-->
+
+<template>
+
+  <el-form :model="formData" label-width="120px" :rules="rules" ref="ruleFormRef">
+    <el-form-item label="名称：" prop="title">
+      <el-input v-model="formData.title" />
+    </el-form-item>
+    <el-form-item label="选择评分模板：">
+      <div> {{ formData.mouldName }}</div> &nbsp; &nbsp;
+      <el-button type="primary" size="small" @click="handleSelectTmpalte" v-if="inuptType !== 'edit'">选择评分模板</el-button>
+    </el-form-item>
+    <el-form-item label="考评内容：" style="margin-bottom: 10px">
+      <el-button type="primary" size="small" @click="handleEdit(null, 'add', 0)">添加</el-button> &nbsp; &nbsp;
+    </el-form-item>
+    <el-form-item class="myform">
+      <div>
+        <div style="border-bottom: solid 1px #ddd; display: flex;" v-for="(item, index) in evaluateQuotaDetailedDtoList" :key="item.title">
+          <div style="flex: 1">
+            <span v-for="sub in item.showContent" :key="sub.id">
+              <!-- 此处只需显示内容 -->
+              <span v-if="sub.template.includes('内容')"> {{ sub.template }}：{{ sub.content }}</span>
+              <!--{{ sub.template }}:{{ sub.content }}； -->
+            </span>
+          </div>
+          <span style="">
+            <el-icon style="cursor: pointer;" :size="16" color="#409EFF" @click="handleEdit(item, 'edit', index)"><edit /></el-icon>&nbsp;&nbsp;
+            <el-icon :size="16" color="#F56C6C" style="cursor: pointer;" @click="handleRemove(item, index)"><delete /></el-icon>
+          </span>
+        </div>
+      </div>
+    </el-form-item>
+    <el-form-item label="总分：">
+      {{ formData.countScore }}
+    </el-form-item>
+    <el-form-item>
+      <el-button type="primary" @click="onSubmit(ruleFormRef)">提交</el-button>
+      <el-button type="warning" @click="cancelTargetModel">关闭</el-button>
+    </el-form-item>
+  </el-form>
+
+  <kvDialog v-bind="selectConfig" v-model="selectConfig.dialogVisible" @cancel="cancel" @callBack="confirm">
+    <kv-table
+      v-if="selectConfig.dialogVisible"
+      :useTableData="useTableData"
+      :pageInfo="pageInfo"
+      @update:pageInfo="pageInfo = $event"
+      :listTotal="listTotal"
+      :propList="templatePropList"
+      :isUseStoreData="false"
+      :isRadio="true"
+      :useSize="[5,10, 20, 30]"
+      :showIndexColumn="true"
+      @handleSelectionChange="handleSelectionChange">
+    </kv-table>
+  </kvDialog>
+  <kvDialog v-bind="contModel" v-model="contModel.dialogVisible">
+    <add-content v-if="contModel.dialogVisible" :userTemplate="userTemplate" :editType="editType" :rowData="rowData" @cancel="cancelContenModel" @callBack="callContent" />
+  </kvDialog>
+
+</template>
+
+<script>
+import { ref, watch, getCurrentInstance } from 'vue'
+import { selectQuota, selectModelConfig, templatePropList, contModelConfig, rules } from './config/config'
+import { get, add, modify } from '@/api/quota'
+import { getListPage } from '@/api/template'
+import addContent from './addContent.vue'
+// import { useStore } from '@/store'
+import { useStore } from '@/store'
+
+export default {
+  components: {
+    addContent
+  },
+  props: {
+    quotaRowData: {
+      type: Object,
+      default: () => ({})
+    },
+    quotaData: {
+      type: Object,
+      default: null
+    },
+    inuptType: {
+      type: String,
+      default: 'add'
+    }
+   },
+  emits: ['resetBtnClick', 'queryBtnClick', 'cancel', 'callBack'],
+
+  setup ({ quotaData, inuptType, quotaRowData }, { emit }) {
+    const { proxy } = getCurrentInstance()
+    const store = useStore()
+    const selectConfig = ref(selectModelConfig)
+    const contModel = ref(contModelConfig)
+    const useSelectIndex = ref(0)
+    const userTemplate = ref(null)
+    const colIndex = ref(0)
+    const rowData = ref(null)
+    const evaluateQuotaDetailedDtoList = ref([])
+    const editType = ref('add')
+    const formData = ref({
+      title: '',
+      sort: 0, // 顺序
+      parentId: quotaData?.id,
+      evaluateQuotaDetailedDtoList: [],
+      countScore: 100,
+      mouldName: userTemplate.value?.name,
+      mouldId: userTemplate.value?.id
+    })
+    const emptObj = ref({})
+    const pageInfo = ref({ curPage: 1, pageSize: 5 })
+    const useTableData = ref([])
+
+    const listTotal = ref(0)
+    const getTemplateLis = async () => {
+      const { data = {} } = await getListPage(pageInfo.value)
+      useTableData.value = data?.list ?? []
+      listTotal.value = data.total
+    }
+    // 详细
+    const getDetaile = async () => {
+      const { data = [] } = await get(quotaRowData?.id)
+      formData.value = data
+      userTemplate.value = {
+          name: data.mouldName,
+          id: data.mouldId
+        }
+     evaluateQuotaDetailedDtoList.value = fromrtgetDtoList(data?.evaluateQuotaDetailedDtoList ?? [])
+    }
+
+    if (inuptType === 'edit') {
+        getDetaile()
+    }
+    const fromrtgetDtoList = (list = []) => {
+      const obj = {}
+      const arrya = []
+      list.forEach(item => {
+        obj[item.sort] = obj[item.sort] || []
+        obj[item.sort].push(item)
+      })
+      for (const i in obj) {
+        arrya.push({
+          ...obj[i],
+        showContent: obj[i]
+        })
+      }
+      return arrya
+    }
+    watch(
+      () => pageInfo.value,
+      (newValue, oldValue) => {
+        pageInfo.value = newValue
+        console.log('5555', 5555)
+        getTemplateLis()
+      },
+      { deep: true }
+    )
+    const handleResetClick = () => {
+      emit('cancel')
+      formData.value = formData
+    }
+
+    const ruleFormRef = ref()
+    const userProps = ref({
+      value: 'id',
+      label: 'title',
+      checkStrictly: true,
+      emitPath: false // 只保留当前选中的id
+    })
+    const cancel = (status) => {
+      selectConfig.value.dialogVisible = status
+      userTemplate.value = null
+    }
+    const cancelTargetModel = () => {
+      emit('cancel')
+    }
+    const cancelContenModel = () => {
+       contModel.value.dialogVisible = false
+    }
+    const confirm = () => {
+       selectConfig.value.dialogVisible = false
+       store.commit('changerPageSizeStatus', false)
+    }
+    // 输入后返回
+    const callContent = (data) => {
+      console.log('data', data)
+      ++colIndex.value
+      const obj = {
+        showContent: [],
+        template: '',
+        score: '',
+        templateId: '',
+        attributeType: '',
+        content: '',
+        sort: ''
+      }
+      emptObj.value[colIndex.value] = data
+      data.forEach((item, index) => {
+        item.number = index
+        item.sort = colIndex.value
+        item.template = item.title
+        item.templateId = item.id
+        for (const key in obj) {
+          obj[key] = item[key]
+        }
+        obj.showContent = data
+      })
+      if (editType.value === 'edit') {
+        evaluateQuotaDetailedDtoList.value[useSelectIndex.value] = obj
+      } else {
+        evaluateQuotaDetailedDtoList.value.push(obj)
+      }
+      console.log('evaluateQuotaDetailedDtoList', evaluateQuotaDetailedDtoList.value)
+      contModel.value.dialogVisible = false
+      count(evaluateQuotaDetailedDtoList.value)
+    }
+    // 计算总分
+    const count = (list) => {
+      formData.value.countScore = list.reduce((per, curre) => {
+        return per + (+curre.score)
+      }, 0)
+    }
+
+    const handleSelectTmpalte = () => {
+      selectConfig.value.dialogVisible = true
+      getTemplateLis()
+    }
+    const handleSelectionChange = (value) => {
+      userTemplate.value = value
+      formData.value.mouldName = value.name
+      formData.value.mouldId = value.id
+    }
+    const handleEdit = (row, type, index) => {
+      store.commit('changerPageSizeStatus', false)
+      editType.value = inuptType === 'edit' && type === 'edit' ? 'edit' : type
+      console.log('editType.value ', editType.value)
+      if (!userTemplate.value) {
+        proxy.$message.warning('请先选择评分模板！')
+        return
+      }
+      if (type === 'edit') {
+         useSelectIndex.value = index
+         rowData.value = row
+      } else {
+        rowData.value = null
+      }
+      contModel.value.dialogVisible = true
+    }
+    const handleRemove = (row, index) => {
+      console.log('row', row)
+       evaluateQuotaDetailedDtoList.value = evaluateQuotaDetailedDtoList.value.filter(x => x.sort !== row.sort)
+       count(evaluateQuotaDetailedDtoList.value)
+    }
+
+    const fn = inuptType === 'add' ? add : modify
+    const onSubmit = (formEL) => {
+      const useList = [] // 将所有的集合展开提交
+       evaluateQuotaDetailedDtoList.value.forEach(item => {
+         useList.push(...item.showContent)
+      })
+
+      formData.value.evaluateQuotaDetailedDtoList = useList
+      formEL?.validate((valid) => {
+        if (valid) {
+          fn(formData.value, '/quota').then((res) => {
+            const { status } = res
+            if (status?.code === '0') {
+              emit('callBack')
+            }
+          })
+        }
+      })
+    }
+    return {
+      formData,
+      onSubmit,
+      emit,
+      userProps,
+      ruleFormRef,
+      // 组件
+      handleResetClick,
+      selectQuota,
+      selectConfig,
+      handleSelectTmpalte,
+      getListPage,
+      templatePropList,
+      handleSelectionChange,
+      useTableData,
+      pageInfo,
+      listTotal,
+      cancel,
+      confirm,
+      cancelContenModel,
+      userTemplate,
+      handleEdit,
+      handleRemove,
+
+      contModel,
+      editType,
+      callContent,
+      useSelectIndex,
+      rowData,
+      colIndex,
+      evaluateQuotaDetailedDtoList,
+      cancelTargetModel,
+      rules,
+      emptObj
+    }
+  }
+}
+</script>
+
+<style lang="less">
+  .myform {
+    .el-form-item__content {
+      display: block;
+    }
+  }
+</style>

@@ -1,0 +1,106 @@
+<!--
+ * @Author: kevin
+ * @Date: 2022-03-14 10:13:59
+ * @LastEditors: kevin
+ * @LastEditTime: 2022-03-30 11:36:39
+ * @Description: 添加指标库
+-->
+
+<template>
+  <kv-form v-bind="selectQuota" v-model="formData" ref="ruleFormRef">
+    <template #parentId>
+      <el-cascader
+        style="width: 100%"
+        v-model="formData.parentId"
+        :options="menuList"
+        clearable
+        placeholder="请选择父级菜单"
+        :props="userProps" />
+    </template>
+    <template #footer>
+      <div class="handle-btns" style="text-align: center">
+        <el-button type="primary" @click.prevent="onSubmit(ruleFormRef)">提交</el-button>
+        <!-- <el-button type="warning" @click="handleResetClick">关闭</el-button> -->
+      </div>
+    </template>
+  </kv-Form>
+
+</template>
+
+<script>
+import { ref } from 'vue'
+import { selectQuota, account } from './config/config'
+import { add, modify } from '@/api/quota'
+export default {
+  props: {
+    menuList: {
+      type: Array,
+      default: () => []
+    },
+    quotaData: {
+      type: Object,
+      default: null
+    },
+    inuptType: {
+      type: String,
+      default: 'add'
+    }
+   },
+  //  组件相关
+  emits: ['resetBtnClick', 'queryBtnClick', 'cancel', 'callBack'],
+
+  setup ({ quotaData, inuptType, menuList }, { emit }) {
+    const formItems = selectQuota?.formItems ?? []
+    const formOriginData = {
+      parentId: 0 // 默认添加是0
+    }
+    for (const item of formItems) {
+      formOriginData[item.field] = ''
+    }
+    const formData = ref(formOriginData)
+    const handleResetClick = () => {
+      emit('cancel')
+      formData.value = formData
+    }
+      if (inuptType === 'edit') {
+        formData.value = quotaData
+      }
+
+    const ruleFormRef = ref()
+    const userProps = ref({
+      value: 'id',
+      label: 'title',
+      checkStrictly: true,
+      emitPath: false // 只保留当前选中的id
+    })
+    const fn = inuptType === 'add' ? add : modify
+    const onSubmit = (formEL) => {
+      formEL.$refs.ruleFormRef?.validate((valid) => {
+        if (valid) {
+          fn(formData.value).then((res) => {
+            const { status } = res
+            if (status?.code === '0') {
+              emit('callBack')
+            }
+          })
+        }
+      })
+    }
+    return {
+      formData,
+      onSubmit,
+      emit,
+      userProps,
+      ruleFormRef,
+      account,
+      // 组件
+      handleResetClick,
+      selectQuota
+    }
+  }
+}
+</script>
+
+<style lang="scss" scoped>
+
+</style>

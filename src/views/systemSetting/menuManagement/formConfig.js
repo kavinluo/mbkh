@@ -2,9 +2,16 @@
  * @Author: kevin
  * @Date: 2022-03-03 12:49:43
  * @LastEditors: kevin
- * @LastEditTime: 2022-03-04 16:45:22
+ * @LastEditTime: 2022-03-29 13:29:09
  * @Description: 表单字段
  */
+// import { getListApplication } from '@/api/applicationManagemwnt'
+// let appList = [];
+// (async () => {
+//   const { data = [] } = await getListApplication()
+//   console.log('data', data)
+//   appList = data
+// })()
 
 export default {
   labelWidth: '120px',
@@ -65,6 +72,14 @@ export default {
       placeholder: '请选择',
       options: [{ label: '1级', value: 1 }, { label: '2级', value: 2 }, { label: '3级', value: 3 }, { label: '4级', value: 4 }],
       help: '例： 系统管理（1级）=> 菜单管理（2级）...'
+    },
+    {
+      field: 'application',
+      type: 'slot',
+      slotName: 'application',
+      label: '所属应用',
+      placeholder: '请选择所属应用',
+      help: ''
     },
     {
       field: 'isSee',

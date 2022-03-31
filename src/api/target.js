@@ -2,12 +2,13 @@
  * @Author: kevin
  * @Date: 2022-03-18 15:01:31
  * @LastEditors: kevin
- * @LastEditTime: 2022-03-18 15:54:08
+ * @LastEditTime: 2022-03-28 15:11:48
  * @Description: 目标管理
  */
 import { axios } from '@/utils/request'
 
 const baseURL = '/check/target'
+// const target = '/target'
 
 /**
  *  添加

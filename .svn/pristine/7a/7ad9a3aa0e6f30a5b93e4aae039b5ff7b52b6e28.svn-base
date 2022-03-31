@@ -1,0 +1,107 @@
+<!--
+ * @Author: kevin
+ * @Date: 2022-03-21 11:46:11
+ * @LastEditors: kevin
+ * @LastEditTime: 2022-03-22 11:19:47
+ * @Description: 机构管理
+-->
+<template>
+  <kv-form v-bind="institutionSearch" v-model="formData">
+    <template #searchBtn>
+      <el-button type="primary" @click.prevent="onSubmit">搜索</el-button>
+    </template>
+    <template #handler>
+      <el-button type="primary" @click.prevent="handleAddTemplate(null)"><el-icon style="vertical-align: middle"> <plus /> </el-icon>创建机构</el-button>
+    </template>
+  </kv-Form>
+  <kv-table
+    :propList="institutionList"
+    :showIndexColumn="true"
+    :getDataFn="getListTreePage"
+    @handleSelectionChange="handleSelectionChange">
+    <template #handler="scope">
+      <el-link type="primary" size="small" @click="handleAddTemplate(scope.row)" underline icon="edit">编辑</el-link>&nbsp;&nbsp;&nbsp;
+      <el-link type="danger" size="small" @click="handleRemove(scope.row)" underline icon="delete">删除</el-link>
+    </template>
+  </kv-table>
+
+  <!-- 模态框 -->
+  <kv-dialog v-model="addModel" v-if="addModel">
+    <add-institutiona v-if="addModel" @callBack="confirm" :rowData="rowData" />
+  </kv-dialog>
+  <kv-dialog v-bind="kvDialogConfig" v-model="kvDialogConfig.dialogVisible" @callBack="confirm"/>
+</template>
+
+<script>
+  import { ref } from 'vue'
+  import addInstitutiona from './addInstitutiona.vue'
+  import { institutionList, institutionSearch } from './config/dataConfig'
+  import { getListTreePage } from '@/api/organization'
+  import { updateList } from '@/store'
+  export default {
+    components: {
+      addInstitutiona
+    },
+    emits: ['change'],
+    setup (props, { emit }) {
+      const addModel = ref(false)
+      const rowData = ref({})
+      const kvDialogConfig = ref({
+        modeType: 'remove',
+        params: '',
+        isShowFooter: true,
+        dialogVisible: false,
+        message: '您确定要删除吗？',
+        baseURL: '/organization'
+      })
+      const formItems = institutionSearch?.formItems ?? []
+      const formOriginData = {}
+      for (const item of formItems) {
+        if (item?.field) {
+          formOriginData[item.field] = ''
+        }
+      }
+      const formData = ref(formOriginData)
+      const confirm = () => {
+        addModel.value = false
+        kvDialogConfig.value.dialogVisible = false
+        updateList(getListTreePage, formData.value)
+      }
+      const handleRemove = (row) => {
+        kvDialogConfig.value.dialogVisible = true
+        kvDialogConfig.value.params = row.id
+      }
+
+      const onSubmit = () => {
+        updateList(getListTreePage, formData.value)
+      }
+      const handleSelectionChange = () => {}
+
+      // 添加
+      const handleAddTemplate = (row) => {
+        rowData.value = row
+        addModel.value = true
+      }
+
+        return {
+          addModel,
+          confirm,
+          institutionSearch,
+          institutionList,
+          formData,
+          onSubmit,
+          rowData,
+          handleSelectionChange,
+          handleAddTemplate,
+          getListTreePage,
+          kvDialogConfig,
+          handleRemove
+        }
+  }
+}
+
+</script>
+
+<style lang="scss" scoped>
+
+</style>

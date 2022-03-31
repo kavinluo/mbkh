@@ -2,7 +2,7 @@
  * @Author: kevin
  * @Date: 2022-03-17 14:03:23
  * @LastEditors: kevin
- * @LastEditTime: 2022-03-23 11:08:46
+ * @LastEditTime: 2022-03-29 15:31:35
  * @Description: 新增目标
 -->
 <template>
@@ -18,12 +18,22 @@
 <script>
 import { ref } from 'vue'
 import { addtarget } from './config/dataConfig'
-import { add } from '@/api/target'
+import { add, modify } from '@/api/target'
   export default {
+    props: {
+      rowData: {
+        type: Object,
+        default: () => null
+      },
+      inuptType: {
+        type: String,
+        default: 'add'
+      }
+    },
     components: {
       // createAttrs
     },
-    setup (props, { emit }) {
+    setup ({ rowData, inuptType }, { emit }) {
       const ruleFormRef = ref({})
       const formOriginData = {
         parentId: 0 // 默认固定传0
@@ -32,13 +42,15 @@ import { add } from '@/api/target'
         formOriginData[item.field] = ''
       }
       const formData = ref(formOriginData)
-
-      // const fn =
-
+      console.log('inuptType', inuptType)
+      if (inuptType === 'edit') {
+        formData.value = rowData
+      }
+      const fn = inuptType === 'add' ? add : modify
       const handleAddTarget = (formEL) => {
        formEL.$refs.ruleFormRef?.validate((valid) => {
          if (valid) {
-          add(formData.value).then(res => {
+          fn(formData.value).then(res => {
             const { status } = res
             if (status?.code === '0') {
               emit('callBack')

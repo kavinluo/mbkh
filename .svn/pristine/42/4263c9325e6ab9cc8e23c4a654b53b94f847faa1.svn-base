@@ -1,0 +1,111 @@
+/*
+ * @Author: kevin
+ * @Date: 2022-02-21 13:45:02
+ * @LastEditors: kevin
+ * @LastEditTime: 2022-03-31 09:01:40
+ * @Description: Do not edit
+ */
+
+import axios from 'axios'
+import { ElMessage } from 'element-plus'
+import NProgress from 'nprogress' // progress bar
+import 'nprogress/nprogress.css' // progress bar custom style
+import { getCookie } from '@/utils/util'
+import router from '@/router'
+import store from '@/store'
+// import { computed } from 'vue'
+// 创建 axios 实例
+const service = axios.create({
+  baseURL: '/api', // api base_url
+  timeout: 300000, // 请求超时时间,
+  isLoading: true, // 是否显示loading状态
+  successTitle: null, // 成功后需要提示的内容
+  errorTitle: null, // 发生错误的提示
+  params: {},
+  data: {}
+})
+
+const err = (e) => {
+  const error = e.response
+  if (error) {
+    const data = error.data
+    const token = null // Vue.ls.get(ACCESS_TOKEN)
+    const code = error.status
+    NProgress.done()
+    switch (code) {
+      case 403:
+      ElMessage.error(data.message + '！')
+      break
+      case 500:
+      ElMessage.error('服务器异常' + '！')
+      break
+    }
+    if (error.status === 401 && !(data.result && data.result.isLogin)) {
+      if (token) {
+        store.dispatch('Logout').then(() => {
+          setTimeout(() => {
+            window.location.reload()
+          }, 1500)
+        })
+      }
+    }
+  }
+  console.log('error', error)
+  return Promise.reject(error)
+}
+
+// request interceptor
+service.interceptors.request.use(config => {
+  if (config.isLoading) {
+    NProgress.start()
+  }
+  const token = getCookie('token')
+  if (token) {
+    // config.headers.Authorization = token // 'Bearer ' + token
+    config.headers.token = token // 'Bearer ' + token
+  }
+  if (typeof config['Content-Type'] !== 'undefined') {
+    config.headers['Content-Type'] = config['Content-Type']
+  }
+  return config
+}, err)
+
+/**
+ * response interceptor
+ * 所有请求统一返回
+ */
+service.interceptors.response.use((response) => {
+  NProgress.done()
+  if (errorCode(response)) {
+    if (response.request.responseType === 'blob') {
+      return response
+    }
+    return response.data
+  }
+  return response.data // 这里必须返回 免得报错
+}, err)
+
+function errorCode (response) {
+  const { data, config } = response
+  const code = data?.status?.code
+  const msg = data?.status?.msg
+  let flag = true
+  if (code === '4') { // 登录超时
+    router.push('/login')
+    // ElMessage.error(msg)
+    flag = false
+    localStorage.clear()
+  }
+  if (code && code !== '0') {
+    ElMessage.error(config.errorTitle || msg)
+    flag = false
+  }
+  if (code === '0' && config.successTitle) { // 如果需要成功后提示
+    ElMessage.success(config.successTitle)
+  }
+  return flag
+}
+
+export {
+  service as axios
+}

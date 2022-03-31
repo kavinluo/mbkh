@@ -2,7 +2,7 @@
  * @Author: kevin
  * @Date: 2022-03-03 12:49:43
  * @LastEditors: kevin
- * @LastEditTime: 2022-03-15 16:32:28
+ * @LastEditTime: 2022-03-29 15:15:53
  * @Description: 表单字段
  */
 // 机构
@@ -120,6 +120,12 @@ export const account = {
         message: '请输入密码',
         trigger: 'blur'
       }
+    }, {
+      field: 'enable',
+      type: 'slot',
+      slotName: 'enable',
+      label: '是否启用'
     }
+
   ]
 }

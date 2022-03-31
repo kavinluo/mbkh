@@ -1,0 +1,36 @@
+<!--
+ * @Author: kevin
+ * @Date: 2022-02-21 11:54:16
+ * @LastEditors: kevin
+ * @LastEditTime: 2022-03-15 11:49:30
+ * @Description: Do not edit
+-->
+<!DOCTYPE html>
+<html lang="">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <!-- <link rel="icon" href="<%= BASE_URL %>favicon.ico"> -->
+    <title>目标考核管理</title>
+    <!-- <link rel="stylesheet" href="//unpkg.com/element-plus/dist/index.css" /> -->
+  </head>
+  <body>
+    <noscript>
+      <strong>We're sorry but <%= htmlWebpackPlugin.options.title %> doesn't work properly without JavaScript enabled. Please enable it to continue.</strong>
+    </noscript>
+    <div id="app"></div>
+    <!-- built files will be auto injected -->
+    <% for (var i in htmlWebpackPlugin.options.cdn && htmlWebpackPlugin.options.cdn.js) { %>
+      <script src="<%= htmlWebpackPlugin.options.cdn.js[i] %>"></script>
+    <% } %>
+  </body>
+</html>
+
+<script>
+  if ((navigator.userAgent.toLowerCase().indexOf('chrome') === -1 &&
+      navigator.userAgent.toLowerCase().indexOf('firefox') === -1) || navigator.userAgent.toLowerCase().match(/MicroMessenger/i) === 'micromessenger') {
+      alert('检测到您使用的浏览器不支持，请使用我们推荐的浏览器，否则相关功能将不能正常使用！')
+      document.location.href = '/downloadBrowser.html'
+    }
+</script>

@@ -2,7 +2,7 @@
  * @Author: kevin
  * @Date: 2022-02-21 13:45:02
  * @LastEditors: kevin
- * @LastEditTime: 2022-03-11 18:02:34
+ * @LastEditTime: 2022-03-31 09:01:40
  * @Description: Do not edit
  */
 
@@ -59,7 +59,7 @@ service.interceptors.request.use(config => {
   if (config.isLoading) {
     NProgress.start()
   }
-  const token = getCookie('token') // Vue.ls.get(ACCESS_TOKEN)
+  const token = getCookie('token')
   if (token) {
     // config.headers.Authorization = token // 'Bearer ' + token
     config.headers.token = token // 'Bearer ' + token
@@ -76,8 +76,6 @@ service.interceptors.request.use(config => {
  */
 service.interceptors.response.use((response) => {
   NProgress.done()
-  // const code = response.data?.status?.code
-  console.log('response', response)
   if (errorCode(response)) {
     if (response.request.responseType === 'blob') {
       return response
@@ -93,23 +91,21 @@ function errorCode (response) {
   const msg = data?.status?.msg
   let flag = true
   if (code === '4') { // 登录超时
-    // delStaticData('token')
     router.push('/login')
-    ElMessage.error(msg)
+    // ElMessage.error(msg)
     flag = false
+    localStorage.clear()
   }
   if (code && code !== '0') {
     ElMessage.error(config.errorTitle || msg)
     flag = false
   }
   if (code === '0' && config.successTitle) { // 如果需要成功后提示
-    console.log('777', 777)
     ElMessage.success(config.successTitle)
   }
   return flag
 }
 
 export {
-  // installer as VueAxios,
   service as axios
 }

@@ -2,7 +2,7 @@
  * @Author: kevin
  * @Date: 2022-03-10 17:13:09
  * @LastEditors: kevin
- * @LastEditTime: 2022-03-24 15:58:55
+ * @LastEditTime: 2022-03-30 09:40:09
  * @Description: 左侧
 -->
 <template>
@@ -12,6 +12,9 @@
       <el-button size="small" type="warning" :disabled="isSelect" @click="heandleEdit">修改</el-button>
       <el-button size="small" type="danger" :disabled="isSelect" @click="handleRemove">删除</el-button>
     </div>
+    <div style="margin: 10px 10px 10px 0" v-if="isShowSearch">
+      <el-input v-model="filterText" placeholder="搜索" />
+    </div>
     <el-tree
       ref="treeRef"
       class="filter-tree"
@@ -19,19 +22,20 @@
       :props="defaultProps"
       node-key="id"
       :default-expand-all="false"
-      :check-on-click-node="true"
+      :current-node-key="useCurrentNodeKey"
+      :check-on-click-node="checkOnClickNode"
       :highlight-current="true"
-      :expand-on-click-node="false"
+      :expand-on-click-node="expandOnClickNode"
       :draggable="true"
       :indent="5"
-      icon="circle-plus"
       @node-click="nodeClick"
+      :filter-node-method="filterNode"
     />
   </div>
 </template>
 
 <script>
-  import { ref } from 'vue'
+  import { ref, watch } from 'vue'
   export default {
     props: {
       treeData: {
@@ -45,12 +49,28 @@
           label: 'name'
         })
       },
+      checkOnClickNode: {
+        type: Boolean,
+        default: true
+      },
       isSelect: {
+        type: Boolean,
+        default: true
+      },
+      isShowSearch: {
+        type: Boolean,
+        default: false
+      },
+      expandOnClickNode: {
         type: Boolean,
         default: true
       },
       showHandle: {
         type: Boolean,
+        default: false
+      },
+      currentNodeKey: {
+        type: [Boolean, String],
         default: false
       }
     },
@@ -58,9 +78,20 @@
 
     setup (props, { emit }) {
       const treeRef = ref({})
+      const filterText = ref('')
+      const useCurrentNodeKey = ref()
+      const filterNode = (value, treeData) => {
+        if (!value) return true
+        return treeData.title.includes(value)
+      }
 
-      console.log('treeData', props)
-
+      watch(() => props.currentNodeKey,
+      (newVal, oldVal) => {
+        useCurrentNodeKey.value = newVal
+      })
+      watch(filterText, (val) => {
+        treeRef.value?.filter(val)
+      })
       const handleAdd = () => {
         emit('add', treeRef.value.getCurrentNode(), 'add')
       }
@@ -72,6 +103,7 @@
       }
 
       const nodeClick = () => {
+        console.log(' treeRef.value', treeRef.value.getCurrentNode())
         emit('nodeClick', treeRef.value.getCurrentNode()) // 返回当前选中的节点
       }
 
@@ -80,7 +112,10 @@
         handleAdd,
         handleRemove,
         nodeClick,
-        treeRef
+        treeRef,
+        useCurrentNodeKey,
+        filterNode,
+        filterText
       }
     }
   }

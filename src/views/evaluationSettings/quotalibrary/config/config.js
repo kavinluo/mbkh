@@ -2,7 +2,7 @@
  * @Author: kevin
  * @Date: 2022-03-03 12:49:43
  * @LastEditors: kevin
- * @LastEditTime: 2022-03-25 14:12:19
+ * @LastEditTime: 2022-03-30 11:00:12
  * @Description: 表单字段
  */
 // 创建指标
@@ -28,9 +28,10 @@ export const selectQuota = {
     {
       field: 'parentId',
       type: 'slot',
-      label: '父节点',
-      placeholder: '父节点',
-      slotName: 'parentId'
+      label: '父级菜单',
+      placeholder: '请选择',
+      slotName: 'parentId',
+      help: '顶级菜单不选'
     }
   ]
 }
@@ -48,7 +49,8 @@ export const propList = [
     prop: 'createUser'
   }, {
     label: '更新时间',
-    prop: 'updateTime'
+    prop: 'updateTime',
+    slotName: 'updateTime'
   }, {
     label: '操作',
     slotName: 'handler'
@@ -82,10 +84,12 @@ export const targetModelConfig = {
 
 export const treeConfigData = {
   treeData: [],
+  currentNodeKey: '',
   isSelect: true,
   showHandle: true,
+  isShowSearch: true,
   defaultProps: {
-    children: 'evaluateQuotaDetailedDtoList',
+    children: 'evaluateQuotaDtoList',
     label: 'title'
   }
 }
@@ -108,4 +112,12 @@ export const contModelConfig = {
   width: '800px',
   draggable: true,
   dialogVisible: false
+}
+
+export const rules = {
+  title: {
+    required: true,
+    trigger: 'blur',
+    message: '标题不能为空'
+  }
 }

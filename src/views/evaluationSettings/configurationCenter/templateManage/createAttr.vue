@@ -2,7 +2,7 @@
  * @Author: kevin
  * @Date: 2022-03-17 10:44:31
  * @LastEditors: kevin
- * @LastEditTime: 2022-03-25 14:00:58
+ * @LastEditTime: 2022-03-30 11:16:36
  * @Description: 添加属性
 -->
 <template>
@@ -18,8 +18,10 @@
         inactive-text="否"/>
     </template>
     <template #defaultValue>
-      <el-form-item :label="defaultValueType==='select' ? '下拉选项' : '默认值'">
-        <el-input v-model="formData.defaultValue" :placeholder="defaultValueType==='select' ? '输入下拉选项，多个请用;号隔开' : '默认值'" />
+      <el-form-item :label="defaultValueType==='select' ? '下拉选项' : '默认值'" >
+        <el-input v-if="defaultValueType ==='select'" v-model="formData.tips" :placeholder=" '输入下拉选项，多个请用;号隔开'" />
+        <p style="margin: 0; font-size:12px;color:#ccc;line-height:1.2">{{ defaultValueType === 'select' ? '输入下拉选项，多个请用;号隔开' : '' }}</p>
+        <el-input v-model="formData.defaultValue" :placeholder="'默认值'" />
       </el-form-item>
     </template>
     <template #footer>
@@ -54,7 +56,6 @@ import { addAttr, modifyAttr } from '@/api/template'
       }
 
       const handleChange = (val) => {
-        console.log('val', val)
         defaultValueType.value = val
         if (val === 'select') {
 

@@ -2,7 +2,7 @@
  * @Author: kevin
  * @Date: 2022-02-28 09:09:17
  * @LastEditors: kevin
- * @LastEditTime: 2022-03-14 16:06:32
+ * @LastEditTime: 2022-03-30 10:17:24
  * @Description: 用户相关
  */
 import router from '@/router'
@@ -41,7 +41,10 @@ export default ({
       const subMenus = getStaticData('subMenus')
       state.subMenus = subMenus || _routes[0].children
       state.hasSubMenus = hasSubMenus || (state.subMenus.length > 1)
+      console.log('11111state.hasSubMenus', state.hasSubMenus, state.userMenus)
       if (state.hasSubMenus) {
+        console.log('state.hasSubMenus', state.hasSubMenus, state.userMenus)
+        console.log('router', router)
         router.push(state.userMenus[0].path)
       } else {
         router.push('/manage')
@@ -79,7 +82,6 @@ export default ({
      // 请求用户信息
     async userInfoAction ({ commit, dispatch }, payload) {
       const userInfoRes = await getUserInfo()
-
       const userInfo = userInfoRes || {}
       setStaticData('userInfo', userInfo)
       commit('changeUserInfo', userInfo)

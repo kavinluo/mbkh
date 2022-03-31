@@ -1,0 +1,36 @@
+<!--
+ * @Author: kevin
+ * @Date: 2022-03-14 09:39:40
+ * @LastEditors: kevin
+ * @LastEditTime: 2022-03-18 16:02:31
+ * @Description: 目标设置
+-->
+<template>
+
+  <target-list v-if="active === 'list'" />
+  <target-settings v-if="active === 'setting'" />
+</template>
+
+<script>
+  import { ref } from 'vue'
+
+  import targetList from './targetSettingsList.vue'
+  import targetSettings from './targetSettings.vue'
+
+  export default {
+    components: {
+      targetList,
+      targetSettings
+
+    },
+    emits: ['cancel'],
+
+    setup () {
+      const active = ref('list')
+
+        return {
+          active
+        }
+    }
+  }
+</script>

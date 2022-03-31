@@ -2,7 +2,7 @@
  * @Author: kevin
  * @Date: 2022-03-14 09:33:45
  * @LastEditors: kevin
- * @LastEditTime: 2022-03-25 17:02:36
+ * @LastEditTime: 2022-03-30 14:10:02
  * @Description: 指标库
 -->
 <template>
@@ -18,19 +18,24 @@
     </el-col>
     <el-col :span="19">
       <div class="mb10">
-        <el-button @click="handleAddTarget('add')" type="primary">新建</el-button>
+        <el-button @click="handleAddTarget(null, 'add')" :disabled="addDateStatus" type="primary">新建</el-button>
       </div>
       <kv-table
-        :getDataFn="targetListPage"
+        :getDataFn="getQuotaListPage"
         :propList="propList"
+        :isAwait="isAwait"
+        :params="{ parentId: 0 }"
         :showIndexColumn="true"
         @handleSelectionChange="handleSelectionChange">
         <template #enable="scope">
           {{ !scope.row.enable ? '是' : '否' }}
         </template>
+        <template #updateTime="scope">
+          {{ formatTimestamp(scope.row.updateTime, 'YYYY-MM-DD HH:mm') }}
+        </template>
         <template #handler="scope">
-          <el-link type="primary" size="small" @click="handleEdit(scope.row, 'account')" underline icon="edit">编辑</el-link>&nbsp;&nbsp;&nbsp;
-          <el-link type="danger" size="small" @click="handleRemove(scope.row, 'account')" underline icon="delete">删除</el-link>
+          <el-link type="primary" size="small" @click="handleAddTarget(scope.row, 'edit')" underline icon="edit">编辑</el-link>&nbsp;&nbsp;&nbsp;
+          <el-link type="danger" size="small" @click="handleRemove(scope.row, 'remove', 'row')" underline icon="delete">删除</el-link>
         </template>
       </kv-table>
     </el-col>
@@ -38,11 +43,11 @@
 
   <!-- 模态框 -->
   <kvDialog v-bind="modelConfig" v-model="modelConfig.dialogVisible" @cancel="cancel">
-    <add v-if="modelConfig.dialogVisible" :inuptType="inuptType" :menuList="treeConfig.treeData" :targetData="targetData" @callBack="confirm" />
+    <add v-if="modelConfig.dialogVisible" :inuptType="inuptType" :menuList="treeConfig.treeData" :quotaData="quotaData" @callBack="confirm" />
   </kvDialog>
 
   <kvDialog v-bind="targetDialogConfig" v-model="targetDialogConfig.dialogVisible">
-    <add-target v-if="targetDialogConfig.dialogVisible" :inuptType="inuptType" :targetData="targetData" :targetRowData="targetRowData" @callBack="confirm" />
+    <add-quota v-if="targetDialogConfig.dialogVisible" :inuptType="inuptType" :quotaData="quotaData" :quotaRowData="quotaRowData" @callBack="targetConfirm" @cancel="cancel" />
   </kvDialog>
 
   <kvDialog v-bind="kvDialogConfig" v-model="kvDialogConfig.dialogVisible" v-if="kvDialogConfig.dialogVisible" @callBack="confirm"/>
@@ -50,9 +55,10 @@
 
 <script>
   import { ref, computed, watch, getCurrentInstance } from 'vue'
+  import { formatTimestamp } from '@/utils/formatDate'
   import add from './add.vue'
-  import addTarget from './addTarget.vue'
-  import { getQuotaListPage, targetListPage } from '@/api/quota'
+  import addQuota from './addQuota.vue'
+  import { getQuotaListPage, getQueryContentList } from '@/api/quota'
   import { useStore, updateList } from '@/store'
   import { propList, quotaliDialogConfig, targetModelConfig, treeConfigData, modelConfigData } from './config/config'
   import leftTree from '@/components/kvLeftTree'
@@ -61,7 +67,7 @@
     components: {
       add,
       leftTree,
-      addTarget
+      addQuota
     },
     emits: ['cancel'],
     setup () {
@@ -72,21 +78,34 @@
       const modelConfig = ref(modelConfigData)
       const inuptType = ref('add')
       const store = useStore()
-      const targetData = ref(null)
-      const targetRowData = ref(null)
+      const quotaData = ref(null)
+      const quotaRowData = ref(null)
       const multipleSelection = ref({})
-
+      const isAwait = ref(true)
+      const isrowHandle = ref(null)
+      const addDateStatus = ref(true) // 是否可以添加右侧的内容
       const pagination = computed(() => store.state.pagination)
       const getTreeList = async () => {
-        const { data = {} } = await getQuotaListPage(pagination.value)
-        treeConfig.value.treeData = data.list
+        const { data = [] } = await getQueryContentList()
+        treeConfig.value.treeData = data
+        quotaData.value = data?.length > 0 ? data[0] : null
+        treeConfig.value.currentNodeKey = data?.length > 0 ? data[0]?.id + '' : ''
+        isAwait.value = false
       }
       getTreeList()
       const confirm = (modeType) => {
-        kvDialogConfig.value.dialogVisible = false
         modelConfig.value.dialogVisible = false
-        getTreeList()
         callBack()
+        if (isrowHandle.value) {
+          console.log('quotaData.vaklue', quotaData.value)
+         updateList(getQuotaListPage, { parentId: quotaData.value.id })
+        } else {
+           getTreeList()
+        }
+      }
+      const targetConfirm = () => {
+        targetDialogConfig.value.dialogVisible = false
+        updateList(getQuotaListPage, { parentId: quotaData.value.id })
       }
 
       watch(pagination.value, () => getAccuntList())
@@ -94,11 +113,13 @@
         // const { data = {} } = await getQuotaListPage({ ...pagination.value, organization })
       }
 
-      const handleAddTarget = () => {
-        if (!targetData.value) {
+      const handleAddTarget = (row, type) => {
+        if (!quotaData.value) {
           proxy.$message.warning('请选择指标库！')
           return
         }
+        inuptType.value = type
+        quotaRowData.value = row
         targetDialogConfig.value.dialogVisible = true
       }
 
@@ -111,13 +132,18 @@
       }
 
      const cancel = () => {
-        targetData.value = null
         treeConfig.value.isSelect = true
         kvDialogConfig.value.dialogVisible = false
+        targetDialogConfig.value.dialogVisible = false
       }
       const nodeClick = (row) => {
-        updateList(targetListPage)
-        targetData.value = row
+        if (!row.evaluateQuotaDtoList?.length) {
+          addDateStatus.value = false
+          updateList(getQuotaListPage, { parentId: row.id })
+        } else {
+          addDateStatus.value = true
+        }
+        quotaData.value = row
         kvDialogConfig.value.params = row.id
         treeConfig.value.isSelect = false
       }
@@ -127,18 +153,25 @@
         modelConfig.value.dialogVisible = true
       }
 
-      const handleRemove = (row, type) => {
-        targetData.value = row
+      const handleRemove = (row, type, t) => {
+        if (t) {
+          quotaRowData.value = row
+        } else {
+          quotaData.value = row
+        }
+        kvDialogConfig.value.baseURL = '/quota'
         kvDialogConfig.value.dialogVisible = true
         kvDialogConfig.value.modeType = type
+        kvDialogConfig.value.params = row.id
+        isrowHandle.value = t
       }
 
       return {
         handleAddTarget,
-        targetRowData,
+        quotaRowData,
         handleSelectionChange,
         modelConfig,
-        targetData,
+        quotaData,
         cancel,
         kvDialogConfig,
         confirm,
@@ -147,11 +180,16 @@
         nodeClick,
         handleEdit,
         handleRemove,
+        getQueryContentList,
         getQuotaListPage,
-        targetListPage,
         treeConfig,
         inuptType,
-        targetDialogConfig
+        targetDialogConfig,
+        targetConfirm,
+        formatTimestamp,
+        isAwait,
+        addDateStatus,
+        isrowHandle
       }
     }
   }

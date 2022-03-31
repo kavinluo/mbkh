@@ -2,7 +2,7 @@
  * @Author: kevin
  * @Date: 2022-03-14 10:13:59
  * @LastEditors: kevin
- * @LastEditTime: 2022-03-25 16:53:44
+ * @LastEditTime: 2022-03-30 11:36:39
  * @Description: 添加指标库
 -->
 
@@ -10,9 +10,11 @@
   <kv-form v-bind="selectQuota" v-model="formData" ref="ruleFormRef">
     <template #parentId>
       <el-cascader
+        style="width: 100%"
         v-model="formData.parentId"
         :options="menuList"
         clearable
+        placeholder="请选择父级菜单"
         :props="userProps" />
     </template>
     <template #footer>
@@ -35,7 +37,7 @@ export default {
       type: Array,
       default: () => []
     },
-    targetData: {
+    quotaData: {
       type: Object,
       default: null
     },
@@ -47,7 +49,7 @@ export default {
   //  组件相关
   emits: ['resetBtnClick', 'queryBtnClick', 'cancel', 'callBack'],
 
-  setup ({ targetData, inuptType }, { emit }) {
+  setup ({ quotaData, inuptType, menuList }, { emit }) {
     const formItems = selectQuota?.formItems ?? []
     const formOriginData = {
       parentId: 0 // 默认添加是0
@@ -61,7 +63,7 @@ export default {
       formData.value = formData
     }
       if (inuptType === 'edit') {
-        formData.value = targetData
+        formData.value = quotaData
       }
 
     const ruleFormRef = ref()

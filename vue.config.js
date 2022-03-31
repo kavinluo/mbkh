@@ -2,7 +2,7 @@
  * @Author: kevin
  * @Date: 2022-02-21 11:54:16
  * @LastEditors: kevin
- * @LastEditTime: 2022-03-23 17:32:33
+ * @LastEditTime: 2022-03-31 09:38:20
  * @Description: 配置文件
  */
 
@@ -57,7 +57,7 @@ module.exports = defineConfig({
     // target: 'node'
   },
   devServer: {
-    port: 8080,
+    port: 8084,
     proxy: {
       '/api': {
         target: process.env.VUE_APP_API_BASE_URL,

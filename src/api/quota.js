@@ -2,7 +2,7 @@
  * @Author: kevin
  * @Date: 2022-03-14 11:12:47
  * @LastEditors: kevin
- * @LastEditTime: 2022-03-24 15:49:10
+ * @LastEditTime: 2022-03-29 18:12:02
  * @Description: 指标库
  */
 import { axios } from '@/utils/request'
@@ -22,6 +22,28 @@ const baseURL = '/quota'
     })
   }
 
+ /**
+  *  查询目录结构
+  */
+  export function getQueryContentList (parameter, useUrl = baseURL) {
+    return axios({
+      url: `${useUrl}/queryContent`,
+      method: 'get',
+      params: parameter
+    })
+  }
+
+   /**
+  *  选择指标
+  */
+    export function getQuotaList (parameter, useUrl = baseURL) {
+      return axios({
+        url: `${useUrl}/getQuotaList`,
+        method: 'get',
+        params: parameter
+      })
+    }
+
   /**
    * 获得单个
    */
@@ -36,13 +58,23 @@ const baseURL = '/quota'
   /**
    * 查询
    */
-   export function getRoleList (parameter, useUrl = baseURL) {
+   export function getList (parameter, useUrl = baseURL) {
     return axios({
       url: `${useUrl}/list`, //
-      method: 'get'
-      // params: parameter
+      method: 'get',
+      params: parameter
     })
   }
+    /**
+   * listDetails/{ids}查询指标明细
+   */
+     export function getListDetails (parameter, useUrl = baseURL) {
+      return axios({
+        url: `${useUrl}/listDetails/${parameter}`, //
+        method: 'get',
+        params: ''
+      })
+    }
 
   /**
    * 分页查询
@@ -81,7 +113,7 @@ const baseURL = '/quota'
     })
   }
 
- const target = '/target'
+const target = '/target'
 export function targetListPage (parameter, useUrl = target) {
   return axios({
     url: `${useUrl}/listPage`, //

@@ -2,7 +2,7 @@
  * @Author: kevin
  * @Date: 2022-03-07 10:20:25
  * @LastEditors: kevin
- * @LastEditTime: 2022-03-25 17:28:46
+ * @LastEditTime: 2022-03-29 14:13:26
  * @Description: table 封装
 -->
 <template>
@@ -138,6 +138,7 @@
       total = computed(() => store.state.total)
       pagination = computed(() => store.state.pagination)
       const changerPageSizeStatus = computed(() => store.state.changerPageSizeStatus)
+      console.log('props.params', props.params)
       const getList = async () => {
         store.dispatch('getListPage', { fn: props.getDataFn, params: props.params })
       }

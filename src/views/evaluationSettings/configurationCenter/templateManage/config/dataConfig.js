@@ -2,7 +2,7 @@
  * @Author: kevin
  * @Date: 2022-03-15 15:09:08
  * @LastEditors: kevin
- * @LastEditTime: 2022-03-25 15:14:40
+ * @LastEditTime: 2022-03-30 11:14:02
  * @Description: Do not edit
  */
 
@@ -92,6 +92,9 @@ export const attrList = [
     prop: 'attributeType',
     slotName: 'attributeType'
   }, {
+    label: '显示顺序',
+    prop: 'sort'
+  }, {
     label: '默认值',
     prop: 'defaultValue'
   }, {
@@ -144,22 +147,35 @@ export const createAttrs = {
       label: '默认值',
       slotName: 'defaultValue',
       placeholder: '默认值',
-      align: 'right'
+      align: 'right',
+      help: 'ghh'
+    }, {
+      field: 'sort',
+      type: 'number',
+      label: '显示顺序',
+      placeholder: '横向显示顺序',
+      align: 'right',
+      prop: 'sort',
+      rules: {
+        required: true,
+        trigger: 'blur',
+        message: '显示顺序'
+      }
     },
     {
       field: 'required',
       type: 'slot',
       slotName: 'required',
       label: '是否必填'
-    },
-    {
-      field: 'tips',
-      prop: 'tips',
-      type: 'input',
-      label: '提示',
-      placeholder: '提示',
-      align: 'right'
     }
+    // {
+    //   field: 'tips',
+    //   prop: 'tips',
+    //   type: 'input',
+    //   label: '提示',
+    //   placeholder: '提示',
+    //   align: 'right'
+    // }
   ]
 }
 

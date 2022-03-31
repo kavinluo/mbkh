@@ -2,7 +2,7 @@
  * @Author: kevin
  * @Date: 2022-03-25 11:37:20
  * @LastEditors: kevin
- * @LastEditTime: 2022-03-25 17:36:26
+ * @LastEditTime: 2022-03-30 19:17:45
  * @Description: 新增考核内容
 -->
 <template>
@@ -10,21 +10,29 @@
     <table class="co-table">
       <tr class="th">
         <td v-for="(item, index) in tableData" :key="index">{{ item.title }}</td>
+        <td>分数</td>
       </tr>
       <tr>
-        <td v-for="(item, index) in tableData" :key="index">
-          <template v-if="item.attributeType === 'select'">
-            <el-select v-model="item.value" class="m-2" :placeholder="item.tips">
-              <el-option
-                v-for="option in item.options"
-                :key="option"
-                :label="option"
-                :value="option"
-              />
-            </el-select>
-          </template>
-          <el-input v-else :placeholder="item.tips" :type="item.attributeType" v-model="item.value" />
-        </td>
+        <template v-for="(item, index) in tableData" :key="index">
+          <td>
+            <template v-if="item.attributeType === 'select'">
+              <el-select v-model="item.content" class="m-2" placeholder="请选择">
+                <el-option
+                  v-for="option in item.options"
+                  :key="option"
+                  :label="option"
+                  :value="option"
+                />
+              </el-select>
+            </template>
+            <el-input v-else :placeholder="item.tips" :type="item.attributeType" v-model="item.content" />
+          </td>
+        </template>
+        <template v-for="(item, index) in tableData" :key="index">
+          <td v-if="index === tableData.length - 1">
+            <el-input placeholder="输入分数" type="number" v-model="score" />
+          </td>
+        </template>
       </tr>
     </table>
     <el-row>
@@ -38,25 +46,30 @@
 
 <script>
   import { ref } from 'vue'
-  import kvDialog from '@/components/kvDialog'
   import { getAttrListPage } from '@/api/template'
   import { useStore } from '@/store'
-import Header from '@/layout/header.vue'
-
   export default {
     components: {
-      kvDialog,
-        Header
     },
     props: {
       userTemplate: {
         type: Object,
         default: null
+      },
+      rowData: {
+        type: Object,
+        default: null
+      },
+      editType: {
+        type: String,
+        default: 'add'
       }
     },
     emits: ['change', 'callBack', 'cancel'],
     setup (props, { emit }) {
+      console.log(' props.userTemplate', props.userTemplate)
       const tableData = ref([])
+      const score = ref(0)
       const total = ref(0)
       const store = useStore()
       store.commit('changerPageSizeStatus', false)
@@ -68,24 +81,43 @@ import Header from '@/layout/header.vue'
       const formData = ref(formOriginData)
       const getData = async () => {
         const { data = {} } = await getAttrListPage(formData.value)
-        format(data.list)
+        tableData.value = format(data.list)
       }
-      getData()
+
+      console.log('props.editType', props.editType)
+
+      if (props.editType === 'add') {
+        console.log('666', 666)
+        getData()
+      } else {
+        tableData.value = props.rowData.showContent
+        score.value = props.rowData.score
+      }
       const format = (list) => {
-        tableData.value = list.map(item => {
+        return list.map(item => {
+          const option = item.attributeType === 'select' ? item?.tips?.split(';') : ''
+          console.log('option', option)
           return {
               title: item.attributeName,
-              value: '',
+              content: item.defaultValue,
+              id: item.id,
               required: item.required,
               tips: item.tips,
               defaultValue: item.defaultValue,
               attributeType: item.attributeType,
-              options: item.attributeType === 'select' ? item.defaultValue.split(';') : ''
+              templateType: item.attributeType, // 提交时候需要
+              templateId: item.templateId,
+              template: item.attributeName,
+              score: 0,
+              options: option
           }
         })
       }
       const handleConfirm = () => {
-        emit('callBack', tableData)
+        tableData.value.forEach(item => {
+          item.score = score.value
+        })
+        emit('callBack', tableData.value)
       }
       const cancel = (row) => {
         emit('cancel')
@@ -111,7 +143,8 @@ import Header from '@/layout/header.vue'
           handleSelectionChange,
           handleAddTemplate,
           createAttr,
-          getAttrListPage
+          getAttrListPage,
+          score
         }
   }
 }

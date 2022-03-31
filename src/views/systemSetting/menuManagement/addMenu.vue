@@ -2,7 +2,7 @@
  * @Author: kevin
  * @Date: 2022-03-02 10:46:03
  * @LastEditors: kevin
- * @LastEditTime: 2022-03-22 17:25:36
+ * @LastEditTime: 2022-03-29 11:57:41
  * @Description: 添加菜单
 -->
 <template>
@@ -25,6 +25,18 @@
         placeholder="请选择父级菜单"
         :props="userProps" />
     </template>
+    <template #application>
+      <el-select
+        v-model="formData.application"
+        clearable
+        placeholder="选择所属应用">
+        <el-option
+          v-for="option in appList"
+          :key="option.id"
+          :value="option.id"
+          :label="option.title"></el-option>
+      </el-select>
+    </template>
     <template #footer>
       <div class="handle-btns" style="text-align: center">
         <el-button type="primary" @click.prevent="onSubmit(ruleFormRef)">提交</el-button>
@@ -39,6 +51,7 @@
 import { ref } from 'vue'
 import formConfig from './formConfig'
 import { addMenu, getMenu, editMenu } from '@/api/menu'
+import { getListApplication } from '@/api/applicationManagemwnt'
 export default {
   props: {
     menuList: {
@@ -58,18 +71,29 @@ export default {
   emits: ['resetBtnClick', 'queryBtnClick', 'cancel', 'callBack'],
 
   setup ({ rowData, inputType }, { emit }) {
+    const appList = ref([])
     const formItems = formConfig?.formItems ?? []
     const formOriginData = {}
     for (const item of formItems) {
       formOriginData[item.field] = ''
+      if (item.field === 'application') {
+        item.options = appList.value
+        console.log('item', item)
+      }
     }
     const formData = ref(formOriginData)
+    console.log('formOriginData', formOriginData)
     formData.value.isSee = 1// 设置是否可见的默认值
     const handleResetClick = () => {
       emit('cancel')
       formData.value = formData
     }
-
+    (async () => {
+      const { data = [] } = await getListApplication()
+      appList.value = data
+      console.log('appList', appList)
+      console.log('formOriginData', formOriginData)
+    })()
     const ruleFormRef = ref()
     const listMenu = ref()
     const userProps = ref({
@@ -102,7 +126,8 @@ export default {
     ruleFormRef,
     formConfig,
     // 组件
-    handleResetClick
+    handleResetClick,
+    appList
   }
   }
 }

@@ -2,7 +2,7 @@
  * @Author: kevin
  * @Date: 2022-02-24 09:58:32
  * @LastEditors: kevin
- * @LastEditTime: 2022-03-21 17:46:17
+ * @LastEditTime: 2022-03-29 14:15:22
  * @Description: 机构
 -->
 <template>
@@ -26,6 +26,7 @@
       </div>
       <kv-table
         :getDataFn="getAccountListPage"
+        :params="{ userType: 2 }"
         :propList="propList"
         :showIndexColumn="true"
         @handleSelectionChange="handleSelectionChange">
@@ -109,7 +110,7 @@
       }
       // table
       const getAccunt = (id) => {
-        updateList(getAccountListPage, { id })
+        updateList(getAccountListPage, { id, userType: 2 })
       }
       getAccunt()
 

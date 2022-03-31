@@ -2,7 +2,7 @@
  * @Author: kevin
  * @Date: 2022-03-21 11:46:11
  * @LastEditors: kevin
- * @LastEditTime: 2022-03-23 15:01:42
+ * @LastEditTime: 2022-03-29 15:33:47
  * @Description: 目标管理
 -->
 <template>
@@ -11,7 +11,7 @@
       <el-button type="primary" @click.prevent="onSubmit">搜索</el-button>
     </template>
     <template #handler>
-      <el-button type="primary" @click.prevent="handleEdit(null)"><el-icon style="vertical-align: middle"> <plus /> </el-icon>添加目标</el-button>
+      <el-button type="primary" @click.prevent="handleEdit(null, 'add')"><el-icon style="vertical-align: middle"> <plus /> </el-icon>添加目标</el-button>
     </template>
   </kv-Form>
   <kv-table
@@ -19,14 +19,14 @@
     :getDataFn="getListPage"
     @handleSelectionChange="handleSelectionChange">
     <template #handler="scope">
-      <el-link type="primary" size="small" @click="handleEdit(scope.row)" underline icon="edit">编辑</el-link>&nbsp;&nbsp;&nbsp;
+      <el-link type="primary" size="small" @click="handleEdit(scope.row, 'edit')" underline icon="edit">编辑</el-link>&nbsp;&nbsp;&nbsp;
       <el-link type="danger" size="small" @click="handleRemove(scope.row)" underline icon="delete">删除</el-link>
     </template>
   </kv-table>
 
   <!-- 模态框 -->
   <kvDialog v-bind="modelConfig" v-model="addModel" v-if="addModel" @cancel="cancel">
-    <add-target v-if="addModel" @callBack="confirm" />
+    <add-target v-if="addModel" @callBack="confirm" :rowData="rowData" :inuptType="inuptType" />
   </kvDialog>
   <kv-dialog v-bind="kvDialogConfig" v-model="kvDialogConfig.dialogVisible" @callBack="confirm"/>
 
@@ -46,6 +46,7 @@
     setup (props, { emit }) {
       const addModel = ref(false)
       const rowData = ref(null)
+      const inuptType = ref('add')
       const modelConfig = ref({
         dialogWidth: '600px'
       })
@@ -55,7 +56,7 @@
         isShowFooter: true,
         dialogVisible: false,
         message: '您确定要删除吗？',
-        baseURL: '/cycle'
+        baseURL: '/check/target'
       })
       const formItems = targetSearch?.formItems ?? []
       const formOriginData = {}
@@ -82,13 +83,15 @@
       const handleSelectionChange = () => {}
       const handleClick = () => {}
 
-      const handleEdit = (row) => {
+      const handleEdit = (row, type) => {
         rowData.value = row
+        inuptType.value = type
         addModel.value = true
       }
 
         return {
           cancel,
+          inuptType,
           modelConfig,
           addModel,
           confirm,
