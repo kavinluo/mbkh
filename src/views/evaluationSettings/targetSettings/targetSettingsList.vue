@@ -2,116 +2,109 @@
  * @Author: kevin
  * @Date: 2022-03-14 09:39:40
  * @LastEditors: kevin
- * @LastEditTime: 2022-03-24 11:37:54
+ * @LastEditTime: 2022-04-02 14:49:37
  * @Description: 目标设置
 -->
 <template>
-  <kv-form v-bind="searchConfig" v-model="formData">
+  <kv-form v-bind="indexSearchConfig" v-model="formData">
     <template #searchBtn>
       <el-button type="primary" @click.prevent="onSubmit">搜索</el-button>
     </template>
     <template #handler>
-      <el-button type="primary" @click.prevent="handleAdd(null)"><el-icon style="vertical-align: middle"> <plus /> </el-icon>新建目标</el-button>
-      &nbsp; &nbsp;
-      <el-select v-model="useSelect.parentId" class="m-2" placeholder="选择目标" @change="changeUseId">
-        <el-option
-          v-for="item in selectDataList"
-          :key="item.id"
-          :label="item.title"
-          :value="item.id"
-        />
-      </el-select>
+      <el-button type="primary" @click.prevent="handleEdit(null)"><el-icon style="vertical-align: middle"> <plus /> </el-icon>新建目标</el-button>
     </template>
   </kv-Form>
   <kv-table
     :getDataFn="getListPage"
+    :params="{ parentId: 0 }"
     :propList="indexTableConfig"
-    :isAwait="isAwait"
-    :params="useSelect"
-    :showIndexColumn="false"
     @handleSelectionChange="handleSelectionChange">
     <template #status="scope">
       {{ scope.row.status ? '已开始' : '未开始' }}
     </template>
     <template #handler="scope">
-      <el-link type="primary" size="small" @click="handleEdit(scope.row, 'account')" underline icon="edit">编辑</el-link>&nbsp;&nbsp;&nbsp;
-      <el-link type="danger" size="small" @click="handleRemove(scope.row, 'account')" underline icon="delete">删除</el-link>
+      <el-link type="primary" size="small" @click="handleSetting(scope.row)" underline icon="setting">配置</el-link>&nbsp;&nbsp;&nbsp;
+      <el-link type="primary" size="small" @click="handleEdit(scope.row)" underline icon="edit">编辑</el-link>&nbsp;&nbsp;&nbsp;
+      <el-link type="danger" size="small" @click="handleRemove(scope.row)" underline icon="delete">删除</el-link>
     </template>
   </kv-table>
 
   <!-- 模态框 -->
-  <kvDialog v-bind="modelConfig" v-model="addModel" v-if="addModel">
-    <add v-if="addModel" :rowData="rowData" :params="useSelect" @cancel="cancel" @callBack="confirm" />
+  <kvDialog v-bind="modelConfig" v-model="modelConfig.dialogVisible">
+    <add :rowData="rowData" @callBack="confirm" />
   </kvDialog>
+  <kvDialog v-bind="removModelConfig" v-model="removModelConfig.dialogVisible" @callBack="confirm" />
 </template>
 
 <script>
-  import { ref, computed } from 'vue'
-
-  import { indexTableConfig, searchConfig } from './config/tableConfig'
+  import { ref } from 'vue'
+  import { indexTableConfig, indexSearchConfig, removeModelConfig, addModelConfig } from './config/dataConfig'
   import { getListPage } from '@/api/target'
-  import add from './addTarget.vue'
-  import { useStore, updateList } from '@/store'
+  import add from './add/addTarget.vue'
+  import { updateList } from '@/store'
   export default {
     components: {
       add
     },
-    emits: ['cancel'],
-    setup () {
-      const store = useStore()
+    emits: ['cancel', 'callBack'],
+    setup (props, { emit }) {
       const addModel = ref(false)
-      const modelConfig = ref({
-        width: '600px'
-      })
+      const modelConfig = ref(addModelConfig)
+      const removModelConfig = ref(removeModelConfig)
       const rowData = ref(null)
       const selectDataList = ref({})
-      const isAwait = ref(true)
       const useSelect = ref({
         parentId: ''
       })
-      const pagination = computed(() => store.state.pagination)
-      const getSelectData = async () => {
-      const { data = {} } = await getListPage(pagination.value)
-        selectDataList.value = data.list
-        useSelect.value.parentId = data.list[0].id
-        isAwait.value = false
-      }
-      getSelectData()
-
-      const changeUseId = (val) => {
-        updateList(getListPage, useSelect.value)
-      }
-      const formItems = searchConfig?.formItems ?? []
+      const formItems = indexSearchConfig?.formItems ?? []
       const formOriginData = {}
       for (const item of formItems) {
-        formOriginData[item.field] = ''
+        if (item.field) {
+          formOriginData[item.field] = ''
+        }
       }
       const formData = ref(formOriginData)
       const cancel = () => { }
-      const confirm = () => {}
-      const onSubmit = () => {}
+      const confirm = () => {
+        modelConfig.value.dialogVisible = false
+        removModelConfig.value.dialogVisible = false
+        updateList(getListPage)
+      }
+      const onSubmit = () => {
+        updateList(getListPage, formData.value)
+      }
       const handleSelectionChange = () => {}
-      const handleAdd = () => {
-        addModel.value = true
+      const handleEdit = (row) => {
+        rowData.value = row
+        modelConfig.value.dialogVisible = true
+      }
+      const handleRemove = (row) => {
+        removModelConfig.value.dialogVisible = true
+        removModelConfig.value.params = row.id
+      }
+      const handleSetting = (row) => {
+        rowData.value = row
+        emit('callBack', row, 'setting')
       }
 
         return {
-          cancel,
           modelConfig,
           addModel,
-          confirm,
           indexTableConfig,
-          searchConfig,
+          indexSearchConfig,
           formData,
+          selectDataList,
+          useSelect,
+          removModelConfig,
+          rowData,
+          handleEdit,
+          handleRemove,
+          cancel,
+          confirm,
           onSubmit,
           getListPage,
           handleSelectionChange,
-          handleAdd,
-          selectDataList,
-          useSelect,
-          isAwait,
-          changeUseId,
-          rowData
+          handleSetting
 
         }
     }

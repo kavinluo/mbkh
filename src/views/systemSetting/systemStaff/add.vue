@@ -2,7 +2,7 @@
  * @Author: kevin
  * @Date: 2022-03-10 10:46:03
  * @LastEditors: kevin
- * @LastEditTime: 2022-03-29 15:19:29
+ * @LastEditTime: 2022-04-01 10:43:38
  * @Description: 添加机构
 -->
 <template>
@@ -87,7 +87,8 @@ export default {
     })
     const formItems = select.value[addType]?.formItems ?? []
     const formOriginData = {
-      [addType === 'account' ? 'userType' : '']: 2
+      [addType === 'account' ? 'userType' : '']: 2,
+      [addType === 'account' ? 'organization' : '']: rowData.id
     }
     for (const item of formItems) {
       formOriginData[item.field] = ''

@@ -2,7 +2,7 @@
  * @Author: kevin
  * @Date: 2022-03-14 10:13:59
  * @LastEditors: kevin
- * @LastEditTime: 2022-03-30 11:36:39
+ * @LastEditTime: 2022-03-31 12:55:46
  * @Description: 添加指标库
 -->
 
@@ -49,7 +49,7 @@ export default {
   //  组件相关
   emits: ['resetBtnClick', 'queryBtnClick', 'cancel', 'callBack'],
 
-  setup ({ quotaData, inuptType, menuList }, { emit }) {
+  setup (props, { emit }) {
     const formItems = selectQuota?.formItems ?? []
     const formOriginData = {
       parentId: 0 // 默认添加是0
@@ -62,8 +62,8 @@ export default {
       emit('cancel')
       formData.value = formData
     }
-      if (inuptType === 'edit') {
-        formData.value = quotaData
+      if (props.inuptType === 'edit') {
+        formData.value = props.quotaData
       }
 
     const ruleFormRef = ref()
@@ -73,7 +73,7 @@ export default {
       checkStrictly: true,
       emitPath: false // 只保留当前选中的id
     })
-    const fn = inuptType === 'add' ? add : modify
+    const fn = props.inuptType === 'add' ? add : modify
     const onSubmit = (formEL) => {
       formEL.$refs.ruleFormRef?.validate((valid) => {
         if (valid) {

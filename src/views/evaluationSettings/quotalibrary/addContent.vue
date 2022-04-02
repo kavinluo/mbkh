@@ -2,7 +2,7 @@
  * @Author: kevin
  * @Date: 2022-03-25 11:37:20
  * @LastEditors: kevin
- * @LastEditTime: 2022-03-30 19:17:45
+ * @LastEditTime: 2022-03-31 17:50:38
  * @Description: 新增考核内容
 -->
 <template>
@@ -10,13 +10,13 @@
     <table class="co-table">
       <tr class="th">
         <td v-for="(item, index) in tableData" :key="index">{{ item.title }}</td>
-        <td>分数</td>
+        <td style="width: 100px">分数</td>
       </tr>
       <tr>
         <template v-for="(item, index) in tableData" :key="index">
           <td>
             <template v-if="item.attributeType === 'select'">
-              <el-select v-model="item.content" class="m-2" placeholder="请选择">
+              <el-select v-model="item.content" class="m-2" placeholder="请选择" style="width: 120px">
                 <el-option
                   v-for="option in item.options"
                   :key="option"
@@ -29,7 +29,7 @@
           </td>
         </template>
         <template v-for="(item, index) in tableData" :key="index">
-          <td v-if="index === tableData.length - 1">
+          <td v-if="index === tableData.length - 1" style="width: 100px">
             <el-input placeholder="输入分数" type="number" v-model="score" />
           </td>
         </template>
@@ -67,14 +67,13 @@
     },
     emits: ['change', 'callBack', 'cancel'],
     setup (props, { emit }) {
-      console.log(' props.userTemplate', props.userTemplate)
       const tableData = ref([])
       const score = ref(0)
       const total = ref(0)
       const store = useStore()
       store.commit('changerPageSizeStatus', false)
       const formOriginData = {
-        templateId: props.userTemplate?.id,
+        templateId: props.userTemplate.id,
         curPage: 1,
         pageSize: 30
       }
@@ -84,22 +83,13 @@
         tableData.value = format(data.list)
       }
 
-      console.log('props.editType', props.editType)
-
-      if (props.editType === 'add') {
-        console.log('666', 666)
-        getData()
-      } else {
-        tableData.value = props.rowData.showContent
-        score.value = props.rowData.score
-      }
       const format = (list) => {
-        return list.map(item => {
+        return list.sort((a, b) => a.number - b.number).map(item => {
+          score.value = (+item.score) || 0
           const option = item.attributeType === 'select' ? item?.tips?.split(';') : ''
-          console.log('option', option)
           return {
-              title: item.attributeName,
-              content: item.defaultValue,
+              title: item.attributeName || item.title,
+              content: item.content || item.defaultValue,
               id: item.id,
               required: item.required,
               tips: item.tips,
@@ -108,11 +98,17 @@
               templateType: item.attributeType, // 提交时候需要
               templateId: item.templateId,
               template: item.attributeName,
-              score: 0,
-              options: option
+              score: item.score || 0,
+              options: option,
+              target: item.tips
           }
         })
       }
+      if (props.editType === 'edit') {
+          tableData.value = format(props.rowData?.showContent ?? [])
+        } else {
+          getData()
+        }
       const handleConfirm = () => {
         tableData.value.forEach(item => {
           item.score = score.value
@@ -121,12 +117,6 @@
       }
       const cancel = (row) => {
         emit('cancel')
-      }
-      const handleSelectionChange = () => {}
-
-      // 创建属性
-      const createAttr = (row) => {
-
       }
 
       // 添加模板
@@ -140,9 +130,7 @@
           total,
           formData,
           cancel,
-          handleSelectionChange,
           handleAddTemplate,
-          createAttr,
           getAttrListPage,
           score
         }

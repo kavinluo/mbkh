@@ -2,7 +2,7 @@
  * @Author: kevin
  * @Date: 2022-02-28 09:09:17
  * @LastEditors: kevin
- * @LastEditTime: 2022-03-25 10:29:51
+ * @LastEditTime: 2022-04-02 09:35:04
  * @Description: Do not edit
  */
 import 'element-plus/theme-chalk/base.css'
@@ -62,7 +62,8 @@ import {
   Edit,
   Delete,
   CirclePlus,
-  Plus
+  Plus,
+  ArrowLeft
 } from '@element-plus/icons-vue'
 
 const components = [
@@ -112,7 +113,8 @@ const components = [
   ElTabs,
   ElTabPane,
   Plus,
-  ElRadio
+  ElRadio,
+  ArrowLeft
 ]
 const plugins = [
   ElInfiniteScroll,

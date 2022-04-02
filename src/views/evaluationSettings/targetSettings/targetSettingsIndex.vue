@@ -2,13 +2,13 @@
  * @Author: kevin
  * @Date: 2022-03-14 09:39:40
  * @LastEditors: kevin
- * @LastEditTime: 2022-03-18 16:02:31
+ * @LastEditTime: 2022-04-02 09:18:13
  * @Description: 目标设置
 -->
 <template>
 
-  <target-list v-if="active === 'list'" />
-  <target-settings v-if="active === 'setting'" />
+  <target-list v-if="active === 'list'" @callBack="callBack" />
+  <target-settings v-if="active === 'setting'" @callBack="callBack" :rowData="rowData" />
 </template>
 
 <script>
@@ -26,11 +26,19 @@
     emits: ['cancel'],
 
     setup () {
+      const rowData = ref({})
       const active = ref('list')
+      const callBack = (row, type) => {
+        console.log('row, type', row, type)
+        active.value = type
+        rowData.value = row
+      }
 
-        return {
-          active
-        }
+      return {
+        active,
+        callBack,
+        rowData
+      }
     }
   }
 </script>

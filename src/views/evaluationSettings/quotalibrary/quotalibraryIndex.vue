@@ -2,7 +2,7 @@
  * @Author: kevin
  * @Date: 2022-03-14 09:33:45
  * @LastEditors: kevin
- * @LastEditTime: 2022-03-30 14:10:02
+ * @LastEditTime: 2022-04-02 16:25:15
  * @Description: 指标库
 -->
 <template>
@@ -43,14 +43,14 @@
 
   <!-- 模态框 -->
   <kvDialog v-bind="modelConfig" v-model="modelConfig.dialogVisible" @cancel="cancel">
-    <add v-if="modelConfig.dialogVisible" :inuptType="inuptType" :menuList="treeConfig.treeData" :quotaData="quotaData" @callBack="confirm" />
+    <add :inuptType="inuptType" :menuList="treeConfig.treeData" :quotaData="quotaData" @callBack="confirm" />
   </kvDialog>
 
   <kvDialog v-bind="targetDialogConfig" v-model="targetDialogConfig.dialogVisible">
-    <add-quota v-if="targetDialogConfig.dialogVisible" :inuptType="inuptType" :quotaData="quotaData" :quotaRowData="quotaRowData" @callBack="targetConfirm" @cancel="cancel" />
+    <add-quota :inuptType="inuptType" :quotaData="quotaData" :quotaRowData="quotaRowData" @callBack="targetConfirm" @cancel="cancel" />
   </kvDialog>
 
-  <kvDialog v-bind="kvDialogConfig" v-model="kvDialogConfig.dialogVisible" v-if="kvDialogConfig.dialogVisible" @callBack="confirm"/>
+  <kvDialog v-bind="kvDialogConfig" v-model="kvDialogConfig.dialogVisible" @callBack="confirm"/>
 </template>
 
 <script>
@@ -137,7 +137,7 @@
         targetDialogConfig.value.dialogVisible = false
       }
       const nodeClick = (row) => {
-        if (!row.evaluateQuotaDtoList?.length) {
+        if (!row.evaluateQuotaDtoList?.length && row.parentId !== null) {
           addDateStatus.value = false
           updateList(getQuotaListPage, { parentId: row.id })
         } else {

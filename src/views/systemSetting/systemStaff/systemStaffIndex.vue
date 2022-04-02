@@ -2,7 +2,7 @@
  * @Author: kevin
  * @Date: 2022-02-24 09:58:32
  * @LastEditors: kevin
- * @LastEditTime: 2022-03-29 14:15:22
+ * @LastEditTime: 2022-04-01 11:23:16
  * @Description: 机构
 -->
 <template>
@@ -110,7 +110,7 @@
       }
       // table
       const getAccunt = (id) => {
-        updateList(getAccountListPage, { id, userType: 2 })
+        updateList(getAccountListPage, { organization: id, userType: 2 })
       }
       getAccunt()
 

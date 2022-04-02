@@ -2,7 +2,7 @@
  * @Author: kevin
  * @Date: 2022-03-14 11:12:47
  * @LastEditors: kevin
- * @LastEditTime: 2022-03-29 18:12:02
+ * @LastEditTime: 2022-04-02 14:05:54
  * @Description: 指标库
  */
 import { axios } from '@/utils/request'
@@ -110,6 +110,16 @@ const baseURL = '/quota'
       data: '',
       successTitle: '删除成功！',
       errorTitle: '删除失败！'
+    })
+  }
+  /**
+ * 选择指标
+ */
+  export function selectQuotaList (ids, useUrl = baseURL) {
+    return axios({
+      url: `${useUrl}/selectQuotaList`, //
+      method: 'get',
+      params: ''
     })
   }
 

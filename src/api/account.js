@@ -2,7 +2,7 @@
  * @Author: kevin
  * @Date: 2022-03-08 16:19:37
  * @LastEditors: kevin
- * @LastEditTime: 2022-03-11 17:03:33
+ * @LastEditTime: 2022-04-01 10:24:28
  * @Description: 创建用户相关
  */
 import { axios } from '@/utils/request'
@@ -39,11 +39,11 @@ import { axios } from '@/utils/request'
  /**
   * 查询
   */
-  export function getRoleList (parameter) {
+  export function getAccountList (parameter) {
    return axios({
      url: `${baseURL}/list`, //
-     method: 'get'
-     // params: parameter
+     method: 'get',
+     params: parameter
    })
  }
 

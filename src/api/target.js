@@ -2,7 +2,7 @@
  * @Author: kevin
  * @Date: 2022-03-18 15:01:31
  * @LastEditors: kevin
- * @LastEditTime: 2022-03-28 15:11:48
+ * @LastEditTime: 2022-04-01 16:43:22
  * @Description: 目标管理
  */
 import { axios } from '@/utils/request'
@@ -38,9 +38,9 @@ export function get (id, useUrl = baseURL) {
  */
  export function getList (parameter, useUrl = baseURL) {
   return axios({
-    url: `${useUrl}/list`, //
-    method: 'get'
-    // params: parameter
+    url: `${useUrl}/getList`, //
+    method: 'get',
+    params: parameter
   })
 }
 

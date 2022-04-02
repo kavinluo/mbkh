@@ -2,7 +2,7 @@
  * @Author: kevin
  * @Date: 2022-03-03 13:54:49
  * @LastEditors: kevin
- * @LastEditTime: 2022-03-30 18:48:09
+ * @LastEditTime: 2022-04-01 17:12:38
  * @Description: 确认弹框
 -->
 
@@ -12,6 +12,7 @@
     :title="title"
     :draggable="draggable"
     :width="dialogWidth"
+    :destroy-on-close="destroyOnClose"
     :close-on-click-modal="false">
     <span v-if="message && !isImport">{{ message }}</span>
     <slot></slot>
@@ -115,6 +116,10 @@ export default {
     params: {
       type: [String, Number],
       default: ''
+    },
+    destroyOnClose: {
+      type: Boolean,
+      default: true
     }
 
   },

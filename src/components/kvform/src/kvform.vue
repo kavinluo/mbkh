@@ -2,7 +2,7 @@
  * @Author: kevin
  * @Date: 2022-03-03 09:40:43
  * @LastEditors: kevin
- * @LastEditTime: 2022-03-29 16:22:05
+ * @LastEditTime: 2022-04-02 15:00:32
  * @Description: form 表单
 -->
 <template>
@@ -23,6 +23,7 @@
             <template v-if="item.type === 'input' || item.type === 'password' || item.type === 'number'"> <!--- to do -->
               <el-input
                 clearable
+                :disabled="item.disabled"
                 :type="item.type"
                 :placeholder="item.placeholder"
                 v-bind="item.otherOptions"
@@ -33,6 +34,7 @@
             </template>
             <template v-else-if="item.type === 'textarea'">
               <el-input
+                :disabled="item.disabled"
                 :model-value="modelValue[`${item.field}`]"
                 v-bind="item.otherOptions"
                 @update:modelValue="handleValueChange($event, item.field)"
@@ -43,6 +45,8 @@
             </template>
             <template v-else-if="item.type === 'select'">
               <el-select
+                clearable
+                :disabled="item.disabled"
                 :placeholder="item.placeholder"
                 v-bind="item.otherOptions"
                 style="width: 100%"
@@ -50,10 +54,10 @@
                 :model-value="modelValue[`${item.field}`]"
                 @update:modelValue="handleValueChange($event, item.field)">
                 <el-option
-                  v-for="option in item.options"
-                  :key="option.value"
-                  :value="option.value"
-                  :label="option.label"></el-option>
+                  v-for="(option, index) in item.options"
+                  :key="index"
+                  :value="option[item?.optionValue || 'value']"
+                  :label="option[item?.optionLabel || 'label']"></el-option>
               </el-select>
             </template>
             <template v-else-if="item.type === 'datepicker'">
@@ -131,7 +135,9 @@ export default {
   setup (props, { emit }) {
     const handleValueChange = (value, field) => {
       emit('update:modelValue', { ...props.modelValue, [field]: value }) // 双向绑定需要同时更新
+      console.log('props.modelValue', props.modelValue)
     }
+    console.log(' props.formItems', props.formItems)
 
     const handleSelect = (val) => {
       console.log('val', val)
