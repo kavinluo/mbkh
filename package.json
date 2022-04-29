@@ -8,7 +8,7 @@
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
-    "lint": "vue-cli-service lint",
+    "lint": "eslint --ext .js,.vue src --fix",
     "prettier": "prettier --write"
   },
   "dependencies": {
@@ -16,11 +16,14 @@
     "axios": "^0.26.0",
     "core-js": "^3.8.3",
     "dayjs": "^1.10.8",
-    "element-plus": "^2.1.7",
+    "echarts": "^5.3.2",
+    "element-plus": "^2.1.11",
+    "file-saver": "^2.0.5",
     "nprogress": "^0.2.0",
     "vue": "^3.2.13",
     "vue-router": "^4.0.12",
-    "vuex": "^4.0.2"
+    "vuex": "^4.0.2",
+    "xlsx": "^0.18.5"
   },
   "devDependencies": {
     "@babel/core": "^7.12.16",

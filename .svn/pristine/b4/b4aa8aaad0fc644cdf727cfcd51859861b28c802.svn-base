@@ -1,0 +1,107 @@
+/*
+ * @Author: kevin
+ * @Date: 2022-04-02 17:14:34
+ * @LastEditors: kevin
+ * @LastEditTime: 2022-04-07 09:56:32
+ * @Description: Do not edit
+ */
+import {
+  addSubFormConfig,
+  getList
+} from '../config/dataConfig'
+import { getList as getCycleList } from '@/api/cycle'
+import { selectQuotaList } from '@/api/quota'
+export const getCycle = (rowData) => {
+  const formOriginData = {
+    parentId: rowData.id // 默认固定传0
+  }
+    // 过滤上一级选中的考区
+  const checkAreaList = rowData.checkArea.split(',').map(item => +item)
+  getCycleList().then(res => {
+    for (const item of addSubFormConfig.formItems) {
+      const { field } = item
+      formOriginData[field] = ''
+      switch (field) {
+        case 'checkArea':
+          getList().then((res) => {
+            item.options = res.filter(item => checkAreaList.includes(item.id))
+          })
+        break
+        case 'cycle1':
+          item.options = [rowData] // 整体周期就是上一级
+          break
+        case 'cycle2':
+          item.options = res?.data || []
+      }
+    }
+  })
+
+  return formOriginData
+}
+
+export const getQuotaLis = async () => {
+  const { data = [] } = await selectQuotaList()
+  return data
+}
+
+const format = (list) => {
+  const obj = {}
+    list.forEach(item => {
+      obj[item.sort] = obj[item.sort] || []
+      obj[item.sort].push(item)
+    })
+    return obj
+  }
+
+export const formatTableData = (list) => {
+  console.log('list', list)
+  const usrlist = []
+  list.forEach(item => {
+    const maxSort = []
+    console.log('item', item)
+    const level1 = {
+      title: item.title, // 一级指标
+      content: item.title,
+      sort: -2,
+      number: -2,
+      countScore: item.countScore,
+      id: item.id,
+      cspan: 0
+      // depositoryId:  item.id,
+    }
+    item.evaluateTargetDtoList = item.evaluateQuotaDtoList // 改名为了提交使用
+    item.depositoryId = item.id
+    if (item.evaluateTargetDtoList.length) {
+      item.evaluateTargetDtoList.forEach(subItem => { // 二级指标
+      const level2Cspan = []
+      subItem.depositoryId = subItem.id
+      subItem.evaluateTargetDetailedDtoList = subItem.evaluateQuotaDetailedDtoList // 改名为了提交使用
+        const level2 = {
+          title: subItem.title, // 二级指标
+          content: subItem.title,
+          sort: -1,
+          number: -1,
+          countScore: subItem.countScore,
+          id: subItem.id,
+          parentId: subItem.parentId,
+          cspan: 0
+        }
+        if (subItem.evaluateTargetDetailedDtoList) {
+          subItem.List = format(subItem.evaluateTargetDetailedDtoList)
+        }
+        for (const key in subItem.List) {
+          maxSort.push(key)
+          level2Cspan.push(key)
+          subItem.List[key].push(level1)
+          subItem.List[key].push(level2)
+          subItem.List[key] = subItem.List[key].sort((a, b) => a.number - b.number)
+          usrlist.push(subItem.List[key])
+        }
+        level2.cspan = level2Cspan.length
+      })
+    }
+    level1.cspan = maxSort.length
+  })
+  console.log('usrlist', usrlist)
+  return { tableData: usrlist, list }
+}

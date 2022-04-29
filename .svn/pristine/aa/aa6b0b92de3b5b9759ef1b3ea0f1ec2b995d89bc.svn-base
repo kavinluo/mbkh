@@ -1,0 +1,29 @@
+/*
+ * @Author: kevin
+ * @Date: 2022-04-6 10:26:51
+ * @LastEditors: kevin
+ * @LastEditTime: 2022-04-6 10:26:51
+ * @Description: 评价结果
+ */
+export const targetList = [
+  {
+    label: '操作',
+    slotName: 'handler'
+
+  }, {
+    label: '目标',
+    prop: 'title'
+  }, {
+    label: '最近更新',
+    prop: 'startTime',
+    slotName: 'startTime'
+  }, {
+    label: '平均分',
+    prop: 'startTime',
+    slotName: 'startTime'
+  }, {
+    label: '评价结果',
+    prop: 'score'
+
+  }
+]

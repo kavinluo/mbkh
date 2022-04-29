@@ -1,0 +1,40 @@
+<!--
+ * @Author: kevin
+ * @Date: 2022-4-2 11:00:00
+ * @LastEditors: kevin
+ * @LastEditTime: 2022-4-2 11:00:00
+ * @Description: 整体目标
+-->
+<template>
+  <el-input v-model="input4" class="w-50 m-2" placeholder="搜索目标名称、序列" style="width:300px">
+    <template #prefix>
+      <el-icon class=" el-input__icon">
+        <search />
+      </el-icon>
+    </template>
+  </el-input>
+  <kv-table :propList="targetList" :getDataFn="getListPage" @handleSelectionChange="handleSelectionChange">
+    <template #handler="scope">
+      <el-link type="primary" size="small" @click="handleEdit(scope.row)">展开</el-link>
+    </template>
+    <template>
+      <kv-table :propList="targetList" :getDataFn="getListPage" @handleSelectionChange="handleSelectionChange" :showFooter="false" :showIndexColumn="false">
+      </kv-table>
+    </template>
+  </kv-table>
+
+</template>
+
+<script setup>
+// import { ref } from 'vue'
+import { targetList } from './config/dataConfig'
+import { getListPage } from '@/api/target'
+
+const handleEdit = (row) => {
+  console.log(123)
+}
+
+</script>
+
+<style>
+</style>

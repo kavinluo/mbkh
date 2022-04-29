@@ -2,7 +2,7 @@
  * @Author: kevin
  * @Date: 2022-03-25 11:37:20
  * @LastEditors: kevin
- * @LastEditTime: 2022-03-31 17:50:38
+ * @LastEditTime: 2022-04-29 13:49:09
  * @Description: 新增考核内容
 -->
 <template>
@@ -44,14 +44,12 @@
   </div>
 </template>
 
-<script>
+<script setup>
   import { ref } from 'vue'
   import { getAttrListPage } from '@/api/template'
   import { useStore } from '@/store'
-  export default {
-    components: {
-    },
-    props: {
+
+  const { userTemplate, rowData, editType } = defineProps({
       userTemplate: {
         type: Object,
         default: null
@@ -64,78 +62,60 @@
         type: String,
         default: 'add'
       }
-    },
-    emits: ['change', 'callBack', 'cancel'],
-    setup (props, { emit }) {
-      const tableData = ref([])
-      const score = ref(0)
-      const total = ref(0)
-      const store = useStore()
-      store.commit('changerPageSizeStatus', false)
-      const formOriginData = {
-        templateId: props.userTemplate.id,
-        curPage: 1,
-        pageSize: 30
-      }
-      const formData = ref(formOriginData)
-      const getData = async () => {
-        const { data = {} } = await getAttrListPage(formData.value)
-        tableData.value = format(data.list)
-      }
+    })
+  const emit = defineEmits(['change', 'callBack', 'cancel'])
 
-      const format = (list) => {
-        return list.sort((a, b) => a.number - b.number).map(item => {
-          score.value = (+item.score) || 0
-          const option = item.attributeType === 'select' ? item?.tips?.split(';') : ''
-          return {
-              title: item.attributeName || item.title,
-              content: item.content || item.defaultValue,
-              id: item.id,
-              required: item.required,
-              tips: item.tips,
-              defaultValue: item.defaultValue,
-              attributeType: item.attributeType,
-              templateType: item.attributeType, // 提交时候需要
-              templateId: item.templateId,
-              template: item.attributeName,
-              score: item.score || 0,
-              options: option,
-              target: item.tips
-          }
-        })
-      }
-      if (props.editType === 'edit') {
-          tableData.value = format(props.rowData?.showContent ?? [])
-        } else {
-          getData()
-        }
-      const handleConfirm = () => {
-        tableData.value.forEach(item => {
-          item.score = score.value
-        })
-        emit('callBack', tableData.value)
-      }
-      const cancel = (row) => {
-        emit('cancel')
-      }
-
-      // 添加模板
-      const handleAddTemplate = () => {
-        emit('change', 'list')
-      }
-
-        return {
-          tableData,
-          handleConfirm,
-          total,
-          formData,
-          cancel,
-          handleAddTemplate,
-          getAttrListPage,
-          score
-        }
+  const tableData = ref([])
+  const score = ref(0)
+  const store = useStore()
+  store.commit('changerPageSizeStatus', false)
+  const formOriginData = {
+    templateId: userTemplate.id,
+    curPage: 1,
+    pageSize: 30
   }
-}
+  const formData = ref(formOriginData)
+  const getData = async () => {
+    const { data = {} } = await getAttrListPage(formData.value)
+    tableData.value = format(data.list)
+  }
+
+  const format = (list) => {
+    // list.splice(list.length - 2, 0, ty)
+    return list.sort((a, b) => a.number - b.number).map(item => {
+      score.value = (+item.score) || 0
+      const option = item.attributeType === 'select' ? item?.tips?.split(';') : ''
+      return {
+          title: item.attributeName || item.title,
+          content: item.content || item.defaultValue,
+          id: item.id,
+          required: item.required,
+          tips: item.tips,
+          defaultValue: item.defaultValue,
+          attributeType: item.attributeType,
+          templateType: item.attributeType, // 提交时候需要
+          templateId: item.templateId,
+          template: item.attributeName,
+          score: item.score || 0,
+          options: option,
+          target: item.tips
+      }
+    })
+  }
+  if (editType === 'edit') {
+      tableData.value = format(rowData?.showContent ?? [])
+    } else {
+      getData()
+    }
+  const handleConfirm = () => {
+    tableData.value.forEach(item => {
+      item.score = score.value
+    })
+    emit('callBack', tableData.value)
+  }
+  const cancel = (row) => {
+    emit('cancel')
+  }
 </script>
 
 <style lang="less" scoped>

@@ -2,7 +2,7 @@
  * @Author: kevin
  * @Date: 2022-03-15 15:55:22
  * @LastEditors: kevin
- * @LastEditTime: 2022-03-24 10:44:11
+ * @LastEditTime: 2022-04-28 09:46:21
  * @Description: 添加模板
 -->
 <template>
@@ -37,101 +37,66 @@
   <kv-dialog v-bind="kvDialogConfig" v-model="kvDialogConfig.dialogVisible" @callBack="confirm"/>
 </template>
 
-<script>
+<script setup>
   import { ref } from 'vue'
-
   import kvDialog from '@/components/kvDialog'
   import createAttrs from './createAttr'
   import { attrList, optionsObj } from './config/dataConfig'
   import { getAttrListPage } from '@/api/template'
   import { updateList } from '@/store'
 
-  export default {
-    components: {
-      kvDialog,
-      createAttrs
-    },
-    props: {
-      rowData: {
-        type: Object,
-        default: () => ({})
-      }
-    },
-    emits: ['change'],
-    setup (props, { emit }) {
-      const addModel = ref(false)
-      const editData = ref(null)
-      const modelConfig = ref({
-        title: '创建属性字段',
-        width: '600px',
-        draggable: true,
-        isShowFooter: false
-      })
-      const kvDialogConfig = ref({
-        modeType: 'remove',
-        params: '',
-        isShowFooter: true,
-        dialogVisible: false,
-        message: '您确定要删除吗？',
-        baseURL: '/template/attribute'
-      })
-      const tableData = ref([])
-      const total = ref(0)
-      // const formItems = searchConfig?.formItems ?? []
-      const formOriginData = {
-        templateId: props.rowData.id
-      }
-      // for (const item of formItems) {
-      //   formOriginData[item.field] = ''
-      // }
-      const formData = ref(formOriginData)
-      const cancel = () => {
-        addModel.value = false
-        kvDialogConfig.value.dialogVisible = false
-      }
-      const confirm = () => {
-        cancel()
-        updateList(getAttrListPage, formData.value)
-      }
-      const handleRemove = (row) => {
-        kvDialogConfig.value.dialogVisible = true
-        kvDialogConfig.value.params = row.id
-      }
-      const handleSelectionChange = () => {}
+  const props = defineProps({
+    rowData: {
+      type: Object,
+      default: () => ({})
+    }
+  })
+  const emit = defineEmits(['change'])
 
-      // 创建属性
-      const createAttr = (row) => {
-        addModel.value = true
-        editData.value = row
-      }
-
-      // 添加模板
-      const handleAddTemplate = () => {
-        emit('change', 'list')
-      }
-
-        return {
-          cancel,
-          tableData,
-          modelConfig,
-          addModel,
-          confirm,
-          attrList,
-          total,
-          // searchConfig,
-          formData,
-          handleRemove,
-          handleSelectionChange,
-          handleAddTemplate,
-          createAttr,
-          editData,
-          getAttrListPage,
-          optionsObj,
-          kvDialogConfig
-
-        }
+  const addModel = ref(false)
+  const editData = ref(null)
+  const modelConfig = ref({
+    title: '创建属性字段',
+    width: '600px',
+    draggable: true,
+    isShowFooter: false
+  })
+  const kvDialogConfig = ref({
+    modeType: 'remove',
+    params: '',
+    isShowFooter: true,
+    dialogVisible: false,
+    baseURL: '/template/attribute'
+  })
+  const formOriginData = {
+    templateId: props.rowData.id
   }
-}
+
+  const formData = ref(formOriginData)
+  const cancel = () => {
+    addModel.value = false
+    kvDialogConfig.value.dialogVisible = false
+  }
+  const confirm = () => {
+    cancel()
+    updateList(getAttrListPage, formData.value)
+  }
+  const handleRemove = (row) => {
+    kvDialogConfig.value.dialogVisible = true
+    kvDialogConfig.value.params = row.id
+  }
+  const handleSelectionChange = () => {}
+
+  // 创建属性
+  const createAttr = (row) => {
+    addModel.value = true
+    editData.value = row
+  }
+
+  // 添加模板
+  const handleAddTemplate = () => {
+    emit('change', 'list')
+  }
 </script>
 
 <style lang="scss" scoped>

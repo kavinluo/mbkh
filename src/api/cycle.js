@@ -2,7 +2,7 @@
  * @Author: kevin
  * @Date: 2022-03-18 15:01:31
  * @LastEditors: kevin
- * @LastEditTime: 2022-03-18 15:02:51
+ * @LastEditTime: 2022-04-22 15:22:08
  * @Description: 周期管理
  */
 import { axios } from '@/utils/request'
@@ -53,7 +53,16 @@ export function get (id, useUrl = baseURL) {
     params: parameter
   })
 }
-
+/**
+ * 周期列表
+ */
+ export function depositoryList (parameter, useUrl = baseURL) {
+  return axios({
+    url: `${useUrl}/depository/list`, //
+    method: 'get',
+    params: parameter
+  })
+}
 /**
  * 修改
  */

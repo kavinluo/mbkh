@@ -2,7 +2,7 @@
  * @Author: kevin
  * @Date: 2022-03-10 10:46:03
  * @LastEditors: kevin
- * @LastEditTime: 2022-03-29 15:16:06
+ * @LastEditTime: 2022-04-28 09:47:11
  * @Description: 添加
 -->
 <template>
@@ -27,12 +27,12 @@
 
 </template>
 
-<script>
+<script setup>
 import { ref } from 'vue'
 import { account } from './formConfig'
 import { add, get, modify } from '@/api/organization'
-export default {
-  props: {
+
+const { rowData, inputType, addType } = defineProps({
     menuList: {
       type: Array,
       default: () => []
@@ -45,12 +45,10 @@ export default {
       type: String,
       default: 'add'
     }
-  },
-  //  组件相关
-  emits: ['resetBtnClick', 'queryBtnClick', 'cancel', 'callBack'],
+  })
+const emit = defineEmits(['resetBtnClick', 'queryBtnClick', 'cancel', 'callBack'])
 
-  setup ({ rowData, inputType, addType }, { emit }) {
-    if (inputType === 'edit') {
+  if (inputType === 'edit') {
       // 编辑账号的时候不需要密码
       account.formItems = account.formItems.filter(item => item.field !== 'password')
     } else {
@@ -83,12 +81,6 @@ export default {
     }
 
     const ruleFormRef = ref({})
-    const userProps = ref({
-      value: 'id',
-      label: 'name',
-      checkStrictly: true,
-      emitPath: false // 只保留当前选中的i/d
-    })
     if (inputType === 'edit') {
       (async () => {
         const dealit = await get(rowData?.id, 'account')
@@ -108,18 +100,6 @@ export default {
         }
       })
    }
-  return {
-    formData,
-    onSubmit,
-    emit,
-    userProps,
-    ruleFormRef,
-    account,
-    // 组件
-    handleResetClick
-  }
-  }
-}
 </script>
 
 <style lang="scss" scoped>

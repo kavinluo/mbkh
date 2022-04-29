@@ -2,16 +2,14 @@
  * @Author: kevin
  * @Date: 2022-03-21 11:49:51
  * @LastEditors: kevin
- * @LastEditTime: 2022-04-02 17:09:32
+ * @LastEditTime: 2022-04-29 10:43:18
  * @Description: 目标相关
  */
 import { getAccountList } from '@/api/account'
 import { getRoleList } from '@/api/organization'
 
-let useOptionList = []
-const getList = async () => {
+export const getList = async () => {
   const { data = [] } = await getRoleList()
-  useOptionList = data
   return data
 }
 
@@ -159,7 +157,7 @@ export const addTargetFormConfig = {
       label: '目标层次',
       placeholder: '请选择',
       align: 'right',
-      options: [{ label: '全部', value: 0 }, { label: '国家层次', value: 101 }, { label: '考区层次', value: 102 }],
+      options: [{ label: '国家层次', value: 101 }, { label: '考区层次', value: 102 }],
       rules: {
         required: true,
         trigger: 'blur',
@@ -289,10 +287,16 @@ export const addSubFormConfig = {
       }
     },
     {
+      field: 'cycleId',
       type: 'slot',
       slotName: 'evaluate',
       label: '选择考核内容',
-      align: 'right'
+      align: 'right',
+      rules: {
+        required: false,
+        trigger: 'blur',
+        message: ''
+      }
     }
   ]
 }
@@ -341,9 +345,10 @@ export const indexTableConfig = [
      prop: 'status',
      slotName: 'status'
    }, {
-     label: '最近更新',
-     prop: 'email'
-   }, {
+    label: '最近更新',
+    prop: 'updateTime',
+    slotName: 'updateTime'
+  }, {
      label: '操作',
      slotName: 'handler'
    }
@@ -354,8 +359,7 @@ export const removeModelConfig = {
   baseURL: '/check/target',
   isShowFooter: true,
   modeType: 'remove',
-  params: '',
-  message: '您确定要删除吗？'
+  params: ''
 }
 export const addModelConfig = {
   width: '600px',
@@ -371,11 +375,9 @@ export const selectModelConfig = {
 export const tablePropList = [
   {
     label: '一级指标',
-    prop: 'title'
+    prop: 'quotaName1'
   }, {
     label: '总分',
     prop: 'countScore'
   }
 ]
-
-export { useOptionList }

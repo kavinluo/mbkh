@@ -2,7 +2,7 @@
  * @Author: kevin
  * @Date: 2022-03-02 10:46:03
  * @LastEditors: kevin
- * @LastEditTime: 2022-03-29 11:57:41
+ * @LastEditTime: 2022-04-28 09:47:05
  * @Description: 添加菜单
 -->
 <template>
@@ -47,13 +47,12 @@
 
 </template>
 
-<script>
+<script setup>
 import { ref } from 'vue'
 import formConfig from './formConfig'
 import { addMenu, getMenu, editMenu } from '@/api/menu'
 import { getListApplication } from '@/api/applicationManagemwnt'
-export default {
-  props: {
+ const props = defineProps({
     menuList: {
       type: Array,
       default: () => []
@@ -66,71 +65,55 @@ export default {
       type: String,
       default: 'add'
     }
-  },
+  })
   //  组件相关
-  emits: ['resetBtnClick', 'queryBtnClick', 'cancel', 'callBack'],
-
-  setup ({ rowData, inputType }, { emit }) {
-    const appList = ref([])
-    const formItems = formConfig?.formItems ?? []
-    const formOriginData = {}
-    for (const item of formItems) {
-      formOriginData[item.field] = ''
-      if (item.field === 'application') {
-        item.options = appList.value
-        console.log('item', item)
-      }
+  const emit = defineEmits(['resetBtnClick', 'queryBtnClick', 'cancel', 'callBack'])
+  const appList = ref([])
+  const formItems = formConfig?.formItems ?? []
+  const formOriginData = {}
+  for (const item of formItems) {
+    formOriginData[item.field] = ''
+    if (item.field === 'application') {
+      item.options = appList.value
+      console.log('item', item)
     }
-    const formData = ref(formOriginData)
+  }
+  const formData = ref(formOriginData)
+  console.log('formOriginData', formOriginData)
+  formData.value.isSee = 1// 设置是否可见的默认值
+  const handleResetClick = () => {
+    emit('cancel')
+    formData.value = formData
+  }
+  (async () => {
+    const { data = [] } = await getListApplication()
+    appList.value = data
+    console.log('appList', appList)
     console.log('formOriginData', formOriginData)
-    formData.value.isSee = 1// 设置是否可见的默认值
-    const handleResetClick = () => {
-      emit('cancel')
-      formData.value = formData
-    }
+  })()
+  const ruleFormRef = ref()
+  const userProps = ref({
+    value: 'id',
+    label: 'title',
+    checkStrictly: true,
+    emitPath: false // 只保留当前选中的id
+  })
+  if (props.inputType === 'edit') {
     (async () => {
-      const { data = [] } = await getListApplication()
-      appList.value = data
-      console.log('appList', appList)
-      console.log('formOriginData', formOriginData)
+      const dealit = await getMenu(props.rowData?.id)
+      formData.value = dealit.data
     })()
-    const ruleFormRef = ref()
-    const listMenu = ref()
-    const userProps = ref({
-      value: 'id',
-      label: 'title',
-      checkStrictly: true,
-      emitPath: false // 只保留当前选中的id
+  }
+  const fn = props.inputType === 'edit' ? editMenu : addMenu
+  const onSubmit = () => {
+    fn(formData.value).then((res) => {
+      const { status } = res
+      if (status?.code === '0') {
+          emit('callBack')
+      }
     })
-    if (inputType === 'edit') {
-      (async () => {
-        const dealit = await getMenu(rowData?.id)
-        formData.value = dealit.data
-      })()
-    }
-    const fn = inputType === 'edit' ? editMenu : addMenu
-    const onSubmit = () => {
-      fn(formData.value).then((res) => {
-        const { status } = res
-        if (status?.code === '0') {
-            emit('callBack')
-        }
-      })
-    }
-  return {
-    formData,
-    onSubmit,
-    emit,
-    userProps,
-    listMenu,
-    ruleFormRef,
-    formConfig,
-    // 组件
-    handleResetClick,
-    appList
   }
-  }
-}
+  // }
 </script>
 
 <style lang="scss" scoped>

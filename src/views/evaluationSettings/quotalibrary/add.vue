@@ -2,7 +2,7 @@
  * @Author: kevin
  * @Date: 2022-03-14 10:13:59
  * @LastEditors: kevin
- * @LastEditTime: 2022-03-31 12:55:46
+ * @LastEditTime: 2022-04-28 09:44:39
  * @Description: 添加指标库
 -->
 
@@ -27,12 +27,12 @@
 
 </template>
 
-<script>
-import { ref } from 'vue'
-import { selectQuota, account } from './config/config'
-import { add, modify } from '@/api/quota'
-export default {
-  props: {
+<script setup>
+  import { ref } from 'vue'
+  import { selectQuota } from './config/config'
+  import { add, modify } from '@/api/quota'
+
+  const props = defineProps({
     menuList: {
       type: Array,
       default: () => []
@@ -45,60 +45,49 @@ export default {
       type: String,
       default: 'add'
     }
-   },
-  //  组件相关
-  emits: ['resetBtnClick', 'queryBtnClick', 'cancel', 'callBack'],
+  })
+  const emit = defineEmits(['resetBtnClick', 'queryBtnClick', 'cancel', 'callBack'])
 
-  setup (props, { emit }) {
-    const formItems = selectQuota?.formItems ?? []
-    const formOriginData = {
-      parentId: 0 // 默认添加是0
-    }
-    for (const item of formItems) {
-      formOriginData[item.field] = ''
-    }
-    const formData = ref(formOriginData)
-    const handleResetClick = () => {
-      emit('cancel')
-      formData.value = formData
-    }
-      if (props.inuptType === 'edit') {
-        formData.value = props.quotaData
-      }
-
-    const ruleFormRef = ref()
-    const userProps = ref({
-      value: 'id',
-      label: 'title',
-      checkStrictly: true,
-      emitPath: false // 只保留当前选中的id
-    })
-    const fn = props.inuptType === 'add' ? add : modify
-    const onSubmit = (formEL) => {
-      formEL.$refs.ruleFormRef?.validate((valid) => {
-        if (valid) {
-          fn(formData.value).then((res) => {
-            const { status } = res
-            if (status?.code === '0') {
-              emit('callBack')
-            }
-          })
-        }
-      })
-    }
-    return {
-      formData,
-      onSubmit,
-      emit,
-      userProps,
-      ruleFormRef,
-      account,
-      // 组件
-      handleResetClick,
-      selectQuota
+  const formItems = selectQuota?.formItems ?? []
+  const formOriginData = {
+    parentId: 0 // 默认添加是0
+  }
+  for (const item of formItems) {
+    formOriginData[item.field] = ''
+    if (item.field === 'parentId') {
+      formOriginData.parentId = 0
     }
   }
-}
+  const formData = ref(formOriginData)
+    if (props.inuptType === 'edit') {
+      formData.value = props.quotaData
+    }
+
+  const ruleFormRef = ref()
+  const userProps = ref({
+    value: 'id',
+    label: 'title',
+    checkStrictly: true,
+    emitPath: false // 只保留当前选中的id
+  })
+  const fn = props.inuptType === 'add' ? add : modify
+  const onSubmit = (formEL) => {
+    formEL.$refs.ruleFormRef?.validate((valid) => {
+      if (valid) {
+        if (formData.value.parentId === 0) {
+          formData.value.level = 0
+        } else {
+          formData.value.level = 1
+        }
+        fn(formData.value).then((res) => {
+          const { status } = res
+          if (status?.code === '0') {
+            emit('callBack')
+          }
+        })
+      }
+    })
+  }
 </script>
 
 <style lang="scss" scoped>

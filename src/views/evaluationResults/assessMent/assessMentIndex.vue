@@ -1,0 +1,95 @@
+<!--
+ * @Author: kevin
+ * @Date: 2022-4-22 11:00:00
+ * @LastEditors: kevin
+ * @LastEditTime: 2022-04-19 17:54:26
+ * @Description: 评价结果
+-->
+<template>
+
+  <kv-form v-bind="searchConfig" v-model="formData">
+    <template #searchBtn>
+      <el-button type="primary" @click.prevent="onSubmit">搜索</el-button>
+    </template>
+  </kv-form>
+  <kv-table
+    v-if="role.identify === 'SYSTEM'"
+    :propList="targetList"
+    :getDataFn="getListPage"
+    @handleSelectionChange="handleSelectionChange">
+    <template #updateTime="scope">
+      {{ formatTimestamp(scope.row.updateTime, 'YYYY-MM-DD') }}
+    </template>
+    <template #expand="scope">
+      <el-table :data="scope.row.evaluateCheckTargetDtoList" style="width: 100%">
+        <el-table-column label="操作" width="180" align="center">
+          <template #default="props">
+            <el-link type="primary" size="small" icon="edit" @click="score(props.row.evaluateCheckTargetDtoList)">评分</el-link>&nbsp;&nbsp;
+          </template>
+        </el-table-column>
+        <el-table-column label="考区" v-if="role.identify === 'SYSTEM'" prop="checkAreaName" align="center" />
+        <el-table-column label="目标" v-if="role.identify === 'AREA'" prop="title" align="center" />
+        <el-table-column label="最近更新" prop="updateTime" align="center">
+          {{ formatTimestamp(scope.row.updateTime, 'YYYY-MM-DD') }}
+        </el-table-column>
+        <el-table-column label="总分" prop="status" align="center" />
+        <el-table-column label="状态" prop="status" align="center" />
+      </el-table>
+    </template>
+  </kv-table>
+  <kv-table
+    v-if="role.identify === 'AREA'"
+    :propList="targetList"
+    :getDataFn="getListPage"
+    @handleSelectionChange="handleSelectionChange">
+    <template #expand="scope">
+      <el-table :data="scope.row.evaluateCheckTargetDtoList" style="width: 100%">
+        <el-table-column label="序号" prop="index" width="80" align="center" />
+        <el-table-column label="" prop="index" width="50" align="center" />
+        <el-table-column label="操作" width="180" align="center">
+          <template #default="props">
+            <el-link type="primary" size="small" icon="view" @click="handleEdit(props.row)">查看</el-link>&nbsp;&nbsp;
+            <el-link type="primary" size="small" icon="edit" @click="handleEdit(props.row)">编辑</el-link>&nbsp;&nbsp;
+            <el-link type="primary" size="small" icon="promotion" @click="handleReport(props.row)">上报</el-link>
+          </template>
+        </el-table-column>
+        <el-table-column label="考区" v-if="role.identify === 'SYSTEM'" prop="checkAreaName" align="center" />
+        <el-table-column label="目标" v-if="role.identify === 'AREA'" prop="title" align="center" />
+        <el-table-column label="状态" prop="status" align="center" />
+      </el-table>
+    </template>
+    <template #handler="scope" v-if="role.identify === 'AREA'">
+      <el-link type="primary" size="small" icon="promotion" @click="handleReport(scope.row)">上报</el-link>
+    </template>
+    <template #status="scope">
+      {{ scope.row.status }}
+    </template>
+  </kv-table>
+</template>
+
+<script setup>
+import { reactive, ref, defineEmits } from 'vue'
+import { targetList, searchConfig } from './config/dataConfig'
+import { getListPage } from '@/api/result'
+import { useState } from '@/hooks/index'
+import { formatTimestamp } from '@/utils/formatDate'
+
+const emit = defineEmits(['callback'])
+
+const formData = reactive({})
+const { userInfo } = useState(['userInfo'], 'user')
+const role = ref(userInfo.value.role)
+ console.log('userInfo', role.value)
+const handleSelectionChange = () => {
+
+}
+// 去二级评分
+const score = (row = []) => {
+  emit('callback', 'assessList', row)
+}
+const onSubmit = () => {}
+
+</script>
+
+<style>
+</style>

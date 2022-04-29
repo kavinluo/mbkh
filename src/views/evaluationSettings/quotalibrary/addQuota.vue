@@ -2,7 +2,7 @@
  * @Author: kevin
  * @Date: 2022-03-24 15:52:07
  * @LastEditors: kevin
- * @LastEditTime: 2022-03-31 17:44:31
+ * @LastEditTime: 2022-04-28 09:46:31
  * @Description: 添加指标信息
 -->
 
@@ -64,20 +64,15 @@
 
 </template>
 
-<script>
-import { ref, watch, getCurrentInstance, toRefs } from 'vue'
-import { selectQuota, selectModelConfig, templatePropList, contModelConfig, rules } from './config/config'
+<script setup>
+import { ref, watch, getCurrentInstance } from 'vue'
+import { selectModelConfig, templatePropList, contModelConfig, rules } from './config/config'
 import { get, add, modify } from '@/api/quota'
 import { getListPage } from '@/api/template'
 import addContent from './addContent.vue'
-// import { useStore } from '@/store'
 import { useStore } from '@/store'
 
-export default {
-  components: {
-    addContent
-  },
-  props: {
+const { quotaData, inuptType, quotaRowData } = defineProps({
     quotaRowData: {
       type: Object,
       default: () => ({})
@@ -90,11 +85,8 @@ export default {
       type: String,
       default: 'add'
     }
-   },
-  emits: ['resetBtnClick', 'queryBtnClick', 'cancel', 'callBack'],
-
-  setup (props, { emit }) {
-    const { quotaData, inuptType, quotaRowData } = toRefs(props)
+   })
+  const emit = defineEmits(['resetBtnClick', 'queryBtnClick', 'cancel', 'callBack'])
     const { proxy } = getCurrentInstance()
     const store = useStore()
     const selectConfig = ref(selectModelConfig)
@@ -108,11 +100,12 @@ export default {
     const formData = ref({
       title: '',
       sort: 0, // 顺序
-      parentId: quotaData.value?.id,
+      parentId: quotaData?.id,
       evaluateQuotaDetailedDtoList: [],
       countScore: 0,
       mouldName: userTemplate.value?.name,
-      mouldId: userTemplate.value?.id
+      mouldId: userTemplate.value?.id,
+      level: 2
     })
     const pageInfo = ref({ curPage: 1, pageSize: 5 })
     const useTableData = ref([])
@@ -125,7 +118,7 @@ export default {
     }
     // 详细
     const getDetaile = async () => {
-      const { data = [] } = await get(quotaRowData.value?.id)
+      const { data = [] } = await get(quotaRowData?.id)
       formData.value = data
       userTemplate.value = {
         name: data.mouldName,
@@ -135,7 +128,7 @@ export default {
      evaluateQuotaDetailedDtoList.value = fromrtgetDtoList(data?.evaluateQuotaDetailedDtoList ?? [])
     }
 
-    if (inuptType.value === 'edit') {
+    if (inuptType === 'edit') {
         getDetaile()
     }
     const fromrtgetDtoList = (list = []) => {
@@ -169,18 +162,8 @@ export default {
       },
       { deep: true }
     )
-    const handleResetClick = () => {
-      emit('cancel')
-      formData.value = formData
-    }
 
     const ruleFormRef = ref()
-    const userProps = ref({
-      value: 'id',
-      label: 'title',
-      checkStrictly: true,
-      emitPath: false // 只保留当前选中的id
-    })
     const cancel = (status) => {
       selectConfig.value.dialogVisible = status
       userTemplate.value = null
@@ -200,7 +183,7 @@ export default {
       console.log('data', data)
       colIndex.value = data[0]?.sort ? data[0].sort : ++colIndex.value
       const obj = {
-        showContent: [],
+        showContent: [], // 只做显示
         template: '',
         score: '',
         templateId: '',
@@ -247,10 +230,8 @@ export default {
       formData.value.mouldId = value.id
     }
     const handleEdit = (row, type, index) => {
-      console.log('row', row)
       store.commit('changerPageSizeStatus', false)
       editType.value = inuptType.value === 'edit' && type === 'edit' ? 'edit' : type
-      console.log('editType.value ', editType.value)
       if (!userTemplate.value) {
         proxy.$message.warning('请先选择评分模板！')
         return
@@ -264,16 +245,14 @@ export default {
       contModel.value.dialogVisible = true
     }
     const handleRemove = (row, index) => {
-      console.log('row', row)
        evaluateQuotaDetailedDtoList.value = evaluateQuotaDetailedDtoList.value.filter(x => x.sort !== row.sort)
        count(evaluateQuotaDetailedDtoList.value)
     }
 
-    const fn = inuptType.value === 'add' ? add : modify
+    const fn = inuptType === 'add' ? add : modify
     const onSubmit = (formEL) => {
       const useList = [] // 将所有的集合展开提交
        evaluateQuotaDetailedDtoList.value.forEach((item, index) => {
-         console.log('index', index)
          item.showContent.forEach(subitem => {
            subitem.sort = index
          })
@@ -292,42 +271,6 @@ export default {
         }
       })
     }
-    return {
-      formData,
-      onSubmit,
-      emit,
-      userProps,
-      ruleFormRef,
-      // 组件
-      handleResetClick,
-      selectQuota,
-      selectConfig,
-      handleSelectTmpalte,
-      getListPage,
-      templatePropList,
-      handleSelectionChange,
-      useTableData,
-      pageInfo,
-      listTotal,
-      cancel,
-      confirm,
-      cancelContenModel,
-      userTemplate,
-      handleEdit,
-      handleRemove,
-
-      contModel,
-      editType,
-      callContent,
-      useSelectIndex,
-      rowData,
-      colIndex,
-      evaluateQuotaDetailedDtoList,
-      cancelTargetModel,
-      rules
-    }
-  }
-}
 </script>
 
 <style lang="less">

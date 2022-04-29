@@ -1,0 +1,2 @@
+# 让EsLint不检测一些文件。
+# src/test/* 

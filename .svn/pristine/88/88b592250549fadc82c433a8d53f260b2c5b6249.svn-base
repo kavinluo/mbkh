@@ -1,0 +1,204 @@
+<!--
+ * @Author: kevin
+ * @Date: 2022-02-24 09:58:32
+ * @LastEditors: kevin
+ * @LastEditTime: 2022-04-07 11:54:05
+ * @Description: 机构
+-->
+<template>
+  <el-row :gutter="20">
+    <el-col :span="4">
+      <leftTree
+        @nodeClick="nodeClick"
+        :treeData="treeData"
+        @add="handleAdd('organization')"
+        @edit="handleEdit(null, 'organization')"
+        @remove="handleRemove(null, 'organization')"
+        :isSelect="isSelect"
+        :showHandle="true"
+      />
+    </el-col>
+    <el-col :span="19">
+      <div class="mb10">
+        <el-button :disabled="isSelect" @click="handleAdd('account')" type="primary">添加</el-button>
+        <el-button :disabled="isSelect" @click="handleImport" type="primary">导入</el-button>
+        <el-button :disabled="isSelect" @click="handleExprot" type="primary">导出</el-button>
+      </div>
+      <kv-table
+        :getDataFn="getAccountListPage"
+        :params="{ userType: 2 }"
+        :propList="propList"
+        :showIndexColumn="true"
+        @handleSelectionChange="handleSelectionChange">
+        <template #enable="scope">
+          {{ !scope.row.enable ? '是' : '否' }}
+        </template>
+        <template #handler="scope">
+          <el-link type="primary" size="small" @click="handleEdit(scope.row, 'account')" underline icon="edit">编辑</el-link>&nbsp;&nbsp;&nbsp;
+          <el-link type="danger" size="small" @click="handleRemove(scope.row, 'account')" underline icon="delete">删除</el-link>
+        </template>
+      </kv-table>
+    </el-col>
+  </el-row>
+
+  <!-- 模态框 -->
+  <kvDialog v-bind="modelConfig" v-model="addModel" v-if="addModel" @callBack="confirm" @cancel="cancel">
+    <add v-if="addModel" :addType="addType" :inputType="inputType" :rowData="rowData" @cancel="cancel" @callBack="callBack" />
+  </kvDialog>
+  <kvDialog v-bind="kvDialogConfig" v-model="kvDialogConfig.dialogVisible" @callBack="confirm" @cancel="cancel"/>
+</template>
+
+<script>
+  import { ref, computed } from 'vue'
+  import add from './add.vue'
+  import { downloadHandle } from '@/utils/util'
+  import { getListTreePage } from '@/api/organization.js'
+  import { getAccountListPage, exportAccount } from '@/api/account'
+  import { useStore, updateList } from '@/store'
+  import propList from './tableConfig'
+  import leftTree from '@/components/kvLeftTree'
+
+  export default {
+    components: {
+      add,
+      leftTree
+    },
+    emits: ['cancel'],
+
+    setup () {
+      const kvDialogConfig = ref({
+        dialogVisible: false,
+        isShowFooter: true,
+        message: '您确定要删除吗？',
+        modeType: 'remove',
+        params: '',
+        dialogWidth: '400px',
+        baseURL: '',
+        templateLInk: 'http://192.168.1.202:9090/res/template/%E5%9F%BA%E5%B1%82/%E5%9F%BA%E5%B1%82-%E5%87%86%E8%80%83%E8%AF%81.xlsx'
+      })
+      const modelConfig = ref({
+        title: '编辑机构',
+        width: '600px',
+        draggable: true
+      })
+      const total = ref(0)
+      const addType = ref('account') // 机构: organization;添加用户：account
+      const store = useStore()
+      const inputType = ref('add')
+      const treeData = ref([])
+      const addModel = ref(false)
+      const isSelect = ref(true)
+      const rowData = ref({})
+      const multipleTableRef = ref({})
+      const multipleSelection = ref({})
+
+      //  tree
+      const pagination = computed(() => store.state.pagination)
+      const getTreeList = async () => {
+        const { data = {} } = await getListTreePage(pagination.value)
+        treeData.value = data.list
+      }
+      getTreeList()
+      // 导出人员列表
+      const confirm = (modeType) => {
+        if (kvDialogConfig.value.modeType === 'exprot') {
+          exportAccount().then((res) => {
+            downloadHandle(res, '人员列表')
+          })
+        }
+        callBack()
+      }
+      // table
+      const getAccunt = (id) => {
+        updateList(getAccountListPage, { organization: id, userType: 2 })
+      }
+      getAccunt()
+
+      const callBack = () => {
+        console.log('rowData?.id', rowData.value?.id)
+        addType.value === 'account' ? getAccunt(rowData.value?.id) : getTreeList()
+        cancel()
+      }
+
+      const handleSelectionChange = (val) => {
+        multipleSelection.value = val
+      }
+      // 导入导出
+      const handleImport = () => {
+        kvDialogConfig.value.modeType = 'import'
+        kvDialogConfig.value.dialogVisible = true
+        kvDialogConfig.value.isImport = true
+        kvDialogConfig.value.importAPI = '/api/account/import'
+      }
+      const handleExprot = () => {
+         kvDialogConfig.value.dialogVisible = true
+         kvDialogConfig.value.isImport = false
+        kvDialogConfig.value.modeType = 'exprot'
+         kvDialogConfig.value.message = '你确定要导出吗？'
+      }
+     const cancel = () => {
+        console.log('关闭回调')
+        addModel.value = false
+        rowData.value = null
+        isSelect.value = true
+        kvDialogConfig.value.dialogVisible = false
+      }
+      const nodeClick = (row) => {
+        getAccunt(row.id)
+        rowData.value = row
+        kvDialogConfig.value.baseURL = '/account'
+        isSelect.value = false
+      }
+      const handleAdd = (type) => {
+        isSelect.value = true
+        addModel.value = true
+        inputType.value = 'add'
+        addType.value = type
+      }
+      // 编辑
+      const handleEdit = (row, type) => {
+        rowData.value = type === 'account' ? row : rowData.value
+        addModel.value = true
+        inputType.value = 'edit'
+        addType.value = type
+        isSelect.value = false
+      }
+
+      const handleRemove = (row, type) => {
+        kvDialogConfig.value.params = type === 'account' ? row.id : rowData.value.id
+        addType.value = type
+        kvDialogConfig.value.modeType = 'remove'
+        kvDialogConfig.value.baseURL = '/' + type
+        kvDialogConfig.value.dialogVisible = true
+        kvDialogConfig.value.isImport = false
+        kvDialogConfig.value.message = '你确定要删除吗？'
+      }
+
+      return {
+        handleSelectionChange,
+        multipleTableRef,
+        treeData,
+        modelConfig,
+        addModel,
+        rowData,
+        inputType,
+        cancel,
+        kvDialogConfig,
+        confirm,
+        callBack,
+        propList,
+        nodeClick,
+        handleAdd,
+        handleEdit,
+        handleRemove,
+        isSelect,
+        getAccountListPage,
+
+        addType,
+        total,
+        handleExprot,
+        handleImport
+      }
+    }
+  }
+</script>

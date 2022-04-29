@@ -2,7 +2,7 @@
  * @Author: kevin
  * @Date: 2022-03-10 10:46:03
  * @LastEditors: kevin
- * @LastEditTime: 2022-04-01 10:43:38
+ * @LastEditTime: 2022-04-28 09:47:23
  * @Description: 添加机构
 -->
 <template>
@@ -35,12 +35,12 @@
 
 </template>
 
-<script>
+<script setup>
 import { ref } from 'vue'
 import { organization, account } from './formConfig'
 import { add, get, modify } from '@/api/organization'
-export default {
-  props: {
+
+const { rowData, inputType, addType } = defineProps({
     menuList: {
       type: Array,
       default: () => []
@@ -57,12 +57,10 @@ export default {
       type: String,
       default: 'account'
     }
-  },
-  //  组件相关
-  emits: ['resetBtnClick', 'queryBtnClick', 'cancel', 'callBack'],
+  })
+  const emit = defineEmits(['resetBtnClick', 'queryBtnClick', 'cancel', 'callBack'])
 
-  setup ({ rowData, inputType, addType }, { emit }) {
-    if (inputType === 'edit' && addType === 'account') {
+  if (inputType === 'edit' && addType === 'account') {
       // 编辑账号的时候不需要密码
       account.formItems = account.formItems.filter(item => item.field !== 'password')
     } else {
@@ -112,29 +110,11 @@ export default {
         formData.value = dealit.data
       })()
     }
-    const onSubmit = (formEl) => {
-      if (inputType === 'edit') {
-        editSubmit(formEl)
-      } else {
-        addSubmit(formEl)
-      }
-    }
-    const editSubmit = (formEl) => {
-      formEl.$refs.ruleFormRef?.validate((valid) => {
-        if (valid) {
-          modify(formData.value, addType).then((res) => {
-            const { status } = res
-            if (status?.code === '0') {
-              emit('callBack', addType)
-            }
-          })
-        }
-      })
-   }
-   const addSubmit = (formEl) => {
+  const fn = inputType === 'edit' ? modify : add
+   const onSubmit = (formEl) => {
      formEl.$refs.ruleFormRef?.validate((valid) => {
         if (valid) {
-          add(formData.value, addType).then((res) => {
+          fn(formData.value, addType).then((res) => {
             const { status } = res
             if (status?.code === '0') {
               emit('callBack', addType)
@@ -143,20 +123,6 @@ export default {
         }
       })
    }
-  return {
-    formData,
-    onSubmit,
-    emit,
-    userProps,
-    ruleFormRef,
-    organization,
-    account,
-    // 组件
-    handleResetClick,
-    select
-  }
-  }
-}
 </script>
 
 <style lang="scss" scoped>

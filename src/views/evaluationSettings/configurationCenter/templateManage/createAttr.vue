@@ -2,7 +2,7 @@
  * @Author: kevin
  * @Date: 2022-03-17 10:44:31
  * @LastEditors: kevin
- * @LastEditTime: 2022-03-30 11:16:36
+ * @LastEditTime: 2022-04-28 09:46:10
  * @Description: 添加属性
 -->
 <template>
@@ -32,12 +32,12 @@
   </kv-Form>
 </template>
 
-<script>
-import { ref } from 'vue'
-import { createAttrs } from './config/dataConfig'
-import { addAttr, modifyAttr } from '@/api/template'
-  export default {
-    props: {
+<script setup>
+  import { ref } from 'vue'
+  import { createAttrs } from './config/dataConfig'
+  import { addAttr, modifyAttr } from '@/api/template'
+  const emit = defineEmits(['callBack'])
+  const props = defineProps({
       rowData: {
         type: Object,
         default: null
@@ -46,58 +46,41 @@ import { addAttr, modifyAttr } from '@/api/template'
         type: Object,
         default: null
       }
-    },
-    setup (props, { emit }) {
-      const ruleFormRef = ref({})
-      const defaultValueType = ref('')
-      const formOriginData = {
-        templateId: props.rowData.id,
-        newList: ['77']
-      }
+    })
 
-      const handleChange = (val) => {
-        defaultValueType.value = val
-        if (val === 'select') {
+  const ruleFormRef = ref({})
+  const defaultValueType = ref('')
+  const formOriginData = {
+    templateId: props.rowData.id,
+    newList: ['77']
+  }
 
-        }
-      }
+  const handleChange = (val) => {
+    defaultValueType.value = val
+    if (val === 'select') {
 
-      for (const item of createAttrs.formItems) {
-        formOriginData[item.field] = ''
-      }
-      const formData = ref(formOriginData)
-      if (props.editData) {
-        formData.value = props.editData
-      }
-      const fn = !props.editData ? addAttr : modifyAttr
-      const handleAddTemplate = (formEL) => {
-        formEL.$refs.ruleFormRef?.validate((valid) => {
-         if (valid) {
-           fn(formData.value).then(res => {
-            const { status } = res
-              if (status?.code === '0') {
-                emit('callBack')
-              }
-            })
+    }
+  }
+
+  for (const item of createAttrs.formItems) {
+    formOriginData[item.field] = ''
+  }
+  const formData = ref(formOriginData)
+  if (props.editData) {
+    formData.value = props.editData
+  }
+  const fn = !props.editData ? addAttr : modifyAttr
+  const handleAddTemplate = (formEL) => {
+    formEL.$refs.ruleFormRef?.validate((valid) => {
+      if (valid) {
+        fn(formData.value).then(res => {
+        const { status } = res
+          if (status?.code === '0') {
+            emit('callBack')
           }
         })
       }
-      // watch(() => formData.value,
-      // (newValue, oldValue) => {
-      //   console.log('newValue', newValue)
-      //   formData.value = newValue
-      // },
-      // { deep: true }
-      // )
-      return {
-        createAttrs,
-        formData,
-        handleAddTemplate,
-        ruleFormRef,
-        handleChange,
-        defaultValueType
-      }
-    }
+    })
   }
 </script>
 

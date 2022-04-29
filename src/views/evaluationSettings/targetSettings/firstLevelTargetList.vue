@@ -1,0 +1,92 @@
+<!--
+ * @Author: kevin
+ * @Date: 2022-03-14 09:39:40
+ * @LastEditors: kevin
+ * @LastEditTime: 2022-04-25 14:15:17
+ * @Description: 一级级目标列表
+-->
+<template>
+  <kv-form v-bind="indexSearchConfig" v-model="formData">
+    <template #searchBtn>
+      <el-button type="primary" @click.prevent="onSubmit">搜索</el-button>
+    </template>
+    <template #handler>
+      <el-button type="primary" @click.prevent="handleEdit(null)"><el-icon style="vertical-align: middle"> <plus /> </el-icon>新建目标</el-button>
+    </template>
+  </kv-Form>
+  <kv-table
+    :getDataFn="getListPage"
+    :params="{ parentId: 0 }"
+    :propList="indexTableConfig"
+    @handleSelectionChange="handleSelectionChange">
+    <template #status="scope">
+      {{ scope.row.status ? '已开始' : '未开始' }}
+    </template>
+    <template #updateTime="scope">
+      {{ formatTimestamp(scope.row.updateTime, 'YYYY-MM-DD HH:mm') }}
+    </template>
+    <template #handler="scope">
+      <el-link type="primary" size="small" @click="handlePublish(scope.row)" underline icon="position">发布</el-link>&nbsp;&nbsp;&nbsp;
+      <el-link type="primary" size="small" @click="handleSetting(scope.row)" underline icon="setting">配置</el-link>&nbsp;&nbsp;&nbsp;
+      <el-link type="primary" size="small" @click="handleEdit(scope.row)" underline icon="edit">编辑</el-link>&nbsp;&nbsp;&nbsp;
+      <el-link type="danger" size="small" @click="handleRemove(scope.row)" underline icon="delete">删除</el-link>
+    </template>
+  </kv-table>
+
+  <!-- 模态框 -->
+  <kvDialog v-bind="modelConfig" v-model="modelConfig.dialogVisible">
+    <add :rowData="rowData" @callBack="confirm" />
+  </kvDialog>
+  <kvDialog v-bind="removModelConfig" v-if="removModelConfig.dialogVisible" v-model="removModelConfig.dialogVisible" @callBack="confirm" />
+</template>
+
+<script setup>
+  import { ref, defineEmits } from 'vue'
+  import { indexTableConfig, indexSearchConfig, removeModelConfig, addModelConfig } from './config/dataConfig'
+  import { getListPage, publish } from '@/api/target'
+  import add from './add/addFirstTarget.vue'
+  import { updateList } from '@/store'
+  import { formatTimestamp } from '@/utils/formatDate'
+  const emit = defineEmits(['callBack'])
+  const modelConfig = ref(addModelConfig)
+  const removModelConfig = ref(removeModelConfig)
+  const rowData = ref(null)
+  const formItems = indexSearchConfig?.formItems ?? []
+  const formOriginData = {
+      parentId: 0
+  }
+  for (const item of formItems) {
+    if (item.field) {
+      formOriginData[item.field] = ''
+    }
+  }
+  const formData = ref(formOriginData)
+  const confirm = (type) => {
+    modelConfig.value.dialogVisible = false
+    removModelConfig.value.dialogVisible = false
+    updateList(getListPage, formData.value)
+  }
+  const onSubmit = () => {
+    updateList(getListPage, formData.value)
+  }
+  const handleSelectionChange = () => {}
+  const handleEdit = (row) => {
+    rowData.value = row
+    modelConfig.value.dialogVisible = true
+  }
+  const handleRemove = (row) => {
+    removModelConfig.value.dialogVisible = true
+    removModelConfig.value.params = row.id
+    removModelConfig.value.modeType = 'remove'
+  }
+  const handleSetting = (row) => {
+    rowData.value = row
+    emit('callBack', row, 'scond')
+  }
+  const handlePublish = (row) => {
+    removModelConfig.value.dialogVisible = true
+    removModelConfig.value.params = row.id
+    removModelConfig.value.modeType = 'publish'
+    removModelConfig.value.useFn = publish
+  }
+</script>

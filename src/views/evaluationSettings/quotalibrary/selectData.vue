@@ -1,7 +1,0 @@
-<!--
- * @Author: kevin
- * @Date: 2022-03-24 17:03:39
- * @LastEditors: kevin
- * @LastEditTime: 2022-03-24 17:03:40
- * @Description: 选择评分模板
--->

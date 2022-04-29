@@ -1,0 +1,58 @@
+<!--
+ * @Author: kevin
+ * @Date: 2022-03-17 09:18:56
+ * @LastEditors: kevin
+ * @LastEditTime: 2022-04-20 17:55:46
+ * @Description: 新建周期
+-->
+<template>
+  <kv-form v-bind="addCycleConfig" v-model="formData" ref="ruleFormRef">
+    <template #footer>
+      <div style="margin-top: 20px;text-align: right">
+        <el-button type="primary" @click.prevent="handleAddTemplate(ruleFormRef)">确定</el-button>
+      </div>
+    </template>
+  </kv-Form>
+</template>
+
+<script setup>
+  import { ref, defineProps, defineEmits } from 'vue'
+  import { addCycleConfig } from './config/dataConfig'
+  import { add, modify } from '@/api/cycle'
+
+  const { rowData } = defineProps({
+    rowData: {
+      type: Object,
+      default: null
+    }
+  })
+  const emit = defineEmits(['callBack'])
+  const formData = ref({
+    parentId: 0
+  })
+  const ruleFormRef = ref({})
+  if (rowData) {
+    formData.value = rowData
+    formData.value.usetime = [formData.value.startTime, formData.value.endTime]
+  }
+  const fn = !rowData ? add : modify
+  const handleAddTemplate = (formEL) => {
+    formEL.$refs.ruleFormRef?.validate((valid) => {
+      if (valid) {
+        formData.value.startTime = new Date(formData.value.usetime[0]).getTime()
+        formData.value.endTime = new Date(formData.value.usetime[1]).getTime()
+        delete formData.value.usetime
+        fn(formData.value).then(res => {
+          const { status } = res
+          if (status?.code === '0') {
+            emit('callBack')
+          }
+        })
+      }
+    })
+  }
+</script>
+
+<style lang="scss" scoped>
+
+</style>

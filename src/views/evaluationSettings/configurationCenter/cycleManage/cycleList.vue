@@ -2,7 +2,7 @@
  * @Author: kevin
  * @Date: 2022-03-15 15:20:12
  * @LastEditors: kevin
- * @LastEditTime: 2022-03-24 14:04:41
+ * @LastEditTime: 2022-04-22 16:54:24
  * @Description: 周期管理
 -->
 <template>
@@ -33,85 +33,59 @@
   </kv-table>
 
   <kvDialog v-bind="modelConfig" v-model="addModel">
-    <addCycle v-if="addModel" :inuptType="inuptType" @callBack="confirm" :rowData="rowData" />
+    <addCycle v-if="addModel" @callBack="confirm" :rowData="rowData" />
   </kvDialog>
   <kv-dialog v-bind="kvDialogConfig" v-model="kvDialogConfig.dialogVisible" @callBack="confirm"/>
 
 </template>
 
-<script>
+<script setup>
   import { ref } from 'vue'
   import { tableConfig, searchConfig } from './config/dataConfig'
   import addCycle from './cycleAdd.vue'
   import { getListPage } from '@/api/cycle'
   import { updateList } from '@/store'
-import { formatTimestamp } from '@/utils/formatDate'
+  import { formatTimestamp } from '@/utils/formatDate'
 
-  export default {
-    components: {
-      addCycle
-    },
-    setup () {
-      const addModel = ref(false)
-      const rowData = ref(null)
-      const modelConfig = ref({
-        width: '700px',
-        draggable: true,
-        isShowFooter: false
-      })
-      const kvDialogConfig = ref({
-        modeType: 'remove',
-        params: '',
-        isShowFooter: true,
-        dialogVisible: false,
-        message: '您确定要删除吗？',
-        baseURL: '/cycle'
-      })
-      const formItems = searchConfig?.formItems ?? []
-      const formOriginData = {}
-      for (const item of formItems) {
-        formOriginData[item.field] = ''
-      }
-      const formData = ref(formOriginData)
-      const onSubmit = () => {
-        updateList(getListPage, formData.value)
-      }
-      const handleAddCycle = (row) => {
-        rowData.value = row
-        addModel.value = true
-      }
-      const handleRemove = (row) => {
-        kvDialogConfig.value.dialogVisible = true
-        kvDialogConfig.value.params = row.id
-      }
-      const handleSelectionChange = () => {
-
-      }
-      const confirm = () => {
-        addModel.value = false
-        kvDialogConfig.value.dialogVisible = false
-        updateList(getListPage, formData.value)
-      }
-      return {
-        searchConfig,
-        tableConfig,
-        getListPage,
-        onSubmit,
-        handleAddCycle,
-        formatTimestamp,
-        handleRemove,
-        handleSelectionChange,
-        formData,
-        rowData,
-        addModel,
-        kvDialogConfig,
-        modelConfig,
-        confirm
-      }
-    }
+  const addModel = ref(false)
+  const rowData = ref(null)
+  const modelConfig = ref({
+    width: '700px',
+    draggable: true,
+    isShowFooter: false
+  })
+  const kvDialogConfig = ref({
+    modeType: 'remove',
+    params: '',
+    isShowFooter: true,
+    dialogVisible: false,
+    baseURL: '/cycle'
+  })
+  const formItems = searchConfig?.formItems ?? []
+  const formOriginData = {}
+  for (const item of formItems) {
+    formOriginData[item.field] = ''
+  }
+  const formData = ref(formOriginData)
+  const onSubmit = () => {
+    updateList(getListPage, formData.value)
+  }
+  const handleAddCycle = (row) => {
+    rowData.value = row
+    addModel.value = true
+  }
+  const handleRemove = (row) => {
+    kvDialogConfig.value.dialogVisible = true
+    kvDialogConfig.value.params = row.id
+  }
+  const handleSelectionChange = () => {
 
   }
-
+  const confirm = () => {
+    addModel.value = false
+    kvDialogConfig.value.dialogVisible = false
+    updateList(getListPage, formData.value)
+  }
 </script>
 
 <style lang="scss" scoped>
