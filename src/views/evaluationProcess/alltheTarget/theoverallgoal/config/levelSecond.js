@@ -2,7 +2,7 @@
  * @Author: kevin
  * @Date: 2022-04-19 16:26:46
  * @LastEditors: kevin
- * @LastEditTime: 2022-04-29 16:53:15
+ * @LastEditTime: 2022-04-29 17:54:39
  * @Description: 二级目标
  */
 import { targetModelConfig, reportDialogConfig } from './dialogConfig'
@@ -28,7 +28,9 @@ export const levelSecond = (data) => {
     reportDialog.params = row.id
     reportDialog.useFn = report
   }
-  const onSubmit = () => {}
+  const onSubmit = () => {
+
+  }
   return {
     cancel,
     handleEdit,

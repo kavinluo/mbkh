@@ -2,7 +2,7 @@
  * @Author: kevin
  * @Date: 2022-04-12 09:33:27
  * @LastEditors: kevin
- * @LastEditTime: 2022-04-29 17:02:49
+ * @LastEditTime: 2022-04-29 17:58:11
  * @Description: 二级目标
 -->
 <template>
@@ -25,7 +25,13 @@
       </template>
     </el-table-column>
     <el-table-column label="目标" prop="title" align="center" />
-    <el-table-column label="状态" prop="status" align="center" />
+    <el-table-column label="状态" prop="status" align="center">
+      <template #default="scope">
+        <span v-if="scope.row.status === 0">未上报</span>
+        <span v-if="scope.row.status === 1">已上报</span>
+        <span v-if="scope.row.status === 2">部分上报</span>
+      </template>
+    </el-table-column>
   </el-table>
   <kvDialog v-bind="targetDialog" v-model="targetDialog.dialogVisible">
     <edit-target :rowData="subRowData" @callBack="cancel" />

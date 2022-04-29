@@ -2,7 +2,7 @@
  * @Author: kevin
  * @Date: 2022-04-02 9:08:08
  * @LastEditors: kevin
- * @LastEditTime: 2022-04-12 09:28:04
+ * @LastEditTime: 2022-04-29 17:46:07
  * @Description: 全部目标
 --->
 <template>
@@ -10,9 +10,9 @@
     <el-tab-pane label="整体目标" name="theoverallgoal">
       <theoverallgoal-manage v-if="activeName === 'theoverallgoal'" />
     </el-tab-pane>
-    <el-tab-pane label="个人目标" name="individualgoal">
+    <!-- <el-tab-pane label="个人目标" name="individualgoal">
       <individualgoal-manage v-if="activeName === 'individualgoal'" />
-    </el-tab-pane>
+    </el-tab-pane> -->
   </el-tabs>
 </template>
 
@@ -20,7 +20,7 @@
 import { ref } from 'vue'
 import { useStore } from '@/store'
 import theoverallgoalManage from './theoverallgoal/overallGoalIndex.vue'
-import individualgoalManage from './individualgoal/individualgoal.vue'
+// import individualgoalManage from './individualgoal/individualgoal.vue'
 const store = useStore()
 const activeName = ref('theoverallgoal')
 const handleClick = () => {

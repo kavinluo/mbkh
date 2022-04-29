@@ -2,7 +2,7 @@
  * @Author: kevin
  * @Date: 2022-02-25 09:42:38
  * @LastEditors: kevin
- * @LastEditTime: 2022-04-21 14:03:55
+ * @LastEditTime: 2022-04-29 17:28:24
  * @Description: Do not edit
 -->
 <template>
@@ -126,7 +126,7 @@ import { ref, computed } from 'vue'
     }
     .topbar-navigation {
       margin-left: 40px;
-      a {
+      a *{
         color: #fff;
       }
     }

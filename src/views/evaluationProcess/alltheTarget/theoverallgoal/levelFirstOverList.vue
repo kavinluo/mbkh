@@ -2,7 +2,7 @@
  * @Author: kevin
  * @Date: 2022-4-2 11:00:00
  * @LastEditors: kevin
- * @LastEditTime: 2022-04-29 17:12:05
+ * @LastEditTime: 2022-04-29 17:59:04
  * @Description: 一级目标列表
 -->
 <template>
@@ -28,14 +28,15 @@
         </el-table-column>
         <el-table-column label="考区" v-if="role.userType === 1" prop="checkAreaName" align="center" />
         <el-table-column label="目标" v-if="role.userType === 2" prop="title" align="center" />
-        <el-table-column label="状态" prop="status" align="center" />
       </el-table>
     </template>
     <template #handler="scope">
       <el-link type="primary" size="small" icon="promotion" @click="handleReport(scope.row)">展开</el-link>
     </template>
-    <template #status="scope">
-      {{ scope.row.status }}
+    <template #status="props">
+      <span v-if="props.row.status === 0">未上报</span>
+      <span v-if="props.row.status === 1">已上报</span>
+      <span v-if="props.row.status === 2">部分上报</span>
     </template>
   </kv-table>
 
@@ -58,14 +59,22 @@
         </el-table-column>
         <el-table-column label="考区" v-if="role.userType === 1" prop="checkAreaName" align="center" />
         <el-table-column label="目标" v-if="role.userType === 2" prop="title" align="center" />
-        <el-table-column label="状态" prop="status" align="center" />
+        <el-table-column label="状态" prop="status" align="center">
+          <template #default="props">
+            <span v-if="props.row.status === 0">未上报</span>
+            <span v-if="props.row.status === 1">已上报</span>
+            <span v-if="props.row.status === 2">部分上报</span>
+          </template>
+        </el-table-column>
       </el-table>
     </template>
     <template #handler="scope" v-if="role.userType === 2">
       <el-link type="primary" size="small" icon="promotion" @click="handleReport(scope.row)">上报</el-link>
     </template>
-    <template #status="scope">
-      {{ scope.row.status }}
+    <template #status="props">
+      <span v-if="props.row.status === 0">未上报</span>
+      <span v-if="props.row.status === 1">已上报</span>
+      <span v-if="props.row.status === 2">部分上报</span>
     </template>
   </kv-table>
   <kvDialog v-bind="targetDialog" v-model="targetDialog.dialogVisible">
