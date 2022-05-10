@@ -1,0 +1,49 @@
+<!--
+ * @Author: kevin
+ * @Date: 2022-05-09 11:00:36
+ * @LastEditors: kevin
+ * @LastEditTime: 2022-05-09 15:16:12
+ * @Description: 分类管理
+-->
+<template>
+  <div>
+    <el-form :model="formData" inline>
+      分类名称：<el-input v-model="formData.typeName" placeholder="输入分类名称" style="width: 150px;margin-right:10px" />
+      <el-button type="primary" @click="handleAdd(editType)">{{ editType === 'edit' ? '修改' : '添加' }}</el-button>
+    </el-form>
+    <br>
+    <kv-table
+      :propList="typeTableList"
+      :isUseStoreData="false"
+      :useTableData="tableData"
+      @handleSelectionChange="handleSelectionChange">
+      <template #handle="props">
+        <el-link type="primary" size="small" @click="handleEdit('edit', props.row)" underline icon="edit">编辑</el-link>&nbsp;&nbsp;&nbsp;
+        <el-link type="danger" size="small" @click="handleRemove(props.row)" underline icon="delete">删除</el-link>&nbsp;&nbsp;&nbsp;
+      </template>
+    </kv-table>
+  </div>
+  <kvDialog v-bind="removModelConfig" v-model="removModelConfig.dialogVisible" @callBack="confirm" />
+
+</template>
+
+<script setup>
+  import { typeHandle } from '../config/hook'
+  import { typeTableList } from '../config/dataConfig'
+  const emit = defineEmits(['callBack', 'cancel'])
+  const handleSelectionChange = () => {}
+  const {
+    handleEdit,
+    handleAdd,
+    handleRemove,
+    confirm,
+    formData,
+    tableData,
+    removModelConfig,
+    editType
+  } = typeHandle(emit)
+</script>
+
+<style lang="scss" scoped>
+
+</style>

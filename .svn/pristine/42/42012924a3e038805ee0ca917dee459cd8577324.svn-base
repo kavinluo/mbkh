@@ -1,0 +1,83 @@
+<!--
+ * @Author: kevin
+ * @Date: 2022-03-17 14:03:23
+ * @LastEditors: kevin
+ * @LastEditTime: 2022-04-28 09:46:46
+ * @Description: 新增一级目标
+-->
+<template>
+  <kv-form v-bind="addTargetFormConfig" v-model="formData" ref="ruleFormRef">
+    <template #director>
+      <el-cascader
+        style="width: 100%"
+        clearable
+        filterable
+        :show-all-levels="false"
+        :props="cascaderProps"
+        v-model="formData.director"
+        @change="handelChanger"	/>
+    </template>
+    <template #footer>
+      <div style="margin-top: 20px;text-align: right">
+        <el-button type="primary" @click.prevent="handleAddTarget(ruleFormRef)">确定</el-button>
+      </div>
+    </template>
+  </kv-Form>
+</template>
+
+<script setup>
+import { ref } from 'vue'
+import { addTargetFormConfig, cascaderProps, getList as getOptionsList } from '../config/dataConfig'
+import { add, getList, modify } from '@/api/target'
+  const props = defineProps({
+    rowData: {
+        type: Object,
+        default: () => (null)
+    }
+  })
+  const emit = defineEmits(['callBack'])
+  const ruleFormRef = ref({})
+  const formOriginData = {
+    cycle1: '',
+    cycle2: '',
+    parentId: 0 // 默认固定传0
+  }
+  for (const item of addTargetFormConfig.formItems) {
+    if (item.field === 'checkArea') {
+      getOptionsList().then(res => {
+        item.options = res
+      })
+    }
+    formOriginData[item.field] = ''
+  }
+  const formData = ref(formOriginData)
+
+  const handelChanger = (row) => {
+  }
+  if (props.rowData) {
+    getList({ id: props.rowData.id }).then(res => {
+      res.data.checkArea = res.data.checkArea.split(',').map(item => +item)
+      res.data.director = res.data.director.split(',').map(item => +item)
+      formData.value = res.data
+    })
+  }
+  const fn = props.rowData ? modify : add
+  const handleAddTarget = (formEL) => {
+    formEL.$refs.ruleFormRef?.validate((valid) => {
+      if (valid) {
+        const { checkArea = [], director = [] } = formData.value
+        const params = {
+          checkArea: checkArea.join(','),
+          director: director.join(',')
+        }
+        const obj = Object.assign({}, formData.value, params)
+        fn(obj).then(res => {
+          const { status } = res
+          if (status?.code === '0') {
+            emit('callBack')
+          }
+        })
+      }
+    })
+  }
+</script>

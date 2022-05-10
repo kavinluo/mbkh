@@ -1,0 +1,79 @@
+<!--
+ * @Author: kevin
+ * @Date: 2022-05-06 15:49:44
+ * @LastEditors: kevin
+ * @LastEditTime: 2022-05-09 09:34:03
+ * @Description: Do not edit
+-->
+<template>
+  <div>
+    <kv-form v-bind="formConfig" v-model="formData" ref="ruleFormRef">
+      <template #top>
+        <el-switch
+          size="large"
+          v-model="formData.top"
+          inline-prompt
+          :active-value="1"
+          :inactive-value="0"
+          active-text="是"
+          inactive-text="否"/>
+      </template>
+      <template #checkArea>
+        <el-select
+          style="width: 100%;"
+          v-model="formData.checkArea"
+          multiple
+          filterable
+          default-first-option
+          :reserve-keyword="false"
+          placeholder="选择范围"
+        >
+          <el-option
+            v-for="item in menuList"
+            :key="item.id"
+            :label="item.name"
+            :value="item.id"
+          />
+        </el-select>
+      </template>
+
+      <template #footer>
+        <div class="handle-btns" style="text-align: center">
+          <el-button type="primary" @click.prevent="onSubmit(ruleFormRef)">提交</el-button>
+          <el-button type="warning" @click="handleResetClick">关闭</el-button>
+        </div>
+      </template>
+    </kv-Form>
+
+  </div>
+</template>
+
+<script setup>
+  import { addHandels } from '../config/hook'
+  const emit = defineEmits(['cancel'])
+  const { editType, rowData } = defineProps({
+    editType: {
+      type: String,
+      default: 'add'
+    },
+    rowData: {
+      type: Object,
+      default: () => ({})
+    }
+  })
+  const handleResetClick = () => {
+    emit('cancel')
+    formData.value = formData
+  }
+  const {
+    onSubmit,
+    ruleFormRef,
+    menuList,
+    formData,
+    formConfig
+  } = addHandels(editType, rowData, emit)
+</script>
+
+<style lang="scss" scoped>
+
+</style>

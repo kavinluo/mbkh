@@ -2,7 +2,7 @@
  * @Author: kevin
  * @Date: 2022-03-24 15:52:07
  * @LastEditors: kevin
- * @LastEditTime: 2022-04-28 09:46:31
+ * @LastEditTime: 2022-05-10 15:03:32
  * @Description: 添加指标信息
 -->
 
@@ -112,7 +112,7 @@ const { quotaData, inuptType, quotaRowData } = defineProps({
 
     const listTotal = ref(0)
     const getTemplateLis = async () => {
-      const { data = {} } = await getListPage(pageInfo.value)
+      const { data } = await getListPage(pageInfo.value)
       useTableData.value = data?.list ?? []
       listTotal.value = data.total
     }
@@ -225,6 +225,7 @@ const { quotaData, inuptType, quotaRowData } = defineProps({
       getTemplateLis()
     }
     const handleSelectionChange = (value) => {
+      console.log('value', value)
       userTemplate.value = value
       formData.value.mouldName = value.name
       formData.value.mouldId = value.id

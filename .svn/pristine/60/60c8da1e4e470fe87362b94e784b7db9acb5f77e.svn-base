@@ -1,0 +1,21 @@
+/*
+ * @Author: kevin
+ * @Date: 2022-05-06 16:02:25
+ * @LastEditors: kevin
+ * @LastEditTime: 2022-05-09 10:14:45
+ * @Description: Do not edit
+ */
+import { ref } from 'vue'
+import { editModelConfig } from './dialogConfig'
+
+export const handels = () => {
+  const editDialog = ref(editModelConfig)
+
+  const addSchedule = () => {
+    editDialog.value.dialogVisible = true
+  }
+  return {
+    editDialog,
+    addSchedule
+  }
+}

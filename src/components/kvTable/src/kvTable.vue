@@ -2,7 +2,7 @@
  * @Author: kevin
  * @Date: 2022-03-07 10:20:25
  * @LastEditors: kevin
- * @LastEditTime: 2022-04-28 09:42:39
+ * @LastEditTime: 2022-05-10 14:37:49
  * @Description: table 封装
 -->
 <template>
@@ -16,6 +16,7 @@
     :highlight-current-row="isRadio"
     @selection-change="handleSelectionChange">
     <el-table-column type="selection" width="55" v-if="showSelectColumn" />
+    <!-- 单选 -->
     <el-table-column label="选择" align="center" width="65" v-if="isRadio">
       <template #default="scope">
         <el-radio :label="scope.row.id" v-model="radio">&nbsp;</el-radio>
@@ -47,74 +48,9 @@
  <script setup>
   import { computed, ref, watch, nextTick } from 'vue'
   import { useStore } from '@/store'
+  import { propsList } from './props'
 
-  const props = defineProps({
-    useTableData: {
-      type: Array,
-      default: () => ([])
-    },
-    propList: {
-      type: Array,
-      required: true
-    },
-    isRadio: { // 表格是否是单选
-      type: Boolean,
-      default: false
-    },
-    showIndexColumn: { // /是否显示 序号列
-      type: Boolean,
-      default: true
-    },
-    showSelectColumn: { // 是否显示选择列
-      type: Boolean,
-      default: false
-    },
-    showFooter: { // 是否显示页脚分页
-      type: Boolean,
-      default: true
-    },
-    pageInfo: {
-      type: Object,
-      default: () => ({ curPage: 1, pageSize: 10 })
-    },
-    useSize: {
-      type: Array,
-      default: () => ([10, 20, 30])
-    },
-    listTotal: {
-      type: Number,
-      default: 0
-    },
-    tableOtherOption: {
-      type: Object,
-      default: () => ({})
-    },
-    getDataFn: { // 请求列表数据的方法
-      type: Function,
-      default: () => { }
-    },
-    params: { // 默认需要的参数
-      type: Object,
-      default: () => ({})
-    },
-    isAwait: { // 是否需要等待
-      type: Boolean,
-      default: false
-    },
-    isUseStoreData: { // 是否需要使用store里面的数据, 如果不使用自己请求后传递
-      type: Boolean,
-      default: true
-    },
-    baseURL: {
-      type: String,
-      default: undefined
-    },
-    // 多选时选中的数据
-    useSelectData: {
-      type: Object,
-      default: () => (null)
-    }
-  })
+  const props = defineProps(propsList)
   const emit = defineEmits(['handleSelectionChange', 'update:pageInfo'])
   const multipleTableRef = ref()
   const store = useStore()
@@ -138,7 +74,6 @@
       total = computed(() => store.state.total)
       pagination = computed(() => store.state.pagination)
       const changerPageSizeStatus = computed(() => store.state.changerPageSizeStatus)
-      console.log('props.params', props.params)
       const getList = async () => {
         store.dispatch('getListPage', { fn: props.getDataFn, params: props.params, baseURL: props.baseURL })
       }
@@ -169,7 +104,9 @@
       })
     }
     const handleSelectionChange = (val) => {
-      emit('handleSelectionChange', val)
+      if (val) {
+        emit('handleSelectionChange', val)
+      }
     }
     const handleSizeChange = (pageSize) => {
       if (!props.isUseStoreData) {
@@ -191,8 +128,10 @@
     // 单选
     const handleCurrentChangeRadio = (val) => {
       if (!props.isRadio) return
-      emit('handleSelectionChange', val)
-      radio.value = val.id
+      if (val) {
+        emit('handleSelectionChange', val)
+        radio.value = val?.id
+      }
     }
 </script>
 <script>

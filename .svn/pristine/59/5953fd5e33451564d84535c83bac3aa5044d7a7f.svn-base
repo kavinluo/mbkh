@@ -1,0 +1,164 @@
+<!--
+ * @Author: kevin
+ * @Date: 2022-03-07 10:20:25
+ * @LastEditors: kevin
+ * @LastEditTime: 2022-05-10 14:04:13
+ * @Description: table 封装
+-->
+<template>
+  <el-table
+    :class="['kv-table',isRadio ? 'handle-tr' : '']"
+    ref="multipleTableRef"
+    :data="tableData"
+    v-bind="tableOtherOption"
+    row-key="id"
+    @current-change="handleCurrentChangeRadio"
+    :highlight-current-row="isRadio"
+    @selection-change="handleSelectionChange">
+    <el-table-column type="selection" width="55" v-if="showSelectColumn" />
+    <!-- 单选 -->
+    <el-table-column label="选择" align="center" width="65" v-if="isRadio">
+      <template #default="scope">
+        <el-radio :label="scope.row.id" v-model="radio">&nbsp;</el-radio>
+      </template>
+    </el-table-column>
+    <el-table-column type="index" label="序号" align="center" width="80" v-if="showIndexColumn">
+      <template #default="scope">
+        {{ (pagination.curPage - 1) * pagination.pageSize + scope.$index + 1 }}
+      </template>
+    </el-table-column>
+    <template v-for="item in propList" :key="item.prop">
+      <el-table-column v-bind="item" align="center">
+        <template #default="scope">
+          <slot :name="item.slotName" :row="scope.row">
+            {{ scope.row[item.prop] }}
+          </slot>
+        </template>
+      </el-table-column>
+    </template>
+  </el-table>
+  <div class="table-footer" v-if="showFooter">
+    <slot name="footer">
+      <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="pagination.curPage" :page-size="pagination.pageSize" :page-sizes="useSize" layout="total, sizes, prev, pager, next, jumper" :total="total">
+      </el-pagination>
+    </slot>
+  </div>
+</template>
+
+ <script setup>
+  import { computed, ref, watch, nextTick } from 'vue'
+  import { useStore } from '@/store'
+  import { propsList } from './props'
+
+  const props = defineProps(propsList)
+  const emit = defineEmits(['handleSelectionChange', 'update:pageInfo'])
+  const multipleTableRef = ref()
+  const store = useStore()
+    let tableData = ref([])
+    let total = ref(0)
+    const radio = ref(false)
+    let pagination = ref({})
+    if (!props.isUseStoreData) {
+      console.log(' props.listTotal-不使用store数据', props.listTotal)
+      tableData.value = props.useTableData
+      total.value = props.listTotal
+      pagination.value = props.pageInfo
+      watch(() => [props.pageInfo, props.useTableData, props.listTotal],
+        ([pageInfo, useTableData, listTotal], [oldPageInfo, oldOuseTableData, oldOlistTotal]) => {
+          pagination.value = pageInfo
+          tableData.value = useTableData
+          total.value = listTotal
+        }, { deep: true })
+    } else {
+      tableData = computed(() => store.state.tableData)
+      total = computed(() => store.state.total)
+      pagination = computed(() => store.state.pagination)
+      const changerPageSizeStatus = computed(() => store.state.changerPageSizeStatus)
+      const getList = async () => {
+        store.dispatch('getListPage', { fn: props.getDataFn, params: props.params, baseURL: props.baseURL })
+      }
+      watch(pagination.value, (newVal, oldVal) => {
+        // 阻止点击菜单重置时再次请求
+        if (changerPageSizeStatus.value) {
+          getList()
+        }
+      }, { deep: true })
+      // 需要等待 如：同一个页面需要等待其他接口请求完成后在更新列表
+      const isAwait = computed(() => props.isAwait)
+      watch(isAwait, () => {
+        getList()
+      })
+      // 不需要等待
+      if (!props.isAwait) {
+        getList()
+      }
+    }
+    // 选中回显
+    if (props.showSelectColumn && props.useSelectData) {
+      watch(() => props.useSelectData, (rows) => {
+        nextTick(() => {
+          rows.forEach(row => {
+            multipleTableRef.value.toggleRowSelection(row, undefined)
+          })
+        })
+      })
+    }
+    const handleSelectionChange = (val) => {
+      if (val) {
+        emit('handleSelectionChange', val)
+      }
+    }
+    const handleSizeChange = (pageSize) => {
+      if (!props.isUseStoreData) {
+        emit('update:pageInfo', { ...props.pageInfo, pageSize })
+      } else {
+        store.commit('changerPageSizeStatus', true)
+        store.dispatch('changerPageSize', pageSize)
+      }
+    }
+    const handleCurrentChange = (curPage) => {
+      if (!props.isUseStoreData) {
+        emit('update:pageInfo', { ...props.pageInfo, curPage })
+      } else {
+        store.commit('changerPageSizeStatus', true)
+        store.dispatch('changerCurrentPage', curPage)
+      }
+    }
+
+    // 单选
+    const handleCurrentChangeRadio = (val) => {
+      if (!props.isRadio) return
+      if (val) {
+        emit('handleSelectionChange', val)
+        radio.value = val?.id
+      }
+    }
+</script>
+<script>
+export default {
+  name: 'KvTable'
+}
+</script>
+<style lang="less">
+.table-footer {
+  text-align: right;
+  margin-top: 15px;
+  display: flex;
+  .el-pagination {
+    margin-left: auto;
+  }
+}
+.kv-table {
+  border-top: solid #ebeef5 1px;
+}
+.handle-tr {
+  .el-table__body {
+    .el-table__row {
+      cursor: pointer;
+    }
+    .current-row td {
+      background-color: #c0deff !important;
+    }
+  }
+}
+</style>

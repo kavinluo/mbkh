@@ -2,37 +2,40 @@
  * @Author: kevin
  * @Date: 2022-04-22 09:33:27
  * @LastEditors: kevin
- * @LastEditTime: 2022-04-19 17:38:07
+ * @LastEditTime: 2022-05-10 15:01:39
  * @Description: 二级目标
 -->
 <template>
-  <kv-form v-bind="searchConfig" v-model="formData">
-    <template #searchBtn>
-      <el-button type="primary" @click.prevent="onSubmit">搜索</el-button>
-    </template>
-    <template #backBtn>
-      <el-button type="warning" @click.prevent="goToFirst">返回</el-button>
-    </template>
-    <template #expBtn>
-      <el-button type="primary" @click.prevent="onDerive">导出</el-button>
-    </template>
-  </kv-Form>
+  <el-button type="warning" @click.prevent="goToFirst">返回</el-button>
+  <el-button type="primary" @click.prevent="onDerive">导出</el-button>
   <el-table :data="thatDataList" style="width: 100%" id="title">
+    <el-table-column label="序号" prop="index" width="80" align="center">
+      <template #default="scope">
+        {{ scope.$index + 1 }}
+      </template>
+    </el-table-column>
     <el-table-column label="操作" width="180" align="center">
       <template #default="scope">
         <el-link type="primary" size="small" icon="view" @click="handleEdit(scope.row)">查看</el-link>&nbsp;&nbsp;
-        <el-link type="primary" size="small" icon="edit" @click="handleEdit(scope.row)">编辑</el-link>&nbsp;&nbsp;
-        <el-link type="primary" size="small" icon="promotion" @click="handleReport(scope.row)">上报</el-link>
+        <!-- <el-link type="primary" size="small" icon="edit" @click="handleEdit(scope.row)">编辑</el-link>&nbsp;&nbsp;
+        <el-link type="primary" size="small" icon="promotion" @click="handleReport(scope.row)">上报</el-link> -->
       </template>
     </el-table-column>
     <el-table-column label="目标" prop="title" align="center" />
-    <el-table-column label="状态" prop="status" align="center" />
     <el-table-column label="最近更新" prop="updateTime" align="center">
-      {{ formatTimestamp(thatDataList[0].updateTime, 'YYYY-MM-DD') }}
+      <template #default="scope">
+        {{ formatTimestamp(scope.row.updateTime, 'YYYY-MM-DD') }}
+      </template>
     </el-table-column>
     <el-table-column label="自评分" prop="selfScore" align="center" />
-    <el-table-column label="评分" prop="status" align="center" />
-
+    <el-table-column label="评分" prop="scoreResult" align="center" />
+    <el-table-column label="状态" prop="status" align="center">
+      <template #default="scope">
+        <span v-if="scope.row.status === 0">未上报</span>
+        <span v-if="scope.row.status === 1">已上报</span>
+        <span v-if="scope.row.status === 2">部分上报</span>
+      </template>
+    </el-table-column>
   </el-table>
   <kvDialog v-bind="targetDialog" v-model="targetDialog.dialogVisible">
     <edit-target :rowData="subRowData" @callBack="cancel" />
@@ -43,7 +46,7 @@
 <script setup>
 import * as XLSX from 'xlsx'
 import FileSaver from 'file-saver'
-import { reactive, ref, defineProps, defineEmits } from 'vue'
+import { ref, defineProps, defineEmits } from 'vue'
 import editTarget from './editTarget.vue'
 import { useState } from '@/hooks/index'
 import { levelSecond } from './config/levelSecond'
@@ -56,7 +59,6 @@ const props = defineProps({
   }
 })
 const thatDataList = props.rowData.value
-const formData = reactive({})
 const { userInfo } = useState(['userInfo'], 'user')
 const role = ref(userInfo.value.role)
  console.log('userInfo', role.value, thatDataList)
@@ -67,7 +69,6 @@ const goToFirst = () => {
 const onDerive = () => {
   const filename = '导出.xlsx'
   const wb = XLSX.utils.table_to_book(document.getElementById('title'))
-  console.log(wb)
   const wbout = XLSX.write(wb, {
     bookType: 'xlsx',
     bookSST: true,
@@ -84,13 +85,11 @@ const onDerive = () => {
 }
  const {
     subRowData,
-    searchConfig,
     targetDialog,
     reportDialog,
     cancel,
-    handleEdit,
-    handleReport,
-    onSubmit
+    handleEdit
+    // handleReport,
  } = levelSecond()
 
 </script>

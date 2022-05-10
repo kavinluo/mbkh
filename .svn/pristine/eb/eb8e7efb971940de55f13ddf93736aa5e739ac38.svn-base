@@ -1,0 +1,137 @@
+<!--
+ * @Author: kevin
+ * @Date: 2022-03-25 11:37:20
+ * @LastEditors: kevin
+ * @LastEditTime: 2022-04-29 13:49:09
+ * @Description: 新增考核内容
+-->
+<template>
+  <div>
+    <table class="co-table">
+      <tr class="th">
+        <td v-for="(item, index) in tableData" :key="index">{{ item.title }}</td>
+        <td style="width: 100px">分数</td>
+      </tr>
+      <tr>
+        <template v-for="(item, index) in tableData" :key="index">
+          <td>
+            <template v-if="item.attributeType === 'select'">
+              <el-select v-model="item.content" class="m-2" placeholder="请选择" style="width: 120px">
+                <el-option
+                  v-for="option in item.options"
+                  :key="option"
+                  :label="option"
+                  :value="option"
+                />
+              </el-select>
+            </template>
+            <el-input v-else :placeholder="item.tips" :type="item.attributeType" v-model="item.content" />
+          </td>
+        </template>
+        <template v-for="(item, index) in tableData" :key="index">
+          <td v-if="index === tableData.length - 1" style="width: 100px">
+            <el-input placeholder="输入分数" type="number" v-model="score" />
+          </td>
+        </template>
+      </tr>
+    </table>
+    <el-row>
+      <el-col align="right" style="margin-top: 20px">
+        <el-button type="primary" @click="handleConfirm">确定</el-button>
+        <el-button type="warning" @click="cancel">关闭</el-button>
+      </el-col>
+    </el-row>
+  </div>
+</template>
+
+<script setup>
+  import { ref } from 'vue'
+  import { getAttrListPage } from '@/api/template'
+  import { useStore } from '@/store'
+
+  const { userTemplate, rowData, editType } = defineProps({
+      userTemplate: {
+        type: Object,
+        default: null
+      },
+      rowData: {
+        type: Object,
+        default: null
+      },
+      editType: {
+        type: String,
+        default: 'add'
+      }
+    })
+  const emit = defineEmits(['change', 'callBack', 'cancel'])
+
+  const tableData = ref([])
+  const score = ref(0)
+  const store = useStore()
+  store.commit('changerPageSizeStatus', false)
+  const formOriginData = {
+    templateId: userTemplate.id,
+    curPage: 1,
+    pageSize: 30
+  }
+  const formData = ref(formOriginData)
+  const getData = async () => {
+    const { data = {} } = await getAttrListPage(formData.value)
+    tableData.value = format(data.list)
+  }
+
+  const format = (list) => {
+    // list.splice(list.length - 2, 0, ty)
+    return list.sort((a, b) => a.number - b.number).map(item => {
+      score.value = (+item.score) || 0
+      const option = item.attributeType === 'select' ? item?.tips?.split(';') : ''
+      return {
+          title: item.attributeName || item.title,
+          content: item.content || item.defaultValue,
+          id: item.id,
+          required: item.required,
+          tips: item.tips,
+          defaultValue: item.defaultValue,
+          attributeType: item.attributeType,
+          templateType: item.attributeType, // 提交时候需要
+          templateId: item.templateId,
+          template: item.attributeName,
+          score: item.score || 0,
+          options: option,
+          target: item.tips
+      }
+    })
+  }
+  if (editType === 'edit') {
+      tableData.value = format(rowData?.showContent ?? [])
+    } else {
+      getData()
+    }
+  const handleConfirm = () => {
+    tableData.value.forEach(item => {
+      item.score = score.value
+    })
+    emit('callBack', tableData.value)
+  }
+  const cancel = (row) => {
+    emit('cancel')
+  }
+</script>
+
+<style lang="less" scoped>
+  .co-table {
+    width: 100%;
+    border: solid #eee 1px;
+    border-collapse: collapse;
+    .th {
+      border: solid #eee 1px;
+        background: #dedede;
+        font-weight: bold;
+    }
+    tr {
+      td{
+        padding: 5px;
+      }
+    }
+  }
+</style>

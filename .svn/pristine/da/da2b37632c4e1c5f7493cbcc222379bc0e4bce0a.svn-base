@@ -1,0 +1,53 @@
+<!--
+ * @Author: kevin
+ * @Date: 2022-05-09 11:32:44
+ * @LastEditors: kevin
+ * @LastEditTime: 2022-05-09 09:34:03
+ * @Description: 新建日程弹窗
+-->
+<template>
+  <div>
+    <kv-form v-bind="formConfig" v-model="formData" ref="ruleFormRef">
+      <template #top>
+        <el-date-picker
+          style="width: 60%"
+          v-model="value"
+          type="datetimerange"
+          start-placeholder="开始时间"
+          end-placeholder="结束时间"
+          :default-time="defaultTime"
+        />
+      </template>
+      <template #icon>
+        <el-icon style="font-size: 25px">
+          <circlePlus />
+        </el-icon>
+      </template>
+
+      <template #footer>
+        <div class="handle-btns" style="text-align: center">
+          <el-button type="primary" @click.prevent="onSubmit">确定</el-button>
+          <el-button type="warning" @click="handleResetClick">关闭</el-button>
+        </div>
+      </template>
+    </kv-form>
+  </div>
+</template>
+
+<script setup>
+import { addHandels } from '../config/hook'
+import { ref } from 'vue'
+const emit = defineEmits(['cancel'])
+const handleResetClick = () => {
+  emit('cancel')
+  formData.value = formData
+}
+const value = ref('')
+const defaultTime = ref([
+  new Date(2000, 1, 1, 0, 0, 0),
+  new Date(2000, 2, 1, 23, 59, 59)
+])
+const { formConfig, formData } = addHandels()
+</script>
+
+<style lang="scss" scoped></style>
