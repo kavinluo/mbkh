@@ -1,0 +1,71 @@
+<!--
+ * @Author: kevin
+ * @Date: 2022-05-13 11:32:12
+ * @LastEditors: kevin
+ * @LastEditTime: 2022-05-19 15:47:52
+ * @Description: 已办事宜
+-->
+<template>
+  <kv-form v-bind="searchConfig" v-model="formData" >
+    <template #searchBtn>
+      <el-button type="primary" @click.prevent="onSubmit">搜索</el-button>
+    </template>
+    <template #textLinkBtn>
+      <el-link type="primary" :underline="false" style="padding:0 5px 15px 5px" >全部</el-link>
+      <el-link type="primary" :underline="false" style="padding:0 5px 15px 5px" >未读</el-link>
+      <el-link type="primary" :underline="false" style="padding:0 5px 15px 5px" >已读</el-link>
+    </template>
+  </kv-form>
+  <kv-table
+    :propList="targetList"
+    :getDataFn="getalready"
+    @handleSelectionChange="handleSelectionChange"
+    :showFooter="false"
+  >
+    <template #times="scope">
+      {{ formatTimestamp(scope.row.times, 'YYYY-MM-DD') }}
+    </template>
+    <template #handler="scope">
+      <el-link type="primary" size="small" @click="handleAddTemplate(scope.row)" underline icon="view">查看</el-link>&nbsp;&nbsp;&nbsp;
+    </template>
+  </kv-table>
+  <kvDialog v-bind="editDialog" v-model="editDialog.dialogVisible">
+    <edit-target :rowData="subRowData" where="work" @callBack="cancelcancel" />
+  </kvDialog>
+  <kvDialog v-bind="acmDialog" v-model="acmDialog.dialogVisible">
+    <handleAcm :rowData="subRowDatas" />
+  </kvDialog>
+</template>
+
+<script setup>
+import { reactive } from 'vue'
+import { targetList } from './config/dataConfig'
+import { getalready } from '@/api/todoList'
+import { formatTimestamp } from '@/utils/formatDate.js'
+import { handeles } from './config/hooks'
+import editTarget from '@/views/evaluationProcess/alltheTarget/theoverallgoal/editTarget.vue'
+import { updateList } from '@/store'
+import handleAcm from '../../bounced/handleAcm.vue'
+
+const formData = reactive({})
+const handleSelectionChange = () => {}
+const onSubmit = () => {}
+const cancelcancel = () => {
+  console.log('77', 77)
+  updateList(getalready)
+}
+const {
+  handleAddTemplate,
+  // cancel,
+  searchConfig,
+  subRowData,
+  // targetDialog
+  editDialog,
+  acmDialog,
+  subRowDatas
+} = handeles()
+</script>
+
+<style scoped>
+
+</style>

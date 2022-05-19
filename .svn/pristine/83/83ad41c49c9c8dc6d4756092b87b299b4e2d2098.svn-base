@@ -1,0 +1,62 @@
+<!--
+ * @Author: kevin
+ * @Date: 2022-05-06 15:49:44
+ * @LastEditors: kevin
+ * @LastEditTime: 2022-05-09 16:40:01
+ * @Description: 添加公告
+-->
+<template>
+  <div>
+    <kv-form v-bind="formConfig" v-model="formData" ref="ruleFormRef">
+      <template #type>
+        <el-select v-model="formData.type" placeholder="请选择分类">
+          <el-option
+            v-for="option in tableData"
+            :value="option.id"
+            :key="option.id"
+            :label="option.typeName"
+          ></el-option>
+        </el-select>
+      </template>
+      <template #checkArea>
+        <el-select
+          style="width: 100%"
+          v-model="formData.checkArea"
+          multiple
+          filterable
+          default-first-option
+          :reserve-keyword="false"
+          placeholder="选择范围"
+        >
+          <el-option
+            v-for="item in menuList"
+            :key="item.id"
+            :label="item.name"
+            :value="item.id"
+          />
+        </el-select>
+      </template>
+
+      <template #footer>
+        <div class="handle-btns" style="text-align: center">
+          <el-button type="warning" @click="handleResetClick">关闭</el-button>
+        </div>
+      </template>
+    </kv-form>
+  </div>
+</template>
+
+<script setup>
+import { addHandels, handeles } from '../config/hooks'
+const { rowData } = defineProps({
+  rowData: {
+    type: Object,
+    default: () => ({})
+  }
+})
+const { handleResetClick } = handeles()
+const { tableData, ruleFormRef, menuList, formData, formConfig } =
+  addHandels(rowData)
+</script>
+
+<style lang="scss" scoped></style>

@@ -1,0 +1,59 @@
+<!--
+ * @Author: kevin
+ * @Date: 2022-05-06 15:49:44
+ * @LastEditors: kevin
+ * @LastEditTime: 2022-05-09 16:40:01
+ * @Description: 添加公告
+-->
+<template>
+  <div>
+    <kv-form v-bind="formConfig" v-model="formData">
+      <template #text>
+        <span>{{ formData.title }}</span>
+      </template>
+      <template #type>
+        <span>{{ formData.type }}</span>
+      </template>
+      <template #content>
+        <span v-html="formData.content"></span>
+      </template>
+      <template #checkArea>
+        <el-select
+          disabled
+          style="width: 100%"
+          v-model="formData.checkArea"
+          multiple
+        >
+          <el-option
+            v-for="item in menuList"
+            :key="item.id"
+            :label="item.name"
+            :value="item.id"
+          />
+        </el-select>
+
+      </template>
+
+      <template #footer>
+        <div class="handle-btns" style="text-align: center">
+          <el-button type="warning" @click="handleResetClick">关闭</el-button>
+        </div>
+      </template>
+    </kv-form>
+  </div>
+</template>
+
+<script setup>
+import { addHandels, handeles } from '../config/hooks'
+const { rowData } = defineProps({
+  rowData: {
+    type: Object,
+    default: () => ({})
+  }
+})
+const { handleResetClick } = handeles()
+const { menuList, formData, formConfig } =
+  addHandels(rowData)
+</script>
+
+<style lang="scss" scoped></style>

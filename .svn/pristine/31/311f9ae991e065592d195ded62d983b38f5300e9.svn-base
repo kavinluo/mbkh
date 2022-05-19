@@ -1,0 +1,68 @@
+/*
+ * @Author: kevin
+ * @Date: 2022-05-06 16:02:25
+ * @LastEditors: kevin
+ * @LastEditTime: 2022-05-09 16:23:17
+ * @Description: Do not edit
+ */
+import { ref } from 'vue'
+import { viewModelConfig } from './dialogConfig'
+import { get } from '@/api/notice'
+import formConfig from './viewFormConfig'
+import { getRoleList } from '@/api/organization'
+const subRowData1 = ref({})
+export const handels = () => {
+  const formData = ref({ title: '' })
+  const viewDialog = ref(viewModelConfig)
+  const viewType = ref('')
+  const handleView = (row) => {
+    viewDialog.value.dialogVisible = true
+    subRowData1.value = row
+  }
+
+  const handleResetClick = () => {
+    viewDialog.value.dialogVisible = false
+  }
+
+  return {
+    handleView,
+    viewDialog,
+    formData,
+    handleResetClick,
+    confirm,
+    subRowData1,
+    viewType
+  }
+}
+export const addHandels = (row) => {
+  const menuList = ref([])
+  const formItems = formConfig?.formItems ?? []
+  const formOriginData = {}
+  for (const item of formItems) {
+    formOriginData[item.field] = ''
+  }
+  const formData = ref(formOriginData)
+  formData.value.top = 1// 设置是否置顶 0 否 1 是
+      // 获得单个公告
+      get(row.id).then(res => {
+        formData.value = res.data
+        formData.value.checkArea = res.data.checkArea?.split(',')
+        if (formData.value.checkArea?.length) {
+          formData.value.checkArea = formData.value.checkArea.map(x => +x)
+        }
+      })
+  const ruleFormRef = ref()
+  const getl = async () => {
+    const { data } = await getRoleList()
+    console.log('data', data)
+    menuList.value = data
+  }
+  getl()
+  return {
+    formData,
+    menuList,
+    status,
+    formConfig,
+    ruleFormRef
+  }
+}
