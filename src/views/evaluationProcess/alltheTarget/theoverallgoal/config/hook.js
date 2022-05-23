@@ -2,13 +2,14 @@
  * @Author: kevin
  * @Date: 2022-04-12 13:40:01
  * @LastEditors: kevin
- * @LastEditTime: 2022-05-19 15:46:45
+ * @LastEditTime: 2022-05-20 17:21:33
  * @Description: Do not edit
  */
-import { ref, getCurrentInstance } from 'vue'
+import { ref, getCurrentInstance, nextTick, watch } from 'vue'
 import { fileDialogConfig, reasonDialogConfig } from './dialogConfig'
 import { targetScoreAdd, getFileList, getAccount, getTarget } from '@/api/process'
 import { getdetail } from '@/api/todoList'
+import { mergeSameCell } from '@/utils/util'
 export const handleFile = ({ emit, where, rowData }) => {
   const { proxy } = getCurrentInstance()
   const fileDialog = ref(fileDialogConfig)
@@ -17,6 +18,7 @@ export const handleFile = ({ emit, where, rowData }) => {
   const showTableData = ref([])
   const useIndex = ref(0)
   const showData = ref({})
+  const useTable = ref(null)
   const showFileList = ref({
     0: []
   })
@@ -81,7 +83,7 @@ export const handleFile = ({ emit, where, rowData }) => {
     reasonDialog.value.dialogVisible = false
   }
   const cancelTargetModle = () => {
-    emit('callBack', '7777')
+    emit('callBack')
   }
   // const fn = targetScoreAdd
   const submitHandle = () => {
@@ -109,7 +111,7 @@ export const handleFile = ({ emit, where, rowData }) => {
        const { data } = await getTarget(rowData.id)
         showData.value = data
     }
-     const { tableData } = formatTableData(showData.value)
+     const { tableData } = formatTableData(showData.value, rowData)
      showTableData.value = tableData
   }
   getTargetData()
@@ -134,6 +136,11 @@ export const handleFile = ({ emit, where, rowData }) => {
       }, 0)
     }
   }
+  watch(() => showTableData.value, () => {
+    nextTick(() => {
+      mergeSameCell(useTable.value, 1, 0, [0, 1])
+    })
+  })
   return {
     count,
     handelS,
@@ -156,33 +163,30 @@ export const handleFile = ({ emit, where, rowData }) => {
     handleReason,
     reasonDialog,
     cancelTargetModle,
-    showData
+    showData,
+    useTable
   }
 }
 /**
  *
  * @param {Array} list // 数据
- * @param {Array} cyListOption // 选项
- * @param {*} type // 类型
  * @returns Array
  */
- export const formatTableData = (data = {}, cyListOption, type) => {
+ export const formatTableData = (data = {}, rowData) => {
   const usrlist = data.targetInfoDtoList
 
-  const objList = {}
   usrlist.forEach(item => {
+    console.log('item', item)
     item.detailedDto.sort((a, b) => a.number - b.number).forEach(x => {
       item.targetId = data.id // 目标id 提交需要
+      item.area = rowData.checkArea // 地区id
       item.depositoryId = item.quotaId2 // 指标库id
       if (x.templateName === '考评方式') { // 此处如果文字有变动将会出现错误
         item.materialType = x.content === '资料上传' ? 1 : x.content === '人员资料' ? 2 : x.content === '实地考察' ? 3 : 0 // 评分方式 1上传资料 2用户名称 3文本 0无）
       }
     })
-    item.rowSpan = ''
   })
   return {
-    tableData: usrlist,
-    usrlist,
-    objList
+    tableData: usrlist
   }
 }

@@ -2,7 +2,7 @@
  * @Author: kevin
  * @Date: 2022-04-08 16:11:57
  * @LastEditors: kevin
- * @LastEditTime: 2022-05-19 15:45:32
+ * @LastEditTime: 2022-05-20 16:15:44
  * @Description: 目标编辑
 -->
 <template>
@@ -16,13 +16,13 @@
     <el-col :span="9"><div class="grid-content bg-purple" /></el-col>
   </el-row>
   <div class="useTable" style="margin-top: 20px;">
-    <table style="width: 100%;">
+    <table style="width: 100%;" ref="useTable" id="useTable">
       <tr>
         <th style="white-space: nowrap;">一级指标</th>
         <th style="white-space: nowrap;">二级指标</th>
         <template v-for="(item, index) in showTableData" :key="index">
           <template v-if="index === 0">
-            <th v-for="s in item.detailedDto" :key="s.id" style="white-space: nowrap;">
+            <th v-for="s in item.detailedDto" :key="s.id">
               {{ s.templateName }}
             </th>
           </template>
@@ -30,13 +30,13 @@
         <th style="white-space: nowrap;">指标周期</th>
         <th style="white-space: nowrap;">分值</th>
         <th style="white-space: nowrap;">扣分原因</th>
-        <th style="white-space: nowrap; width: 90px;">自评分</th>
+        <th style="width: 90px;">自评分</th>
         <th style="white-space: nowrap;" v-if="role.userType === 1">复评分</th>
       </tr>
       <template v-for="(item, index) in showTableData" :key="index">
         <tr>
-          <td>{{ item.quotaName1 }}</td>
-          <td>{{ item.quotaName2 }}</td>
+          <td style="text-align: center;">{{ item.quotaName1 }}</td>
+          <td style="text-align: center;">{{ item.quotaName2 }}</td>
           <template v-for="(s, i) in item.detailedDto" :key="i">
             <td v-if="s.templateName === '考评方式'">
               <el-button v-if="item.materialType!==0" @click="handelS(index, item.materialType, item.material)" type="primary" size="small">
@@ -55,9 +55,15 @@
             <el-button v-else @click="handleReason(index)" type="primary" size="small">填写</el-button>
           </td>
           <!-- 自评 -->
-          <td> <el-input v-model="item.selfScore" type="number" :disabled="role.userType === 1 || rowData.modelType==='view'" @change="count('ZP', item)" style="width: 70px;" /></td>
+          <td align="center" style="width:90px">
+            <div v-if="role.userType === 1 || rowData.modelType==='view'">{{ item.selfScore }}</div>
+            <el-input v-else v-model="item.selfScore" type="number" @change="count('ZP', item)" style="width: 70px;" />
+          </td>
           <!-- 复评 -->
-          <td v-if="role.userType === 1"> <el-input type="number" v-model="item.repeatedScore" :disabled="role.userType !== 1||rowData.modelType==='view'" @change="count('FP', item)" style="width:70px;" /></td>
+          <td v-if="role.userType === 1" align="center">
+            <div v-if="role.userType !== 1||rowData.modelType==='view'">{{ item.repeatedScore }}</div>
+            <el-input v-else type="number" v-model="item.repeatedScore" @change="count('FP', item)" style="width:70px;" />
+          </td>
         </tr>
       </template>
     </table>
@@ -67,12 +73,14 @@
       <el-button @click="cancelTargetModle" type="warning">关闭</el-button>
     </div>
     <kvDialog v-bind="reasonDialog" v-model="reasonDialog.dialogVisible" @callBack="cancelModle">
-      <el-form :inline="false" label-width="120px">
-        <el-form-item label="考区填写的扣分原因：">
-          <el-input type="textarea" :disabled="role.userType !== 1 || rowData.modelType==='view'" v-model="showTableData[useIndex].adminReason"></el-input>
+      <el-form :inline="false" label-width="140px">
+        <el-form-item label="考区扣分原因：">
+          <div v-if="role.userType === 1 || rowData.modelType==='view'">{{ showTableData[useIndex].reason || '-' }}</div>
+          <el-input v-else type="textarea" placeholder="填写扣分原因" style="width: 90%" v-model="showTableData[useIndex].reason"></el-input>
         </el-form-item>
-        <el-form-item label="填写扣分原因：">
-          <el-input type="textarea" :disabled="role.userType === 1 || rowData.modelType==='view'" v-model="showTableData[useIndex].reason"></el-input>
+        <el-form-item label="管理员扣分原因：">
+          <div v-if="role.userType !== 1 || rowData.modelType==='view'">{{ showTableData[useIndex].adminReason || '-' }}</div>
+          <el-input type="textarea" v-else placeholder="填写扣分原因" style="width: 90%" v-model="showTableData[useIndex].adminReason"></el-input>
         </el-form-item>
       </el-form>
 
@@ -135,7 +143,6 @@
   import { handleFile } from './config/hook'
   import { useState } from '@/hooks/index'
   import { tablePropList } from './config/dataConfig'
-
   // role.userType：1 国家层次，2 基地
   const emit = defineEmits(['callBack'])
   const { where, rowData } = defineProps({
@@ -172,9 +179,9 @@
     materialType,
     accountList,
     useSelectAccount,
-    showData
+    showData,
+    useTable
   } = handleFile({ emit, where, rowData })
-
 </script>
 
 <style lang="less" scoped>

@@ -10,10 +10,10 @@
     <el-col :span="12">
       <div>
         <!-- 地图容器 -->
-        <checharts-manage/>
+        <cnEcharts></cnEcharts>
         <!-- 地图数据 -->
         <div class="mapData">
-          <mapdata-manage/>
+          <mapData></mapData>
         </div>
       </div>
       <!-- 日程表 -->
@@ -35,7 +35,7 @@
       <div>
         <!-- 代办/已办事宜 -->
         <div class="doSth">
-          <matterslist-manage/>
+          <mattersList></mattersList>
         </div>
         <!-- 评价指标 -->
         <div>
@@ -51,7 +51,7 @@
         <!-- echarts图表 -->
         <div @click="card">
           <span class="evaluation"><img src="@/assets/img/computer.png" alt="" class="images">评价排名</span>
-          <rankingecharts-manage/>
+          <rankingEcharts></rankingEcharts>
         </div>
       </div>
     </el-col>
@@ -60,10 +60,10 @@
 </template>
 
 <script setup>
-import chechartsManage from './bounced/chEcharts.vue'
-import rankingechartsManage from './bounced/rankingEcharts.vue'
-import mapdataManage from './bounced/mapData.vue'
-import matterslistManage from './bounced/mattersList.vue'
+import cnEcharts from './bounced/cnEcharts.vue'
+import rankingEcharts from './bounced/rankingEcharts.vue'
+import mapData from './bounced/mapData.vue'
+import mattersList from './bounced/mattersList.vue'
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 
@@ -90,7 +90,10 @@ import { useRouter } from 'vue-router'
      // 日程表
     const calenDar = () => {
       $router.push('/manage/calenDar')
+            // setStaticData('defaultActiveValue', 97)
+      // store.dispatch('changerCurrentValue')
     }
+
 </script>
 
 <style scoped>

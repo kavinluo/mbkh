@@ -2,7 +2,7 @@
  * @Author: kevin
  * @Date: 2022-04-02 10:27:51
  * @LastEditors: kevin
- * @LastEditTime: 2022-05-19 11:18:21
+ * @LastEditTime: 2022-05-20 17:12:41
  * @Description: 新建二级目标
 -->
 <template>
@@ -43,7 +43,7 @@
     </template>
     <template #footer>
       <div class="useTable">
-        <table style="width: 100%;">
+        <table style="width: 100%;" ref="useTable">
           <tr>
             <th style="white-space: nowrap;">一级指标</th>
             <th style="white-space: nowrap;">二级指标</th>
@@ -136,7 +136,8 @@
     handleSelectionChange,
     handleAddQuota,
     ruleFormRef,
-    formData
+    formData,
+    useTable
   } = addScondTargetHook({ rowData, subRowData, editType, emit })
 </script>
 

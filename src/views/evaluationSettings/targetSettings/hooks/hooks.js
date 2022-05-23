@@ -50,16 +50,14 @@ export const getQuotaLis = async () => {
  * @param {*} type // 类型
  * @returns Array
  */
-export const formatTableData = (list = [], cyListOption, type) => {
+export const formatTableData = (list = []) => {
   let usrlist = []
   const objList = {}
   list.forEach(item => {
     const key = item.quotaId1
     objList[item.quotaId1] = item[key]
     usrlist = usrlist.concat(item[key])
-    console.log('objList[item.quotaId1].length', objList[item.quotaId1].length)
     usrlist.forEach(i => {
-      i.rowSpan = objList[item.quotaId1].length
       i.detailedDto = i.detailedDto.sort((a, b) => a.number - b.number)
     })
   })

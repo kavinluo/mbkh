@@ -2,7 +2,7 @@
  * @Author: kevin
  * @Date: 2022-05-18 15:26:27
  * @LastEditors: kevin
- * @LastEditTime: 2022-05-19 11:22:20
+ * @LastEditTime: 2022-05-20 18:06:55
  * @Description: 二级目标添加
  */
 import { ref } from 'vue'
@@ -14,11 +14,13 @@ import {
 import { getSuper } from '@/api/account'
 import { getRoleList } from '@/api/organization'
 import { add, getList } from '@/api/target'
+// import { mergeSameCell } from '@/utils/util'
 import { getCycle, getQuotaLis, formatTableData, formatSelectQuotaList } from '../hooks/hooks'
 import { depositoryList } from '@/api/cycle'
 export const addScondTargetHook = ({ rowData, subRowData, editType, emit }) => {
   // 指标周期
   const cyListOption = ref([])
+  const useTable = ref(null)
   // 考区选择
   const checkAreaOptions = ref([])
   //  负责人
@@ -120,6 +122,11 @@ export const addScondTargetHook = ({ rowData, subRowData, editType, emit }) => {
       }
     })
   }
+  // watch(() => showTableData.value, () => {
+  //   nextTick(() => {
+  //     mergeSameCell(useTable.value, 1, 0, [0, 1])
+  //   })
+  // })
   return {
     addSubFormConfig,
     tablePropList,
@@ -136,6 +143,7 @@ export const addScondTargetHook = ({ rowData, subRowData, editType, emit }) => {
     ruleFormRef,
     showTableData,
     // cyListOption,
-    formData
+    formData,
+    useTable
   }
 }
