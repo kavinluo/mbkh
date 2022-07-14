@@ -1,7 +1,7 @@
 <template>
   <div class="box-card3">
     <p style="color: #65a7fe" @click="todo"><img src="@/assets/img/computer.png" alt="" class="images">代办/已办事宜</p>
-    <div v-if="watiList.length === 0 "><img src="@/assets/img/temporarily.png" style="padding:5% 0 0 10%"></div>
+    <div v-if="watiList.length === 0"><img src="@/assets/img/temporarily.png" style="padding:5% 0 0 10%"></div>
     <div class="handle" v-for="item in watiList.slice(0,2)" :key="item.number">
       <el-row :gutter="20">
         <el-col :span="8">
@@ -52,14 +52,12 @@ import editTargetManage from '@/views/evaluationProcess/alltheTarget/theoverallg
 import handleAcmManage from './handleAcm.vue'
     const { userInfo } = useState(['userInfo'], 'user')
     const $router = useRouter()
-    const watiList = ref([])
     const getTargetData = async () => {
-    const { data } = await getwatiList()
-       watiList.value = data
+    const { data } = await getwatiList({ pageSize: 10, curPage: 1 })
+       watiList.value = data || []
    }
-   getTargetData()
-       const role = ref(userInfo.value)
-
+    getTargetData()
+    const role = ref(userInfo.value)
     const acceptList = ref([])
     const acceptData = async () => {
       const { data } = await acceptListPage({ pageSize: 10, curPage: 1 })
@@ -71,18 +69,14 @@ import handleAcmManage from './handleAcm.vue'
       // 待办
     const todo = () => {
       $router.push({ path: '/manage/alreadyDoMatters' })
-      // setStaticData('defaultActiveValue', 93)
-      // store.dispatch('changerCurrentValue', 93)
     }
          // 公告
     const notice = () => {
       $router.push({ path: '/manage/notice' })
-      // setStaticData('defaultActiveValue', 94)
-      // store.dispatch('changerCurrentValue', 94)
     }
 
        const {
-    handleAddTemplate,
+     handleAddTemplate,
      handleView,
      cancel,
      subRowData,
@@ -90,14 +84,15 @@ import handleAcmManage from './handleAcm.vue'
      acmDialog,
      subRowDatas,
      viewDialog,
-     subRowData1
+     subRowData1,
+     watiList
     } = handeles()
 </script>
 
 <style scoped>
 .box-card3 {
   height: 310px;
-  margin-left: 80px;
+  margin-left: 3.333rem;
   flex: 1;
   justify-content: flex-end;
   align-items: center;
@@ -111,13 +106,13 @@ import handleAcmManage from './handleAcm.vue'
   margin-left:10px
 }
 .handle{
-  width: 400px;
+  width: 95%;
   margin-top:20px;
   background-color: #f0f5f9;
   line-height:20px
 }
 .images{
-  width:30px;
+  width:2em;
   height:25px;
   margin-right:5px;
   position:relative;

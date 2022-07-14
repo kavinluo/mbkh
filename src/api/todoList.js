@@ -11,10 +11,11 @@ const baseUrl = '/await'
 /**
  * 查询待办
  */
- export function getwatiList () {
+ export function getwatiList (parameter) {
   return axios({
     url: `${baseUrl}/waitList`,
-    method: 'get'
+    method: 'get',
+    params: parameter
 
   })
 }
@@ -32,9 +33,11 @@ const baseUrl = '/await'
 /**
  * 查询已办
  */
-export function getalready () {
+export function getalready (parameter) {
   return axios({
     url: `${baseUrl}/alreadyList`,
-    method: 'get'
+    method: 'get',
+    params: parameter
+
   })
 }

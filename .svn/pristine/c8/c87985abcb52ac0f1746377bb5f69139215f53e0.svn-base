@@ -1,0 +1,83 @@
+<!--
+ * @Author: kevin
+ * @Date: 2022-05-07 16:31:12
+ * @LastEditors: kevin
+ * @LastEditTime: 2022-04-12 17:59:39
+ * @Description: 日程表
+-->
+<template>
+  <el-row>
+    <el-col :span="4.5">
+      <div class="box-card">
+        <span>日历 <img src="@/assets/img/calenDar.png" style="float:right;margin-right:15px" @click="addcalenDar"></span>
+        <el-calendar ref="calendar">
+          <template #header="{ date }">
+            <span @click="selectDate('prev-month')"> ＜＜ </span>
+            <span>{{ date }}</span>
+            <span @click="selectDate('next-month')"> ＞＞ </span>
+          </template>
+        </el-calendar>
+        <div>
+          <el-collapse
+            v-model="activeNames"
+            style="width: 250px"
+          >
+            <el-collapse-item title="考区日程" name="1" @change="handleChange" >
+              <div>123</div>
+            </el-collapse-item>
+            <el-collapse-item name="2">
+              <template #title>关注日程 <el-icon class="header-icon" :size="20" @click="add" style="position:absolute; left:260px"> <circlePlus /> </el-icon></template>
+              <div>456</div>
+            </el-collapse-item>
+          </el-collapse>
+        </div>
+      </div>
+    </el-col>
+    <el-col :span="19">
+      <el-tabs v-model="activeName" class="use-tabs">
+        <el-tab-pane label="考区日程" name="etsSchedule">
+          <etsScheduleManage v-if="activeName === 'etsSchedule'" />
+        </el-tab-pane>
+      </el-tabs>
+    </el-col>
+  </el-row>
+
+</template>
+
+<script setup>
+import { ref } from 'vue'
+import etsScheduleManage from './etsScheduleIndex.vue'
+const calendar = ref()
+const activeNames = ref(['1'])
+const activeName = ref('etsSchedule')
+const selectDate = (val) => {
+  calendar.value.selectDate(val)
+}
+const handleChange = (val) => {
+  console.log(val)
+}
+const addcalenDar = () => {
+  console.log(123)
+}
+const add = () => {
+  console.log('新增')
+}
+</script>
+
+<style scoped lang="less">
+.box-card {
+  width: 300px;
+  border-right: 1px solid #cccccc;
+}
+:deep(.el-calendar__body) {
+    --el-calendar-cell-width: 40px;
+}
+:deep thead {
+  background-color: #f3f3f3;
+}
+
+:deep div#el-collapse-head-7976 {
+  width: 300px;
+}
+
+</style>

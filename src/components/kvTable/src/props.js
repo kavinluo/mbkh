@@ -2,7 +2,7 @@
  * @Author: kevin
  * @Date: 2022-05-10 14:01:32
  * @LastEditors: kevin
- * @LastEditTime: 2022-05-10 14:02:07
+ * @LastEditTime: 2022-05-23 09:25:27
  * @Description: props
  */
 export const propsList = {
@@ -54,7 +54,7 @@ export const propsList = {
     type: Object,
     default: () => ({})
   },
-  isAwait: { // 是否需要等待
+  isAwait: { // 请求列表数据时是否需要等待
     type: Boolean,
     default: false
   },

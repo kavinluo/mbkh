@@ -17,9 +17,6 @@ import router from './router/index.js'
 import { axios } from './utils/request'
 import { globalRegisterComponent } from './components/index'
 import store, { setupStore } from './store'
-import * as echarts from 'echarts'
-import china from '@/utils/chinaChange.json'
-echarts.registerMap('china', china)
 
 const app = createApp(App)
 
@@ -36,5 +33,3 @@ app.mount('#app')
 app.config.globalProperties.$axios = axios
 
 app.config.globalProperties.$message = ElMessage // 注册提示
-
-app.config.globalProperties.$echarts = echarts

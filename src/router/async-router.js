@@ -2,7 +2,7 @@
  * @Author: kevin
  * @Date: 2022-02-28 15:57:13
  * @LastEditors: kevin
- * @LastEditTime: 2022-05-10 10:30:42
+ * @LastEditTime: 2022-07-05 17:21:10
  * @Description: 动态获取路由
  */
 
@@ -18,7 +18,7 @@
  export const mapMenusToRoutes = (routerMap, parent) => {
   const routers = routerMap.map(item => {
     // eslint-disable-next-line no-unused-vars
-    const { title, show, hideChildren, target, icon, children, id, deppath } = item || {}
+    const { title, isSee, hideChildren, target, icon, children, id, deppath } = item || {}
     const currentRouter = {
       // 如果路由设置了 path，则作为默认 path，否则 路由地址 动态拼接生成如 /dashboard/workplace
       path: item?.path || `${parent && parent.path || ''}/${item.name}`,
@@ -40,10 +40,11 @@
       parentId: item.parentId,
       id: id,
       depath: deppath,
+      hidden: false, // 是否可见
       redirect: children && item.children?.length ? item.children[0].path : ''
     }
-    // 是否设置了隐藏菜单
-    if (show === false) {
+    // 是否设置了隐藏菜单 1 可见 0 不可见
+    if (isSee === 0) {
       currentRouter.hidden = true
     }
     // 是否设置了隐藏子菜单

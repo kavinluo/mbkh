@@ -30,7 +30,7 @@ export const searchConfig = {
       span: {
         span: 4
       },
-      field: 'title',
+      field: 'content',
       type: 'input',
       label: '标题',
       placeholder: '请输入标题',
@@ -38,20 +38,12 @@ export const searchConfig = {
     },
     {
       span: {
-        span: 1,
-        align: 'right'
+        span: 2,
+        align: 'left'
       },
       type: 'colSlot',
       slotName: 'searchBtn',
       itemClassName: 'searchBtn'
-    }, {
-      span: {
-        span: 19,
-        align: 'right'
-      },
-      type: 'colSlot',
-      slotName: 'textLinkBtn',
-      itemClassName: 'textLinkBtn'
     }
   ]
 }

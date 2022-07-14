@@ -66,7 +66,7 @@ import * as echarts from 'echarts'
 
 <style scoped>
 #myChart12 {
-  width: 950px;
-  height: 310px;
+  width: 100%;
+  height: 275px;
 }
 </style>

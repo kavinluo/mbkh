@@ -1,0 +1,58 @@
+<!--
+ * @Author: kevin
+ * @Date: 2022-05-06 11:28:07
+ * @LastEditors: kevin
+ * @LastEditTime: 2022-05-16 16:56:50
+ * @Description: 通知公告
+-->
+<template>
+  <div style="position:relative">
+    <el-tabs v-model="activeName" class="demo-tabs" @tab-click="handleClick">
+      <el-tab-pane label="我的接收" name="send" v-if="role.id !== 1">
+        <send v-if="activeName === 'send'" />
+      </el-tab-pane>
+      <el-tab-pane label="我的发布" name="publish">
+        <publish v-if="activeName === 'publish'" />
+      </el-tab-pane>
+    </el-tabs>
+
+    <div style="position:absolute; right:20px; top: 0;" v-if="activeName === 'publish'">
+      <el-button type="primary" @click="addHandle('add')"><el-icon style="vertical-align: middle"> <plus /> </el-icon>发布公告</el-button>
+    </div>
+  </div>
+  <kvDialog v-bind="editDialog" v-model="editDialog.dialogVisible">
+    <add @cancel="cancel" :editType="editType" :rowData="rowData" @callBack="callBack" />
+  </kvDialog>
+</template>
+
+<script setup>
+  import send from './send/useSend.vue'
+  import publish from './publish/usePublish.vue'
+  import add from './send/add.vue'
+  import { handels } from './config/hook'
+  import { ref } from 'vue'
+  import { useState } from '@/hooks/index'
+
+  const { userInfo } = useState(['userInfo'], 'user')
+  const role = ref(userInfo.value)
+  const activeName = ref('publish')
+  if (role.value.id !== 1) {
+    activeName.value = 'send'
+  }
+  const handleClick = ({ props }) => {
+    console.log('type', props)
+    activeName.value = props.name
+  }
+ const {
+    editDialog,
+    addHandle,
+    cancel,
+    callBack,
+    rowData,
+    editType
+ } = handels()
+</script>
+
+<style lang="scss" scoped>
+
+</style>

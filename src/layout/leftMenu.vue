@@ -2,7 +2,7 @@
  * @Author: kevin
  * @Date: 2022-02-25 09:42:38
  * @LastEditors: kevin
- * @LastEditTime: 2022-05-06 14:17:05
+ * @LastEditTime: 2022-07-05 17:10:11
  * @Description: Do not edit
 -->
 <template>
@@ -13,7 +13,7 @@
     @open="handleOpen"
     @close="handleClose">
     <template v-for="item in subMenus" :key="item.id">
-      <el-sub-menu :index="item.id +''" v-if="item.children">
+      <el-sub-menu :index="item.id +''" v-if="item.children && !item.hidden">
         <template #title>
           <el-icon v-if="item.meta?.icon"><kvIcon :name="item.meta?.icon"/></el-icon>
           <span>{{ item.meta?.title }}</span>
@@ -43,10 +43,12 @@
           </el-menu-item>
         </template>
       </el-sub-menu>
-      <el-menu-item v-else :index="item.id + ''" @click="handleMenuItemClick(item)">
-        <el-icon v-if="item.meta?.icon"><kvIcon :name="item.meta?.icon"/></el-icon>
-        <span>{{ item.meta?.title }}</span>
-      </el-menu-item>
+      <template v-else>
+        <el-menu-item v-if="!item.hidden" :index="item.id + ''" @click="handleMenuItemClick(item)">
+          <el-icon v-if="item.meta?.icon"><kvIcon :name="item.meta?.icon"/></el-icon>
+          <span>{{ item.meta?.title }}</span>
+        </el-menu-item>
+      </template>
     </template>
 
   </el-menu>

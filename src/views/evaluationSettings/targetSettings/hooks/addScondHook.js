@@ -2,25 +2,30 @@
  * @Author: kevin
  * @Date: 2022-05-18 15:26:27
  * @LastEditors: kevin
- * @LastEditTime: 2022-05-20 18:06:55
+ * @LastEditTime: 2022-07-05 10:41:53
  * @Description: 二级目标添加
  */
-import { ref } from 'vue'
+import { ref, nextTick, getCurrentInstance } from 'vue'
 import {
   addSubFormConfig,
   selectModelConfig,
-  tablePropList
+  tablePropList,
+  repeatTipModelConfig
 } from '../config/dataConfig'
 import { getSuper } from '@/api/account'
 import { getRoleList } from '@/api/organization'
 import { add, getList } from '@/api/target'
-// import { mergeSameCell } from '@/utils/util'
+import { mergeSameCell } from '@/utils/util'
 import { getCycle, getQuotaLis, formatTableData, formatSelectQuotaList } from '../hooks/hooks'
 import { depositoryList } from '@/api/cycle'
 export const addScondTargetHook = ({ rowData, subRowData, editType, emit }) => {
+  const { proxy } = getCurrentInstance()
+  // 是否重新选择
+  const isRepeatSelect = ref(repeatTipModelConfig)
   // 指标周期
   const cyListOption = ref([])
   const useTable = ref(null)
+  const selectTableData = ref([])
   // 考区选择
   const checkAreaOptions = ref([])
   //  负责人
@@ -41,7 +46,6 @@ export const addScondTargetHook = ({ rowData, subRowData, editType, emit }) => {
   const getKQ = async () => {
     const { data } = await getRoleList()
     checkAreaOptions.value = data.filter(item => checkAreaList.includes(item.id))
-    console.log('checkAreaOptions.value', checkAreaOptions.value)
   }
   getKQ()
 
@@ -53,9 +57,21 @@ export const addScondTargetHook = ({ rowData, subRowData, editType, emit }) => {
   getQuotaLis().then(res => {
     useTableData.value = formatSelectQuotaList(res, cyListOption.value)
   })
+  // 选择考核内容
   const handleAddQuota = () => {
-    selectConfig.value.dialogVisible = true
+    if (showTableData.value.length) {
+      isRepeatSelect.value.dialogVisible = true
+    } else {
+      repeatConfirm()
+    }
   }
+  // 是否确定重新选择
+  const repeatConfirm = () => {
+    showTableData.value = []
+    selectConfig.value.dialogVisible = true
+    isRepeatSelect.value.dialogVisible = false
+  }
+
   formData.value.cycle1 = rowData.id
 
   if (editType === 'edit') {
@@ -66,22 +82,29 @@ export const addScondTargetHook = ({ rowData, subRowData, editType, emit }) => {
       formData.value = res.data
       selectData(res.data.checkArea)
       const ulist = formatSelectQuotaList(res.data.targetInfoDtoList, cyListOption.value)
-      handleSelectionChange(ulist, cyListOption.value, 'edit')
+      selectTableData.value = ulist
+      confirmTableDat()
     })
   }
   // 选择
   const handleSelectionChange = (selectData, cyList, Type) => {
-    const type = Type || 'add'
-    const Option = cyList || cyListOption.value //
-    const { tableData } = formatTableData(selectData, Option, type)
-    showTableData.value = tableData
+     selectTableData.value = selectData
   }
-  const confirm = (tyy) => {
+  const confirm = () => {
     selectConfig.value.dialogVisible = false
+    confirmTableDat()
   }
+ const confirmTableDat = () => {
+  const { tableData } = formatTableData(selectTableData.value)
+    showTableData.value = tableData
+    nextTick(() => {
+      mergeSameCell(useTable.value, 1, 0, [0, 1])
+    })
+ }
   const cancel = () => {
     evaluateTargetDtoList.value = []
     selectConfig.value.dialogVisible = false
+    isRepeatSelect.value.dialogVisible = false
   }
   const selectData = (val) => {
     if (val.length) {
@@ -100,13 +123,18 @@ export const addScondTargetHook = ({ rowData, subRowData, editType, emit }) => {
     ruleFormRef.$refs.ruleFormRef?.validate((valid) => {
       if (valid) {
         const { checkArea = [], director = [] } = formData.value
-          showTableData.value.forEach(_ => {
-            _.options.forEach(option => {
-              if (_.cycleId === option.id) { // 给周期选择后的
-                _.cycleName = option.title
-              }
-            })
+        for (let index = 0; index < showTableData.value.length; index++) {
+          const _ = showTableData.value[index]
+          if (!_.cycleId) {
+            proxy.$message.error(`第${index + 1}行指标周期不能为空！`)
+            return
+          }
+          _.options.forEach(option => {
+            if (_.cycleId === option.id) { // 给周期选择后的
+              _.cycleName = option.title
+            }
           })
+        }
         const params = {
           checkArea: checkArea.join(','),
           director: director.join(','),
@@ -122,7 +150,7 @@ export const addScondTargetHook = ({ rowData, subRowData, editType, emit }) => {
       }
     })
   }
-  // watch(() => showTableData.value, () => {
+  // watch(() => showTableData.value, (val) => {
   //   nextTick(() => {
   //     mergeSameCell(useTable.value, 1, 0, [0, 1])
   //   })
@@ -142,6 +170,8 @@ export const addScondTargetHook = ({ rowData, subRowData, editType, emit }) => {
     handleAddQuota,
     ruleFormRef,
     showTableData,
+    isRepeatSelect,
+    repeatConfirm,
     // cyListOption,
     formData,
     useTable

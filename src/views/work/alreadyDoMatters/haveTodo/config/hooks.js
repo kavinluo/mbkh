@@ -10,7 +10,7 @@ import { fileDialogConfig, reasonDialogConfig, editModelConfig } from './dialogC
 import { getFileList, getAccount } from '@/api/process'
 import { searchConfig } from './dataConfig'
 import { acmModelConfig } from '../../../config/dialogConfig'
-export const handeles = () => {
+export const handels = () => {
   const subRowData = ref(null)
   const subRowDatas = ref({})
 

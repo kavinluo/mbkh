@@ -14,8 +14,9 @@ const baseURL = '/process'
   */
   export function getTarget (parameter) {
     return axios({
-      url: `${baseURL}/getTarget/${parameter}`,
-      method: 'get'
+      url: `${baseURL}/getTarget`,
+      method: 'get',
+      params: parameter
     })
   }
 
@@ -54,7 +55,7 @@ const baseURL = '/process'
    */
    export function report (id) {
     return axios({
-      url: `${baseURL}/report/${id}`, //
+      url: `/targetScore/report/${id}`, //
       method: 'put',
       // params: parameter,
       successTitle: '上报成功！'

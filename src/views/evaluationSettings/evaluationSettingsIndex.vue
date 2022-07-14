@@ -2,7 +2,7 @@
  * @Author: kevin
  * @Date: 2022-03-04 10:45:35
  * @LastEditors: kevin
- * @LastEditTime: 2022-04-07 11:00:36
+ * @LastEditTime: 2022-05-23 09:37:15
  * @Description: 评价设置
 -->
 
@@ -10,12 +10,8 @@
   <router-view />
 </template>
 
-<script>
-export default {
-  setup () {
-    return {}
-  }
-}
+<script setup>
+
 </script>
 
 <style lang="scss" scoped>

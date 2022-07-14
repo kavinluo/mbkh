@@ -8,7 +8,7 @@
 <template>
   <el-row>
     <el-col :span="12">
-      <div>
+      <div class="mapChart">
         <!-- 地图容器 -->
         <checharts-manage/>
         <!-- 地图数据 -->
@@ -41,8 +41,8 @@
         <div>
           <div class="box-card2">
             <el-row :gutter="10">
-              <el-col :span="6" @click="library" class="library"><p><img src="@/assets/img/library.png"></p>指标库</el-col >
-              <el-col :span="6" @click="setting" class="library"><p><img src="@/assets/img/Goalsetting.png"></p>目标设置</el-col>
+              <el-col :span="6" @click="library" class="library" v-if="role.id === 1"><p><img src="@/assets/img/library.png"></p>指标库</el-col >
+              <el-col :span="6" @click="setting" class="library" v-if="role.id === 1"><p><img src="@/assets/img/Goalsetting.png"></p>目标设置</el-col>
               <el-col :span="6" @click="evaluation" class="library"><p><img src="@/assets/img/evaluation.png"></p>评价结果</el-col>
               <el-col :span="6" class="library"><p><img src="@/assets/img/Personal.png"></p>个人评优</el-col>
             </el-row>
@@ -64,13 +64,14 @@ import chechartsManage from './bounced/chEcharts.vue'
 import rankingechartsManage from './bounced/rankingEcharts.vue'
 import mapdataManage from './bounced/mapData.vue'
 import matterslistManage from './bounced/mattersList.vue'
+import { useState } from '@/hooks/index'
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
-
+    const { userInfo } = useState(['userInfo'], 'user')
     const $router = useRouter()
     const weeks = ref(['周日', '周一', '周二', '周三', '周四', '周五', '周六'])
     const date = ref(['01', '02', '03', '04', '05', '06', '07'])
-
+    const role = ref(userInfo.value)
     // 评价排名
     const card = () => {
       $router.push({ path: '/manage/statisticAnalysis' })
@@ -96,27 +97,30 @@ import { useRouter } from 'vue-router'
 <style scoped>
 
 .box-card2 {
-  width: 900px;
-  height: 184px;
+  width: 50em;
+  height: 170px;
   text-align: center;
   margin-left: 25px;
 }
 .doSth {
   display: flex;
 }
-
+.mapchart {
+  display:flex;
+  width:100%
+}
 .mapData {
   position: absolute;
-  left: 43rem;
-  top: 19rem;
-  width: 12.333rem;
-  height: 14.417rem;
+  left: 37%;
+  top: 19em;
+  width: 10%;
+  height: 14.417em;
   border: 1px solid black;
   margin: 30px 0 0 30px;
   text-align: center;
 }
 .el-col.el-col-6.is-guttered {
-  margin-top: 25px;
+  margin-top: 1.042rem;
 }
 .evaluation {
   margin-left: 80px;
@@ -181,5 +185,8 @@ import { useRouter } from 'vue-router'
   margin-right:5px;
   position:relative;
   top:5px
+}
+.mapChart{
+  width: 100%;
 }
 </style>

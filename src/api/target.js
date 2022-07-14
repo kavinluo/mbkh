@@ -2,7 +2,7 @@
  * @Author: kevin
  * @Date: 2022-03-18 15:01:31
  * @LastEditors: kevin
- * @LastEditTime: 2022-04-11 13:41:41
+ * @LastEditTime: 2022-07-06 14:11:50
  * @Description: 目标管理
  */
 import { axios } from '@/utils/request'
@@ -43,7 +43,18 @@ export function get (id, useUrl = baseURL) {
     url: `${useUrl}/publish/${id}`, //
     method: 'put',
     successTitle: '发布成功！'
-    // params: parameter
+  })
+}
+/**
+ *
+ * 撤销发布
+ *
+ */
+ export function revokePublish (id, useUrl = baseURL) {
+  return axios({
+    url: `${useUrl}/revokePublish/${id}`, //
+    method: 'put',
+    successTitle: '撤销成功！'
   })
 }
 /**

@@ -16,9 +16,10 @@
     <el-table-column label="操作" width="180" align="center">
       <template #default="scope">
         <div v-if="scope.row.parentId > 0">
+          &nbsp;&nbsp;
           <el-link type="primary" size="small" icon="view" @click="handleEdit(scope.row, 'view')">查看</el-link>&nbsp;&nbsp;
           <el-link type="primary" size="small" icon="edit" @click="handleEdit(scope.row, 'edit')">编辑</el-link>&nbsp;&nbsp;
-          <el-link type="primary" size="small" :disabled="scope.row.status === 1" icon="promotion" @click="handleReport(scope.row)">上报</el-link>
+          <el-link v-if="role.id !== 1" type="primary" size="small" :disabled="scope.row.status === 1" icon="promotion" @click="handleReport(scope.row)">上报</el-link>
         </div>
         <div v-else>
           <el-link type="primary" size="small" icon="view" @click="handleEdit(scope.row, 'view', 'DF')">查看</el-link>&nbsp;&nbsp;
@@ -47,10 +48,10 @@
 </template>
 
 <script setup>
-// import { ref } from 'vue'
+import { ref } from 'vue'
 import editTarget from './editTarget.vue'
 import setDf from './setScore.vue'
-// import { useState } from '@/hooks/index'
+import { useState } from '@/hooks/index'
 import { levelSecond } from './config/levelSecond'
 const emit = defineEmits(['callback', 'cancel'])
 const props = defineProps({
@@ -60,6 +61,9 @@ const props = defineProps({
   }
 })
 const thatDataList = props.rowData.value
+
+const { userInfo } = useState(['userInfo'], 'user')
+const role = ref(userInfo.value)
 
 const goToFirst = () => {
   emit('callback', 'levelFirst')

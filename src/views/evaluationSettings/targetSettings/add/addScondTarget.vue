@@ -2,7 +2,7 @@
  * @Author: kevin
  * @Date: 2022-04-02 10:27:51
  * @LastEditors: kevin
- * @LastEditTime: 2022-05-20 17:12:41
+ * @LastEditTime: 2022-05-23 10:33:03
  * @Description: 新建二级目标
 -->
 <template>
@@ -102,10 +102,13 @@
       @handleSelectionChange="handleSelectionChange">
     </kv-table>
   </kvDialog>
+  <kvDialog v-bind="isRepeatSelect" v-model="isRepeatSelect.dialogVisible" @callBack="repeatConfirm" @cancel="cancel">
+    <div>重新选择将覆盖原有数据，是否确定？</div>
+  </kvDialog>
 </template>
 
 <script setup>
-    import { addScondTargetHook } from '../hooks/addScondHook'
+  import { addScondTargetHook } from '../hooks/addScondHook'
   const emit = defineEmits(['callBack'])
   const { rowData, subRowData, editType } = defineProps({
     rowData: {
@@ -129,10 +132,12 @@
     selectConfig,
     useTableData,
     showTableData,
+    isRepeatSelect,
     handleAddTarget,
     selectData,
     cancel,
     confirm,
+    repeatConfirm,
     handleSelectionChange,
     handleAddQuota,
     ruleFormRef,

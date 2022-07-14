@@ -2,7 +2,7 @@
  * @Author: kevin
  * @Date: 2022-05-06 15:40:40
  * @LastEditors: kevin
- * @LastEditTime: 2022-05-17 17:24:32
+ * @LastEditTime: 2022-07-05 09:44:20
  * @Description: 我发送的
 -->
 <template>
@@ -15,6 +15,9 @@
     :propList="sendList"
     :getDataFn="acceptListPage"
     @handleSelectionChange="handleSelectionChange">
+    <template #title="props">
+      <el-link @click="handleEdit(props.row, 'view')" type="primary">{{ props.row.title }}</el-link>
+    </template>
     <template #top="props">
       {{ props.row.top === 1 ? '是' : '否' }}
     </template>
@@ -42,7 +45,8 @@ const handleSelectionChange = () => {
     // reportDialog,
     formData,
     status,
-    onSubmit
+    onSubmit,
+    handleEdit
  } = handels()
 
 </script>

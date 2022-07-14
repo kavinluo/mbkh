@@ -2,7 +2,7 @@
  * @Author: kevin
  * @Date: 2022-03-10 10:46:03
  * @LastEditors: kevin
- * @LastEditTime: 2022-04-28 09:47:11
+ * @LastEditTime: 2022-07-06 10:37:22
  * @Description: 添加
 -->
 <template>
@@ -84,6 +84,7 @@ const emit = defineEmits(['resetBtnClick', 'queryBtnClick', 'cancel', 'callBack'
     if (inputType === 'edit') {
       (async () => {
         const dealit = await get(rowData?.id, 'account')
+        delete dealit.data.password
         formData.value = dealit.data
       })()
     }

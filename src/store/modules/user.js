@@ -2,7 +2,7 @@
  * @Author: kevin
  * @Date: 2022-02-28 09:09:17
  * @LastEditors: kevin
- * @LastEditTime: 2022-05-05 14:53:02
+ * @LastEditTime: 2022-07-06 09:03:43
  * @Description: 用户相关
  */
 import router from '@/router'
@@ -18,7 +18,8 @@ export default ({
       userInfo: {},
       userMenus: [],
       subMenus: [], // 储存子菜单
-      hasSubMenus: false // 是否有子菜单
+      hasSubMenus: false, // 是否有子菜单
+      isJump: true // 菜单是否跳转
     }
   },
   mutations: {
@@ -40,11 +41,12 @@ export default ({
       const subMenus = getStaticData('subMenus')
       state.subMenus = subMenus || _routes[0].children
       state.hasSubMenus = hasSubMenus || (state.subMenus?.length > 0)
-      if (state.hasSubMenus) {
-        router.push(state.userMenus[0].path)
-      } else {
-        router.push(userMenus[0]?.path || '/manage')
-        // router.push('/manage')
+      if (state.isJump) {
+        if (state.hasSubMenus) {
+          router.push(state.userMenus[0].path)
+        } else {
+          router.push(userMenus[0]?.path || '/manage')
+        }
       }
     },
     changeSubMenus (state, subMenus) {
@@ -64,6 +66,9 @@ export default ({
       delStaticData('userInfo')
       delStaticData('defaultActiveValue')
       localStorage.clear()
+    },
+    actionIsJump (state, isJumpStatus = true) {
+      state.isJump = isJumpStatus
     }
   },
   actions: {
@@ -85,7 +90,8 @@ export default ({
       dispatch('getUserMenusActions')
     },
      // 请求菜单
-     async getUserMenusActions ({ commit, dispatch }, payload) {
+     async getUserMenusActions ({ commit, dispatch }, isJumpStatus) {
+      commit('actionIsJump', isJumpStatus)
       const getUserMenusRes = await getUserMenu()
       let userMenus = getUserMenusRes?.data ?? []
       userMenus = userMenus.sort((a, b) => a.sequence - b.sequence)

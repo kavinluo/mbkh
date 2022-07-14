@@ -2,7 +2,7 @@
  * @Author: kevin
  * @Date: 2022-02-21 11:54:16
  * @LastEditors: kevin
- * @LastEditTime: 2022-05-16 17:12:56
+ * @LastEditTime: 2022-07-11 08:57:32
  * @Description: 配置文件
  */
 
@@ -77,7 +77,6 @@ module.exports = defineConfig({
       .resourceQuery(/inline/)
       .use('vue-svg-icon-loader')
       .loader('vue-svg-icon-loader')
-      .end()
       .end()
       .oneOf('external')
       .use('file-loader')

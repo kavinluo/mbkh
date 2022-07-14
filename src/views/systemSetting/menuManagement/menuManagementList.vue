@@ -2,7 +2,7 @@
  * @Author: kevin
  * @Date: 2022-02-24 10:05:17
  * @LastEditors: kevin
- * @LastEditTime: 2022-04-20 11:40:10
+ * @LastEditTime: 2022-07-05 18:06:53
  * @Description: 菜单列表
 -->
 <template>
@@ -39,7 +39,7 @@
   import add from './addMenu.vue'
   import { getMenuList } from '@/api/menu'
   import propList from './tableConfig'
-  import { useStore, updateList } from '@/store'
+  import { useStore } from '@/store'
   const kvDialogConfig = ref({
     dialogVisible: false,
     dialogWidth: '400px',
@@ -76,7 +76,14 @@
   const callBack = () => {
     // getList()
     kvDialogConfig.value.dialogVisible = false
-    updateList(getMenuList)
+    // updateList(getMenuList)
+    getMenuList({
+      pageSize: 20,
+      curPage: 1
+    }).then((res) => {
+      store.commit('setTableData', res.data)
+      store.dispatch('user/getUserMenusActions', false)
+    })
     cancel()
   }
   const handleSelectionChange = (val) => {

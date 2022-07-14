@@ -3,7 +3,10 @@
 </template>
 
 <script setup>
-import { getCurrentInstance, onMounted, ref } from 'vue'
+import { onMounted, ref } from 'vue'
+import * as echarts from 'echarts'
+import china from '@/utils/chinaChange.json'
+echarts.registerMap('china', china)
 // 中国地图
 const mapOption = ref({
   backgroundColor: '#FFFFFF',
@@ -106,20 +109,22 @@ const mapOption = ref({
     }
   ]
 })
-const { proxy } = getCurrentInstance()
 const chart = ref(null)
 onMounted(() => {
-      chart.value = proxy.$echarts.init(
+  setTimeout(() => {
+    chart.value = echarts.init(
         document.getElementById('myMap'),
         'macarons'
       )
       chart.value.setOption(mapOption.value)
+  }, 10)
     })
 </script>
 
 <style scoped>
 #myMap {
-  width: 800px;
+  flex: 1;
+  width: 100%;
   height: 600px;
 }
 </style>

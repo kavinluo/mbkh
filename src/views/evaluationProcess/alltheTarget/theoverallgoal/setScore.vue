@@ -2,7 +2,7 @@
  * @Author: kevin
  * @Date: 2022-05-11 11:06:43
  * @LastEditors: kevin
- * @LastEditTime: 2022-05-18 13:54:34
+ * @LastEditTime: 2022-07-11 17:57:33
  * @Description: Do not edit
 -->
 <template>
@@ -128,8 +128,8 @@
   } = setScoreFn(cancelTargetModle, rowData)
   const showData = ref({})
   const getTargetData = async () => {
-    const { data } = await getTarget(rowData.id)
-    showData.value = data
+    const { data } = await getTarget({ id: rowData.id })
+    showData.value = data || {}
   }
   getTargetData()
 

@@ -39,11 +39,11 @@ export const handeles = () => {
     editDialog.value.dialogVisible = false
   }
   const onSubmit = (type) => {
-    const fn = type === 'send' ? getwatiList : getalready
+    const fn = type === 'wati' ? getwatiList : getalready
     store.dispatch('getListPage', { fn, params: formData.value })
   }
 
-   const updataListFn = () => {
+  const updataListFn = () => {
     updateList(getwatiList)
   }
   return {

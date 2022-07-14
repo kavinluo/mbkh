@@ -14,6 +14,12 @@ import { searchConfig } from '../alreadyDoMatters/comMission/config/dataConfig'
 import { getdetail, getwatiList } from '@/api/todoList'
 import formConfig from './viewFormConfig'
 import { updateList } from '@/store'
+const watiList = ref([])
+const getTargetData = async () => {
+  const { data } = await getwatiList({ pageSize: 10, curPage: 1 })
+     watiList.value = data
+ }
+ console.log(watiList, 'qweqweqwe')
 export const handeles = () => {
   const subRowData = ref(null)
   const subRowDatas = ref({})
@@ -30,14 +36,15 @@ export const handeles = () => {
     if (row.type === 1) {
       acmDialog.value.dialogVisible = true
       subRowDatas.value = row
-      updataListFn()
     }
   }
+
   const handleView = (row) => {
     viewDialog.value.dialogVisible = true
     subRowData1.value = row
   }
   const handleResetClick = () => {
+    getTargetData()
     acmDialog.value.dialogVisible = false
     viewDialog.value.dialogVisible = false
   }
@@ -49,7 +56,6 @@ export const handeles = () => {
   const updataListFn = () => {
     updateList(getwatiList)
   }
-  updataListFn()
   return {
     handleAddTemplate,
     cancel,
@@ -62,7 +68,8 @@ export const handeles = () => {
     updataListFn,
     handleView,
     viewDialog,
-    subRowData1
+    subRowData1,
+    watiList
   }
 }
 

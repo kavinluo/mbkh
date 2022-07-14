@@ -2,7 +2,7 @@
  * @Author: kevin
  * @Date: 2022-02-25 09:42:38
  * @LastEditors: kevin
- * @LastEditTime: 2022-05-06 14:17:26
+ * @LastEditTime: 2022-07-05 17:19:40
  * @Description: Do not edit
 -->
 <template>
@@ -13,11 +13,13 @@
     </div>
   </div>
   <div class="topbar-navigation topbar-left">
-    <router-link v-for="item in userMenus" :key="item.id" :to="item.path" @click="handleMenu(item)" style="margin-right: 15px">
-      <el-button color="#ffffff1a" size="large" type="primary">
-        <el-icon><kvIcon :name="item.meta?.icon" /></el-icon> {{ item.meta?.title }}
-      </el-button>
-    </router-link>
+    <template v-for="item in userMenus" :key="item.id">
+      <router-link :to="item.path" @click="handleMenu(item)" v-if="!item.hidden" style="margin-right: 15px">
+        <el-button color="#ffffff1a" size="large" type="primary">
+          <el-icon><kvIcon :name="item.meta?.icon" /></el-icon> {{ item.meta?.title }}
+        </el-button>
+      </router-link>
+    </template>
   </div>
   <div class="topbar-info topbar-right" ref="headline">
     <div class="welcome-info">

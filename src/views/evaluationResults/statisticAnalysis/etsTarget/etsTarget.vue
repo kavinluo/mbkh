@@ -11,7 +11,7 @@
       <el-tab-pane label="整体评分对比" >
       </el-tab-pane>
       <div class="left">
-        <p style="margin-top:15px">总&nbsp;考&nbsp;区&nbsp;：<span style="color:#008000;font-weight:400;margin-top:30px">{{ showDatas.sumTestArea }}</span></p>
+        <p style="margin-top:45px">总&nbsp;考&nbsp;区&nbsp;：<span style="color:#008000;font-weight:400;margin-top:30px">{{ showDatas.sumTestArea }}</span></p>
         <p>优&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;秀&nbsp;：<span style="color:#008000;font-weight:400">{{ showDatas.fine }}</span></p>
         <p>合&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;格&nbsp;：<span style="color:#008000;font-weight:400">{{ showDatas.eligible }}</span></p>
         <p>限期整改：<span style="color:#008000;font-weight:400">{{ showDatas.change }}</span></p>
@@ -28,8 +28,8 @@
     <el-tabs class="use-tabs">
       <el-tab-pane label="考区评分明细" >
       </el-tab-pane>
-      <el-scrollbar height="350px">
-        <el-table :data="showData" style="width: 100%">
+      <el-scrollbar>
+        <el-table :data="showData" height="245" style="width: 100%">
           <el-table-column prop="areaName" label="考区" align="center" />
           <el-table-column prop="score" label="考区目标指标评分" align="center"/>
           <el-table-column prop="errorRate" label="差错率" align="center"/>
@@ -45,22 +45,23 @@ import { onMounted, ref } from 'vue'
 import { getArea } from '@/api/statistical.js'
 const showData = ref(null)
 const showDatas = ref({})
-const getData = async () => {
-  const { data } = await getArea()
-  showDatas.value = data
-  showData.value = data.infoDtoList
-  }
-getData()
+// const getData = async () => {
+//   const { data } = await getArea()
+//   showDatas.value = data
+//   showData.value = data.infoDtoList
+//   }
+// getData()
 onMounted(() => { // 需要获取到element,所以是onMounted的Hook
 const echartData = ref([])
 const echartDatas = ref([])
 const getData = async () => {
   const { data } = await getArea()
+   showDatas.value = data
+    showData.value = data.infoDtoList
     data.infoDtoList.forEach(item => {
        echartData.value.push(item.areaName)
        echartDatas.value.push(item.score)
   })
-  console.log(echartDatas)
 
   const myChart = echarts.init(document.getElementById('myChart12'))
   // 绘制图表
