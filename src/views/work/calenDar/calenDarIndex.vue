@@ -69,15 +69,18 @@ const add = () => {
   width: 300px;
   border-right: 1px solid #cccccc;
 }
-:v-deep(.el-calendar__body) {
+:deep(.el-calendar__body) {
     --el-calendar-cell-width: 40px;
 }
-:v-deep thead {
+:deep(thead){
   background-color: #f3f3f3;
 }
 
-:v-deep div#el-collapse-head-7976 {
+:deep(div#el-collapse-head-7976) {
   width: 300px;
+}
+:deep(.el-calendar__header) {
+  padding: 20px 20px;
 }
 
 </style>

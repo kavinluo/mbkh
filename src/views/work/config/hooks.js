@@ -2,24 +2,20 @@
  * @Author: kevin
  * @Date: 2022-04-12 13:40:01
  * @LastEditors: kevin
- * @LastEditTime: 2022-05-19 15:50:51
+ * @LastEditTime: 2022-07-19 17:36:21
  * @Description: Do not edit
  */
 import { ref } from 'vue'
 import { fileDialogConfig, reasonDialogConfig, editModelConfig, acmModelConfig, viewModelConfig } from './dialogConfig'
 import { targetScoreAdd, getFileList, getAccount } from '@/api/process'
-import { noticeTypeHaveRead, get } from '@/api/notice'
+import { noticeTypeHaveRead, get, unReadAcceptList } from '@/api/notice'
 import { getRoleList } from '@/api/organization'
 import { searchConfig } from '../alreadyDoMatters/comMission/config/dataConfig'
-import { getdetail, getwatiList } from '@/api/todoList'
+import { getwatiList } from '@/api/todoList'
 import formConfig from './viewFormConfig'
 import { updateList } from '@/store'
 const watiList = ref([])
-const getTargetData = async () => {
-  const { data } = await getwatiList({ pageSize: 10, curPage: 1 })
-     watiList.value = data
- }
- console.log(watiList, 'qweqweqwe')
+const unReadList = ref([])
 export const handeles = () => {
   const subRowData = ref(null)
   const subRowDatas = ref({})
@@ -27,26 +23,23 @@ export const handeles = () => {
   const handleDialog = ref(editModelConfig)
   const acmDialog = ref(acmModelConfig)
   const viewDialog = ref(viewModelConfig)
-  const handleAddTemplate = (row) => {
-    if (row.type === 2) {
-      handleDialog.value.dialogVisible = true
-      row.modelType = 'edit'
-      subRowData.value = row
-    }
-    if (row.type === 1) {
-      acmDialog.value.dialogVisible = true
-      subRowDatas.value = row
-    }
-  }
 
   const handleView = (row) => {
     viewDialog.value.dialogVisible = true
     subRowData1.value = row
+    const noticeList = async () => {
+      await noticeTypeHaveRead(row.id)
+    }
+    noticeList()
   }
   const handleResetClick = () => {
-    getTargetData()
     acmDialog.value.dialogVisible = false
     viewDialog.value.dialogVisible = false
+    const unReadAcceptData = async () => {
+      const { data } = await unReadAcceptList({ pageSize: 10, curPage: 1 })
+       unReadList.value = data.list
+     }
+     unReadAcceptData()
   }
   const cancel = () => {
     handleDialog.value.dialogVisible = false
@@ -57,7 +50,7 @@ export const handeles = () => {
     updateList(getwatiList)
   }
   return {
-    handleAddTemplate,
+    // handleAddTemplate,
     cancel,
     searchConfig,
     subRowData,
@@ -69,7 +62,8 @@ export const handeles = () => {
     handleView,
     viewDialog,
     subRowData1,
-    watiList
+    watiList,
+    unReadList
   }
 }
 
@@ -183,47 +177,7 @@ export const handleFile = (cancelTargetModle) => {
   }
 }
 // 格式化数据 提交使用
-export const formatDataList = (data) => {
-  const list = data.arrayList
-  const keyVal = {
-    一级指标: 'firstLevel',
-    二级指标: 'secondLevel',
-    分值: 'score',
-    原因: 'reason',
-    复评分: 'repeatedScore',
-    考评内容: 'content',
-    考评方式: 'material',
-    考评细则: 'evaluationRules',
-    自评分: 'selfScore'
-  }
- const userList = []
-  const rowSpan = {}
- list.forEach((item, index) => {
-   const obj = {}
-   item.forEach((subItem, index) => {
-      rowSpan[rowSpan[subItem.template]] = []
-    })
-    obj[keyVal[item[0].template]] = item[0].content
-    obj[keyVal[item[1].template]] = item[1].content
-    obj[keyVal[item[2].template]] = item[2].content
-    obj[keyVal[item[3].template]] = item[3].content
-    obj[keyVal[item[4].template]] = item[4].material
-    obj[keyVal[item[5].template]] = item[5].score
-    obj[keyVal[item[6].template]] = item[6].reason
-    obj[keyVal[item[7].template]] = item[7].selfScore
-    obj[keyVal[item[8].template]] = item[8].repeatedScore
 
-    const fileType = item[4].content
-    obj.checkContentId = item[4].id // 评分id  固定的
-    obj.sort = item[3].sort // 顺序 只要后面考评内容的
-    obj.area = data.checkArea // 考区
-    obj.materialType = fileType === '资料上传' ? 1 : fileType === '人员资料' ? 2 : fileType === '实地考察' ? 3 : 0 // 评分方式 1上传资料 2用户名称 3文本 0无）
-    obj.depositoryId = item[1].id // 指标库id 只要二级指标id
-    obj.targetId = data.id // 目标id
-   userList.push(obj)
- })
-  return userList
-}
 //
 
 /**
@@ -235,7 +189,6 @@ export const formatDataList = (data) => {
  */
  export const formatTableData = (data = {}, cyListOption, type) => {
   const usrlist = data.targetInfoDtoList
-  console.log(usrlist, 'usrlistusrlist')
 
   const objList = {}
   usrlist.forEach(item => {
@@ -263,18 +216,17 @@ export const addHandels = (row) => {
   }
   const formData = ref(formOriginData)
       // 获得单个公告
-      if (row.id === undefined) {
-        getdetail({ detailId: row.detailId, type: row.type }).then(res => {
-          formData.value = res.data.noticeDataDto
-          formData.value.checkArea = res.data.noticeDataDto.checkArea?.split(',')
-          if (formData.value.checkArea?.length) {
-            formData.value.checkArea = formData.value.checkArea.map(x => +x)
-          }
-          noticeTypeHaveRead(res.data.noticeDataDto.id)
-        })
-      }
+    // if (row.id === undefined) {
+    //   getdetail({ detailId: row.detailId, type: row.type }).then(res => {
+    //     formData.value = res.data.noticeDataDto
+    //     formData.value.checkArea = res.data.noticeDataDto.checkArea?.split(',')
+    //     if (formData.value.checkArea?.length) {
+    //       formData.value.checkArea = formData.value.checkArea.map(x => +x)
+    //     }
+    //     noticeTypeHaveRead(res.data.noticeDataDto.id)
+    //   })
+    // }
        // 获得单个公告
-       if (row.detailId === undefined) {
         get(row.id).then(res => {
           formData.value = res.data
           formData.value.checkArea = res.data.checkArea?.split(',')
@@ -282,7 +234,6 @@ export const addHandels = (row) => {
             formData.value.checkArea = formData.value.checkArea.map(x => +x)
           }
         })
-       }
   const ruleFormRef = ref()
   const getl = async () => {
     const { data } = await getRoleList()

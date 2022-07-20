@@ -163,6 +163,12 @@ export function acceptListPage (parameter, useUrl = baseURL) {
   })
 }
 
+/**
+ * 已读公告分类
+ * @param {*} parameter
+ * @param {*} useUrl
+ * @returns
+ */
 export function noticeTypeHaveRead (id, useUrl = baseURL) {
   return axios({
     url: `${baseURL}/receive/haveRead/${id}`,
@@ -170,3 +176,33 @@ export function noticeTypeHaveRead (id, useUrl = baseURL) {
     data: ''
   })
 }
+
+/**
+ * 未读公告分类
+ * @param {*} parameter
+ * @param {*} useUrl
+ * @returns
+ */
+
+export function unReadAcceptList (parameter, useUrl = baseURL) {
+  return axios({
+    url: `${baseURL}/unReadAccept`,
+    method: 'get',
+    params: parameter
+
+  })
+}
+
+/**
+ * 已读公告分类
+ * @param {*} parameter
+ * @param {*} useUrl
+ * @returns
+ */
+//  export function noticeModify (params, useUrl = baseURL) {
+//   return axios({
+//     url: `${baseURL}/modify/${params.id}`,
+//     method: 'put',
+//     data: params
+//   })
+// }

@@ -132,9 +132,7 @@ export default ({
         // dispatch('updateRootInfo', null, { root: true })
       }
       const userInfo = getStaticData('userInfo')
-      if (userInfo) {
         commit('changeUserInfo', userInfo)
-      }
       const userMenus = getStaticData('userMenus')
       if (userMenus) {
         commit('changeUserMenus', userMenus)

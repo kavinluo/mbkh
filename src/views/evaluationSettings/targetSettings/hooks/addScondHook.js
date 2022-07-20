@@ -2,7 +2,7 @@
  * @Author: kevin
  * @Date: 2022-05-18 15:26:27
  * @LastEditors: kevin
- * @LastEditTime: 2022-07-05 10:41:53
+ * @LastEditTime: 2022-07-19 16:06:04
  * @Description: 二级目标添加
  */
 import { ref, nextTick, getCurrentInstance } from 'vue'
@@ -20,6 +20,14 @@ import { getCycle, getQuotaLis, formatTableData, formatSelectQuotaList } from '.
 import { depositoryList } from '@/api/cycle'
 export const addScondTargetHook = ({ rowData, subRowData, editType, emit }) => {
   const { proxy } = getCurrentInstance()
+  // 如果已经发布只能查看
+  const isView = ref(false)
+  isView.value = rowData.isPublish === 1
+  addSubFormConfig.formItems.forEach(item => {
+    if (item.field === 'title' || item.field === 'cycle2') {
+      item.disabled = rowData.isPublish === 1
+    }
+  })
   // 是否重新选择
   const isRepeatSelect = ref(repeatTipModelConfig)
   // 指标周期
@@ -101,6 +109,9 @@ export const addScondTargetHook = ({ rowData, subRowData, editType, emit }) => {
       mergeSameCell(useTable.value, 1, 0, [0, 1])
     })
  }
+  const cancel1 = () => {
+    emit('callBack')
+  }
   const cancel = () => {
     evaluateTargetDtoList.value = []
     selectConfig.value.dialogVisible = false
@@ -165,6 +176,7 @@ export const addScondTargetHook = ({ rowData, subRowData, editType, emit }) => {
     handleAddTarget,
     selectData,
     cancel,
+    cancel1,
     confirm,
     handleSelectionChange,
     handleAddQuota,
@@ -174,6 +186,7 @@ export const addScondTargetHook = ({ rowData, subRowData, editType, emit }) => {
     repeatConfirm,
     // cyListOption,
     formData,
-    useTable
+    useTable,
+    isView
   }
 }

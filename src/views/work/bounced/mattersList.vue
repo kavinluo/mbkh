@@ -1,8 +1,8 @@
 <template>
   <div class="box-card3">
     <p style="color: #65a7fe" @click="todo"><img src="@/assets/img/computer.png" alt="" class="images">代办/已办事宜</p>
-    <div v-if="watiList.length === 0"><img src="@/assets/img/temporarily.png" style="padding:5% 0 0 10%"></div>
-    <div class="handle" v-for="item in watiList.slice(0,2)" :key="item.number">
+    <div v-if="watiList.length < 1"><img src="@/assets/img/temporarily.png" style="padding:5% 0 0 10%"></div>
+    <div class="handle" v-for="item in watiList.slice(0,3)" :key="item.number">
       <el-row :gutter="20">
         <el-col :span="8">
           <el-button type="primary" style="position:absolute;top:30%;left: 10%" @click="handleAddTemplate(item)">办理</el-button>
@@ -16,15 +16,15 @@
   </div>
   <div class="box-card4">
     <p style="color: #65a7fe" @click="notice"> <img src="@/assets/img/computer.png" alt="" class="images">公告</p>
-    <div v-if="acceptList.length === 0 "><img src="@/assets/img/temporarily.png" style="padding:5% 0 0 10%"></div>
-    <div class="handle" v-for="item in acceptList.slice(0, 2)" :key="item.id" >
+    <div v-if="unReadList.length === 0"><img src="@/assets/img/temporarily.png" style="padding:5% 0 0 10%"></div>
+    <div class="handle" v-for="item in unReadList.slice(0,3)" :key="item.id" >
       <el-row :gutter="20" >
         <el-col :span="8">
           <el-button type="primary" style="position:absolute;top:30%;left: 10%;" @click="handleView(item)">查看</el-button>
         </el-col>
         <el-col :span="15">
           <p style="font-weight:700;font-size:15px;line-height: 25px;margin-top:10px">{{ item.title }}</p>
-          <p style="font-size:14px;margin-bottom:10px">提交日期:2019-05-08</p>
+          <p style="font-size:14px;margin-bottom:10px">提交日期：{{ formatTimestamp(item.times, 'YYYY-MM-DD') }}</p>
         </el-col>
       </el-row>
     </div>
@@ -42,12 +42,12 @@
 
 <script setup>
 import { ref } from 'vue'
+import { useRouter } from 'vue-router'
 import { useState } from '@/hooks/index'
-import { acceptListPage } from '@/api/notice.js'
+import { unReadAcceptList } from '@/api/notice.js'
 import { formatTimestamp } from '@/utils/formatDate.js'
 import { handeles } from '../config/hooks'
 import { getwatiList } from '@/api/todoList.js'
-import { useRouter } from 'vue-router'
 import editTargetManage from '@/views/evaluationProcess/alltheTarget/theoverallgoal/editTarget.vue'
 import handleAcmManage from './handleAcm.vue'
     const { userInfo } = useState(['userInfo'], 'user')
@@ -58,13 +58,12 @@ import handleAcmManage from './handleAcm.vue'
    }
     getTargetData()
     const role = ref(userInfo.value)
-    const acceptList = ref([])
-    const acceptData = async () => {
-      const { data } = await acceptListPage({ pageSize: 10, curPage: 1 })
-        acceptList.value = data.list
+    const unReadAcceptData = async () => {
+      const { data } = await unReadAcceptList({ pageSize: 10, curPage: 1 })
+       unReadList.value = data.list || []
      }
     if (role.value.id !== 1) {
-      acceptData()
+      unReadAcceptData()
     }
       // 待办
     const todo = () => {
@@ -74,9 +73,18 @@ import handleAcmManage from './handleAcm.vue'
     const notice = () => {
       $router.push({ path: '/manage/notice' })
     }
+    const handleAddTemplate = (row) => {
+      // 跳转到评价过程
+      $router.push({
+        path: '/manage/alltheTarget',
+        query: {
+          id: row.detailId,
+          where: 'work'
+        }
+      })
+    }
 
-       const {
-     handleAddTemplate,
+    const {
      handleView,
      cancel,
      subRowData,
@@ -85,7 +93,8 @@ import handleAcmManage from './handleAcm.vue'
      subRowDatas,
      viewDialog,
      subRowData1,
-     watiList
+     watiList,
+     unReadList
     } = handeles()
 </script>
 

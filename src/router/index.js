@@ -7,16 +7,18 @@
  */
 
 import { createRouter, createWebHistory } from 'vue-router'
-import { getCookie } from '@/utils/util'
+import { getCookie, getStaticData } from '@/utils/util'
 import routes from './routes'
 const router = createRouter({
   routes,
   history: createWebHistory()
 })
 router.beforeEach((to, from) => {
+  const userMenus = getStaticData('userMenus') // 本地储存是否被删除
+  const userInfo = getStaticData('userInfo')
   const Token = getCookie('Token')
   if (to.path !== '/login') {
-    if (!Token) {
+    if (!Token || !userMenus || !userInfo) {
       return '/login'
     }
   }

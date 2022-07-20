@@ -62,7 +62,6 @@ const getData = async () => {
        echartData.value.push(item.areaName)
        echartDatas.value.push(item.score)
   })
-
   const myChart = echarts.init(document.getElementById('myChart12'))
   // 绘制图表
   myChart.setOption({

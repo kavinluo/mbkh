@@ -2,7 +2,7 @@
  * @Author: kevin
  * @Date: 2022-05-13 11:32:12
  * @LastEditors: kevin
- * @LastEditTime: 2022-05-19 15:47:52
+ * @LastEditTime: 2022-07-15 17:18:04
  * @Description: 已办事宜
 -->
 <template>
@@ -19,6 +19,9 @@
   >
     <template #times="scope">
       {{ formatTimestamp(scope.row.times, 'YYYY-MM-DD') }}
+    </template>
+    <template #content="scope">
+      <div v-html="scope.row.content"></div>
     </template>
     <template #handler="scope">
       <el-link type="primary" size="small" @click="handleAddTemplate(scope.row)" underline icon="view">查看</el-link>&nbsp;&nbsp;&nbsp;

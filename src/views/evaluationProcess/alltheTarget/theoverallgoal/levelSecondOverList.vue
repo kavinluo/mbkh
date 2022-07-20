@@ -16,14 +16,15 @@
     <el-table-column label="操作" width="180" align="center">
       <template #default="scope">
         <div v-if="scope.row.parentId > 0">
-          &nbsp;&nbsp;
           <el-link type="primary" size="small" icon="view" @click="handleEdit(scope.row, 'view')">查看</el-link>&nbsp;&nbsp;
-          <el-link type="primary" size="small" icon="edit" @click="handleEdit(scope.row, 'edit')">编辑</el-link>&nbsp;&nbsp;
-          <el-link v-if="role.id !== 1" type="primary" size="small" :disabled="scope.row.status === 1" icon="promotion" @click="handleReport(scope.row)">上报</el-link>
+          <el-link type="primary" size="small" :disabled="scope.row.status === 1 && role.userType !== 1 || role.userType === 1 && scope.row.status !== 1" icon="edit" @click="handleEdit(scope.row, 'edit')">编辑</el-link>&nbsp;&nbsp;
+          <el-link type="primary" size="small" v-if="role.userType !== 1" :disabled="scope.row.status === 1" icon="promotion" @click="handleReport(scope.row)">上报</el-link>
         </div>
         <div v-else>
           <el-link type="primary" size="small" icon="view" @click="handleEdit(scope.row, 'view', 'DF')">查看</el-link>&nbsp;&nbsp;
-          <el-link type="primary" size="small" icon="edit" @click="handleEdit(scope.row, 'edit', 'DF')">编辑</el-link>
+          <el-link type="primary" size="small" :disabled="scope.row.status === 1 && role.userType !== 1 || role.userType === 1 && scope.row.status !== 1" icon="edit" @click="handleEdit(scope.row, 'edit', 'DF')">编辑</el-link>&nbsp;&nbsp;
+          <!-- <el-link type="primary" size="small" :disabled="scope.row.status === 1" icon="promotion" @click="handleReport(scope.row)">上报</el-link> -->
+
         </div>
       </template>
     </el-table-column>
@@ -31,12 +32,12 @@
     <el-table-column label="状态" prop="status" align="center">
       <!-- 最后两行没有状态 -->
       <template #default="scope">
-        <template v-if="scope.row.parentId > 0">
-          <span v-if="scope.row.status === 0">未上报</span>
-          <span v-if="scope.row.status === 1">已上报</span>
-          <span v-if="scope.row.status === 2">部分上报</span>
-        </template>
-        <span v-else> - </span>
+        <!-- <template> -->
+        <span v-if="scope.row.status === 0">未上报</span>
+        <span v-if="scope.row.status === 1">已上报</span>
+        <span v-if="scope.row.status === 2">部分上报</span>
+        <!-- </template> -->
+        <!-- <span v-else> - </span> -->
       </template>
     </el-table-column>
   </el-table>

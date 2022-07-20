@@ -11,6 +11,7 @@
     ref="multipleTableRef"
     :data="tableData"
     v-bind="tableOtherOption"
+    :expand-row-keys="props.expandRowKeys"
     row-key="id"
     @current-change="handleCurrentChangeRadio"
     :highlight-current-row="isRadio"

@@ -2,7 +2,7 @@
  * @Author: kevin
  * @Date: 2022-04-02 10:27:51
  * @LastEditors: kevin
- * @LastEditTime: 2022-05-23 10:33:03
+ * @LastEditTime: 2022-07-15 16:13:43
  * @Description: 新建二级目标
 -->
 <template>
@@ -10,7 +10,7 @@
     <!-- 负责人 -->
     <template #director>
       <el-select
-        :disabled="!directorOptions.length"
+        :disabled="!directorOptions.length || isView"
         style="width: 100%"
         v-model="formData.director"
         multiple
@@ -26,6 +26,7 @@
     <template #checkArea>
       <el-select
         @change="selectData"
+        :disabled="isView"
         style="width: 100%"
         v-model="formData.checkArea"
         multiple
@@ -39,7 +40,7 @@
       </el-select>
     </template>
     <template #evaluate>
-      <el-button type="primary" size="small" @click="handleAddQuota"><el-icon style="vertical-align: middle"> <plus /> </el-icon></el-button>
+      <el-button type="primary" :disabled="isView" size="small" @click="handleAddQuota"><el-icon style="vertical-align: middle"> <plus /> </el-icon></el-button>
     </template>
     <template #footer>
       <div class="useTable">
@@ -68,7 +69,7 @@
                 <td> {{ s.content }} </td>
               </template>
               <td>
-                <el-select v-model="item.cycleId" placeholder="选择周期">
+                <el-select v-model="item.cycleId" placeholder="选择周期" :disabled="isView">
                   <el-option
                     v-for="option in item.options"
                     :key="option.id"
@@ -86,7 +87,8 @@
         </table>
       </div>
       <div style="margin-top: 20px;text-align: right">
-        <el-button type="primary" @click.prevent="handleAddTarget(ruleFormRef)">确定</el-button>
+        <el-button type="primary" v-if="!isView" @click.prevent="handleAddTarget(ruleFormRef)">确定</el-button>
+        <el-button type="warning" v-else @click.prevent="cancel1">关闭</el-button>
       </div>
     </template>
   </kv-Form>
@@ -136,13 +138,15 @@
     handleAddTarget,
     selectData,
     cancel,
+    cancel1,
     confirm,
     repeatConfirm,
     handleSelectionChange,
     handleAddQuota,
     ruleFormRef,
     formData,
-    useTable
+    useTable,
+    isView
   } = addScondTargetHook({ rowData, subRowData, editType, emit })
 </script>
 

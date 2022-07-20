@@ -2,7 +2,7 @@
  * @Author: kevin
  * @Date: 2022-04-12 13:40:01
  * @LastEditors: kevin
- * @LastEditTime: 2022-07-11 09:37:32
+ * @LastEditTime: 2022-07-19 17:27:55
  * @Description: Do not edit
  */
 import { ref, getCurrentInstance, nextTick, watch } from 'vue'
@@ -128,7 +128,7 @@ const role = ref(userInfo.value)
 console.log(role, 'role')
   const getTargetData = async () => {
     if (where === 'work') {
-       const { data } = await getdetail({ detailId: rowData.detailId, type: rowData.type })
+       const { data } = await getdetail({ detailId: rowData.detailId })
         showData.value = data?.evaluateCheckTargetDto ?? {}
     } else {
       if (role.value.organization) {

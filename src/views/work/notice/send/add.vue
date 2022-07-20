@@ -103,6 +103,7 @@
   const store = useStore()
   const HOST = computed(() => store.state.HOST)
   console.log('HOST', HOST)
+  // 富文本编辑器配置
   const editorConfig = reactive({
     setting: {
       width: '100%',

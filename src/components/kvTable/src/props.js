@@ -10,6 +10,10 @@ export const propsList = {
     type: Array,
     default: () => ([])
   },
+  expandRowKeys: {
+    type: Array,
+    default: []
+  },
   propList: {
     type: Array,
     required: true

@@ -11,32 +11,53 @@ export default {
   colLayout: {
     // span: 12
   },
+  // 表单是否需要验证
+  isVerify: true,
   formItems: [
     {
       field: 'title',
       type: 'input',
       label: '公告标题',
-      placeholder: '请输入标题'
+      placeholder: '请输入标题',
+      rules: {
+        required: true,
+        trigger: 'blur',
+        message: '请输入标题'
+      }
     },
     {
       field: 'type',
       type: 'slot',
       label: '分类',
-      slotName: 'type'
-      // options: [{ label: '1级', value: 1 }, { label: '2级', value: 2 }, { label: '3级', value: 3 }]
+      slotName: 'type',
+      rules: {
+        required: true,
+        trigger: 'blur',
+        message: '请选择分类'
+      }
     },
     {
       field: 'content',
       type: 'slot', // 、、'textarea',
       label: '内容',
       slotName: 'content',
-      placeholder: '请输入内容'
+      placeholder: '请输入内容',
+      rules: {
+        required: true,
+        trigger: 'blur',
+        message: '请输入内容'
+      }
     },
     {
       field: 'checkArea',
       type: 'slot',
       label: '公告范围',
-      slotName: 'checkArea'
+      slotName: 'checkArea',
+      rules: {
+        required: true,
+        trigger: 'blur',
+        message: '请选择公告范围'
+      }
     }, {
       field: 'top',
       type: 'slot',

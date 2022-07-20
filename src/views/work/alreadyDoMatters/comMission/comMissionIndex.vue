@@ -2,7 +2,7 @@
  * @Author: kevin
  * @Date: 2022-04-29 11:32:12
  * @LastEditors: kevin
- * @LastEditTime: 2022-05-19 15:50:06
+ * @LastEditTime: 2022-07-19 17:45:10
  * @Description: 代办事宜
 -->
 <template>
@@ -33,15 +33,27 @@
 </template>
 
 <script setup>
+import { useRouter } from 'vue-router'
 import { targetList } from './config/dataConfig'
 import { getwatiList } from '@/api/todoList'
 import { formatTimestamp } from '@/utils/formatDate.js'
 import { handeles } from './config/hooks'
 import editTarget from '@/views/evaluationProcess/alltheTarget/theoverallgoal/editTarget.vue'
 import handleacmManage from '../../bounced/handleAcm.vue'
+const $router = useRouter()
 const handleSelectionChange = () => {}
+const handleAddTemplate = (row) => {
+      // 跳转到评价过程
+      $router.push({
+        path: '/manage/alltheTarget',
+        query: {
+          id: row.detailId,
+          where: 'work'
+        }
+      })
+  }
+
 const {
-  handleAddTemplate,
   cancel,
   searchConfig,
   subRowData,

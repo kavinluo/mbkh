@@ -2,7 +2,7 @@
  * @Author: kevin
  * @Date: 2022-03-14 09:39:40
  * @LastEditors: kevin
- * @LastEditTime: 2022-07-06 14:10:10
+ * @LastEditTime: 2022-07-19 16:00:12
  * @Description: 一级级目标列表
 -->
 <template>
@@ -26,8 +26,8 @@
       {{ formatTimestamp(scope.row.updateTime, 'YYYY-MM-DD HH:mm') }}
     </template>
     <template #handler="scope">
-      <el-link type="primary" size="small" @click="handlePublish(scope.row, scope.row.isPublish === 1 ? 'revokePublish' : 'publish')" underline icon="position">{{ scope.row.isPublish === 1 ? `撤销发布` : `发布` }}</el-link>&nbsp;&nbsp;&nbsp;
-      <el-link type="primary" :disabled="scope.row.isPublish === 1" size="small" @click="handleSetting(scope.row)" underline icon="setting">配置</el-link>&nbsp;&nbsp;&nbsp;
+      <el-link type="primary" size="small" @click="handlePublish(scope.row, scope.row.isPublish === 1 ? 'revokePublish' : 'publish')" underline :icon="scope.row.isPublish === 1 ? 'refresh' : 'position'">{{ scope.row.isPublish === 1 ? `撤销发布` : `发布` }}</el-link>&nbsp;&nbsp;&nbsp;
+      <el-link type="primary" size="small" @click="handleSetting(scope.row)" underline icon="setting">配置</el-link>&nbsp;&nbsp;&nbsp;
       <el-link type="primary" :disabled="scope.row.isPublish === 1" size="small" @click="handleEdit(scope.row)" underline icon="edit">编辑</el-link>&nbsp;&nbsp;&nbsp;
       <el-link type="danger" :disabled="scope.row.isPublish === 1" size="small" @click="handleRemove(scope.row)" underline icon="delete">删除</el-link>
     </template>

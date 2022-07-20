@@ -2,7 +2,7 @@
  * @Author: kevin
  * @Date: 2022-04-12 13:40:01
  * @LastEditors: kevin
- * @LastEditTime: 2022-05-19 15:49:03
+ * @LastEditTime: 2022-07-19 17:46:03
  * @Description: Do not edit
  */
 import { ref } from 'vue'
@@ -26,12 +26,11 @@ export const handeles = () => {
       subRowData.value = row
       updataListFn()
     }
-
-      if (row.type === 1) {
-        acmDialog.value.dialogVisible = true
-        subRowDatas.value = row
-        updataListFn()
-      }
+    if (row.type === 1) {
+      acmDialog.value.dialogVisible = true
+      subRowDatas.value = row
+      updataListFn()
+    }
   }
 
   const cancel = () => {

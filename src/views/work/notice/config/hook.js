@@ -2,10 +2,10 @@
  * @Author: kevin
  * @Date: 2022-05-06 16:02:25
  * @LastEditors: kevin
- * @LastEditTime: 2022-05-17 17:24:01
+ * @LastEditTime: 2022-07-15 16:45:24
  * @Description: Do not edit
  */
-import { ref } from 'vue'
+import { ref, getCurrentInstance } from 'vue'
 import { editModelConfig, removeModelConfig, removeModel, typeModelConfig } from './dialogConfig'
 import { searchConfig } from './dataConfig'
 import { getRoleList } from '@/api/organization'
@@ -103,6 +103,7 @@ export const handels = () => {
 
 //  添加、编辑公告相关
 export const addHandels = (editType, row, emit) => {
+  const ruleFormRef = ref()
   const menuList = ref([])
   const formItems = formConfig?.formItems ?? []
   const formOriginData = {}
@@ -123,14 +124,18 @@ export const addHandels = (editType, row, emit) => {
   }
 
   const fn = editType === 'add' ? add : modify
-  const onSubmit = (ref) => {
+  const onSubmit = (formEl) => {
+    console.log('formEl', formEl)
     const params = Object.assign({}, formData.value)
     params.checkArea = params.checkArea.join(',')
-    fn(params).then(res => {
-      emit('callBack')
+    formEl.$refs.ruleFormRef?.validate((valid) => {
+      if (valid) {
+        fn(params).then(res => {
+          emit('callBack')
+        })
+      }
     })
   }
-  const ruleFormRef = ref()
   const getl = async () => {
     const { data } = await getRoleList()
     console.log('data', data)
@@ -151,6 +156,7 @@ export const addHandels = (editType, row, emit) => {
 
 //  分类管理
 export const typeHandle = () => {
+  const { proxy } = getCurrentInstance()
   const editType = ref('add')
   const formData = ref({
     typeName: ''
@@ -183,10 +189,14 @@ export const typeHandle = () => {
         getTypeList()
       })
     } else {
-      noticeTypeAdd(formData.value).then(res => {
-        formData.value.typeName = ''
-        getTypeList(noticeTypeList)
-      })
+      if (formData.value.typeName) {
+        noticeTypeAdd(formData.value).then(res => {
+          formData.value.typeName = ''
+          getTypeList(noticeTypeList)
+        })
+      } else {
+        proxy.$message.warning('分类名称不能为空!')
+      }
     }
   }
   const handleEdit = (type, row) => {

@@ -230,7 +230,6 @@ export const formatDataList = (data) => {
  */
  export const formatTableData = (data = {}, cyListOption, type) => {
   const usrlist = data.targetInfoDtoList
-
   const objList = {}
   usrlist.forEach(item => {
     item.detailedDto.sort((a, b) => a.number - b.number).forEach(x => {

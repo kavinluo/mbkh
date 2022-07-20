@@ -1,3 +1,10 @@
+/*
+ * @Author: kevin
+ * @Date: 2022-07-14 09:45:10
+ * @LastEditors: kevin
+ * @LastEditTime: 2022-07-15 17:17:38
+ * @Description: Do not edit
+ */
 
 //  @Author: kevin
 //  @Date: 2022-04-2211:49:51
@@ -13,7 +20,8 @@ export const targetList = [
     width: '180'
   }, {
     label: '内容',
-    prop: 'content'
+    prop: 'content',
+    slotName: 'content'
   }, {
     label: '发布时间',
     prop: 'times',

@@ -7,7 +7,7 @@
 -->
 <template>
   <el-button type="warning" @click.prevent="goToFirst">返回</el-button>
-  <el-button type="primary" @click.prevent="onDerive">导出</el-button>
+  <!-- <el-button type="primary" @click.prevent="onDerive">导出</el-button> -->
   <el-table :data="thatDataList" style="width: 100%" id="title">
     <el-table-column label="序号" prop="index" width="80" align="center">
       <template #default="scope">
@@ -49,8 +49,8 @@
 </template>
 
 <script setup>
-import * as XLSX from 'xlsx'
-import FileSaver from 'file-saver'
+// import * as XLSX from 'xlsx'
+// import FileSaver from 'file-saver'
 import setDf from '@/views/evaluationProcess/alltheTarget/theoverallgoal/setScore.vue'
 // import editTarget from './editTarget.vue'
  import editTarget from '@/views/evaluationProcess/alltheTarget/theoverallgoal/editTarget.vue'
@@ -68,23 +68,23 @@ const thatDataList = props.rowData.value
 const goToFirst = () => {
   emit('callback', 'assessIndex')
 }
-const onDerive = () => {
-  const filename = '导出.xlsx'
-  const wb = XLSX.utils.table_to_book(document.getElementById('title'))
-  const wbout = XLSX.write(wb, {
-    bookType: 'xlsx',
-    bookSST: true,
-    type: 'array'
-  })
-  try {
-    FileSaver.saveAs(new Blob([wbout], {
-      type: 'application/octet-stream'
-    }), filename)
-  } catch (e) {
-    console.log(e)
-  }
-  return wbout
-}
+// const onDerive = () => {
+//   const filename = '导出.xlsx'
+//   const wb = XLSX.utils.table_to_book(document.getElementById('title'))
+//   const wbout = XLSX.write(wb, {
+//     bookType: 'xlsx',
+//     bookSST: true,
+//     type: 'array'
+//   })
+//   try {
+//     FileSaver.saveAs(new Blob([wbout], {
+//       type: 'application/octet-stream'
+//     }), filename)
+//   } catch (e) {
+//     console.log(e)
+//   }
+//   return wbout
+// }
  const {
     subRowData,
     targetDialog,

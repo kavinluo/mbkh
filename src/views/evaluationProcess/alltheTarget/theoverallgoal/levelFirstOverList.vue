@@ -2,7 +2,7 @@
  * @Author: kevin
  * @Date: 2022-4-2 11:00:00
  * @LastEditors: kevin
- * @LastEditTime: 2022-05-20 14:02:52
+ * @LastEditTime: 2022-07-19 17:43:08
  * @Description: 一级目标列表
 -->
 <template>
@@ -14,8 +14,7 @@
   <kv-table
     v-if="role.userType === 1"
     :propList="targetList"
-    :getDataFn="getListPage"
-    @handleSelectionChange="handleSelectionChange">
+    :getDataFn="getListPage">
     <template #expand="scope">
       <el-table :data="scope.row.evaluateCheckTargetDtoList" style="width: 100%">
         <el-table-column label="" prop="index" width="80" align="center">
@@ -53,8 +52,8 @@
   <kv-table
     v-if="role.userType === 2"
     :propList="targetList"
-    :getDataFn="getListPage"
-    @handleSelectionChange="handleSelectionChange">
+    :expandRowKeys="expandRowKeys"
+    :getDataFn="getListPage">
     <template #expand="scope">
       <el-table :data="scope.row.evaluateCheckTargetDtoList" style="width: 100%">
         <el-table-column label="序号" prop="index" width="80" align="center">
@@ -72,7 +71,9 @@
             </div>
             <div v-else>
               <el-link type="primary" size="small" icon="view" @click="handleEdit(props.row, 'view', 'DF')">查看</el-link>&nbsp;&nbsp;
-              <el-link type="primary" size="small" icon="edit" @click="handleEdit(props.row,'edit', 'DF')">编辑</el-link>&nbsp;&nbsp;
+              <el-link type="primary" size="small" :disabled="props.row.status === 1" icon="edit" @click="handleEdit(props.row,'edit', 'DF')">编辑</el-link>&nbsp;&nbsp;
+              <el-link type="primary" size="small" :disabled="props.row.status === 1" icon="promotion" @click="handleReport(props.row)">上报</el-link>
+
             </div>
           </template>
         </el-table-column>
@@ -80,12 +81,12 @@
         <el-table-column label="目标" v-if="role.userType === 2" prop="title" align="center" />
         <el-table-column label="状态" prop="status" align="center">
           <template #default="props">
-            <template v-if="props.row.parentId > 0">
-              <span v-if="props.row.status === 0">未上报</span>
-              <span v-if="props.row.status === 1">已上报</span>
-              <span v-if="props.row.status === 2">部分上报</span>
-            </template>
-            <span v-else>-</span>
+            <!-- <template v-if="props.row.parentId > 0"> -->
+            <span v-if="props.row.status === 0">未上报</span>
+            <span v-if="props.row.status === 1">已上报</span>
+            <span v-if="props.row.status === 2">部分上报</span>
+            <!-- </template> -->
+            <!-- <span v-else>-</span> -->
           </template>
         </el-table-column>
       </el-table>
@@ -103,13 +104,16 @@
     </template>
   </kv-table>
   <kvDialog v-bind="targetDialog" v-model="targetDialog.dialogVisible">
+    <!-- set-df 汇总表设置 -->
     <set-df v-if="dfDataType" :rowData="subRowData" @callBack="cancel" />
+    <!-- 目标设置 -->
     <edit-target v-else :rowData="subRowData" where="proc" @callBack="cancel" />
   </kvDialog>
   <kvDialog v-bind="reportDialog" v-model="reportDialog.dialogVisible" @callBack="cancel" ></kvDialog>
 </template>
 <script setup>
 import { ref } from 'vue'
+import { useRoute } from 'vue-router'
 import setDf from './setScore.vue'
 import editTarget from './editTarget.vue'
 import { targetList } from './config/dataConfig'
@@ -119,10 +123,8 @@ import { useState } from '@/hooks/index'
 const emit = defineEmits(['callback'])
 const { userInfo } = useState(['userInfo'], 'user')
 const role = ref(userInfo.value)
-const handleSelectionChange = () => {
-
-}
-
+const $route = useRoute()
+const expandRowKeys = ref([])
 // 去二级评分
 const goToEdit = (row = []) => {
   emit('callback', 'levelSecond', row)
@@ -142,6 +144,10 @@ const goToEdit = (row = []) => {
     onSubmit
  } = levelSecond()
 
+  if ($route.query?.where) {
+    expandRowKeys.value.push($route.query.id)
+    // handleEdit({ id: $route.query.id }, 'edit', null)
+  }
 </script>
 
 <style>
