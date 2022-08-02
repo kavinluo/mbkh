@@ -19,7 +19,9 @@
     :getDataFn="releaseListPage"
     @handleSelectionChange="handleSelectionChange">
     <template #title="props">
-      <el-link @click="handleEdit(props.row, 'view')">{{ props.row.title }}</el-link> <el-tag size="small" style="cursor: pointer;" @click="handleTop(props.row)" type="success">置顶</el-tag>
+      <el-link @click="handleEdit(props.row, 'view')">{{ props.row.title }}</el-link>&nbsp;
+      <!-- <el-link type="warning" @click="handleTop(props.row)" v-if="props.row.top !== 1">设为置顶</el-link> -->
+      <el-tag v-if="props.row.top !== 1" size="small" style="cursor: pointer;" @click="handleTop(props.row)" type="warning">设为置顶</el-tag>
     </template>
     <template #top="props">
       {{ props.row.top === 1 ? '是' : '否' }}
@@ -31,8 +33,8 @@
       {{ status[props.row.status] }}
     </template>
     <template #handle="props">
-      <el-link type="primary" size="small" @click="handleEdit(props.row, 'edit')" underline icon="edit">编辑</el-link>&nbsp;&nbsp;&nbsp;
-      <el-link type="danger" size="small" @click="handleRemove(props.row)" underline icon="delete">删除</el-link>&nbsp;&nbsp;&nbsp;
+      <el-link type="primary" size="small" :disabled="props.row.status !== 0" @click="handleEdit(props.row, 'edit')" underline icon="edit">编辑</el-link>&nbsp;&nbsp;
+      <el-link type="danger" size="small" :disabled="props.row.status !== 0" @click="handleRemove(props.row)" underline icon="delete">删除</el-link>&nbsp;&nbsp;
       <el-link type="primary" v-if="[0].includes(props.row.status)" icon="position" @click="handlePublish(props.row, annouce)">发布</el-link>
       <el-link type="primary" v-if="[1,2].includes(props.row.status)" icon="refresh" @click="handlePublish(props.row, revokeAnnouce )">撤销</el-link>
     </template>

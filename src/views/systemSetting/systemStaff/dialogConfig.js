@@ -15,7 +15,7 @@ export const removeImportDialogConfig = {
   templateLInk: ``
 }
 export const modelConfig = {
-    title: '编辑机构',
+    title: '编辑',
     width: '600px',
     dialogVisible: false
   }

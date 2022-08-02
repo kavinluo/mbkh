@@ -7,30 +7,42 @@
  */
  export default [
     {
-      label: '登陆账号',
-      prop: 'account'
+      label: '登录账号',
+      prop: 'account',
+      width: 120
     }, {
       label: '姓名',
-      prop: 'name'
+      prop: 'name',
+      width: 120
     }, {
       label: '手机号',
-      prop: 'telephone'
+      prop: 'telephone',
+      width: 130
     }, {
-      label: '电子邮箱',
-      prop: 'email'
-    },
-    {
+      label: '是否负责人',
+      prop: 'isSupervisor',
+      slotName: 'supervisor',
+      width: 120
+    }, {
       label: '启用状态',
       prop: 'enable',
-      slotName: 'enable'
+      slotName: 'enable',
+      minWidth: 100
+    }, {
+      label: '所属机构',
+      prop: 'organizationName'
     }, {
       label: '人员编号',
       prop: 'number'
-    }, {
-      label: '所属机构',
-      prop: 'organization'
+    },
+    {
+      label: '电子邮箱',
+      prop: 'email',
+      minWidth: 200
     }, {
       label: '操作',
-      slotName: 'handler'
+      slotName: 'handler',
+      fixed: 'right',
+      width: 240
     }
   ]

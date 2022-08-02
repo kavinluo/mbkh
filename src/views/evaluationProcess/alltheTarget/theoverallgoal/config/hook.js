@@ -149,11 +149,26 @@ console.log(role, 'role')
     //  }
   }
   getTargetData()
+
   // 输入分值计算
   const count = (type, row) => {
+    // 不可以输入非小数点或者 0 开头的整数
+    const quantityScale = 2
+    const re = new RegExp('^(0|[1-9][0-9]*)(\\.[0-9]{0,' + quantityScale + '})?$')
     if (type === 'ZP') {
+      const f = row.selfScore + ''.toString()
+      if (f !== 'undefined' && !re.test(f)) {
+        proxy.$message.warning('输入不正确！')
+        row.selfScore = 0
+        return
+      }
       if (row.score < row.selfScore) {
         proxy.$message.warning('自评分不能大于分值！')
+        row.selfScore = 0
+        return
+      }
+      if (row.selfScore < 0) {
+        proxy.$message.warning('自评分不能小于0！')
         row.selfScore = 0
         return
       }
@@ -161,8 +176,19 @@ console.log(role, 'role')
         return per + Number(next.selfScore)
       }, 0)
     } else {
+      const f = row.repeatedScore + ''.toString()
+      if (f !== 'undefined' && !re.test(f)) {
+        proxy.$message.warning('输入不正确！')
+        row.repeatedScore = 0
+        return
+      }
       if (row.score < row.repeatedScore) {
         proxy.$message.warning('复评分不能大于分值！')
+        row.repeatedScore = 0
+        return
+      }
+      if (row.repeatedScore < 0) {
+        proxy.$message.warning('复评分不能小于0！')
         row.repeatedScore = 0
         return
       }

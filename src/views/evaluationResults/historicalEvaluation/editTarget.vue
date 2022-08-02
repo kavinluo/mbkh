@@ -8,7 +8,7 @@
 <template>
   <el-row :gutter="20">
     <el-col :span="10"><h4 style="margin: 0;"> {{ showData.title }}</h4></el-col>
-    <el-col :span="9">负责人：{{ showData.directorName }}</el-col>
+    <el-col :span="9">负责人：{{ formatName(showData) }}</el-col>
     <el-col :span="5" algin="right">总评分：{{ showData.scoreResult }}</el-col>
     <br><br>
     <el-col :span="15">考区：{{ showData.checkAreaName }} &nbsp;&nbsp;  &nbsp;&nbsp; 更新时间：{{ formatTimestamp(showData.updateTime, 'YYYY-MM-DD HH:mm:ss') }}</el-col>
@@ -139,6 +139,13 @@ const emit = defineEmits(['callBack', 'cancel'])
     showTableData.value = formatDataList(data)
   }
   getTargetData()
+
+  const formatName = (showData) => {
+    const name = showData.directorName?.replaceAll(/,null|null,/g, '')
+    if (name === 'null') {
+      return '-'
+    } else return name
+  }
 
   // 获取人员列表
 

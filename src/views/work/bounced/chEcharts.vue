@@ -1,12 +1,31 @@
 <template>
-  <div id="myMap" ref="myMap" class="border"></div>
+  <div ref="myMap" class="border"></div>
 </template>
 
 <script setup>
-import { onMounted, ref } from 'vue'
+import { ref } from 'vue'
 import * as echarts from 'echarts'
 import china from '@/utils/chinaChange.json'
+import { getRanking } from '@/api/statistical.js'
 echarts.registerMap('china', china)
+ const newChinaData = ref([])
+ const getRankData = async () => {
+    const { data } = await getRanking()
+    data.forEach((item) => {
+    item.name = item.checkAreaName.replace('省', '')
+    item.name = item.name.replace('市', '')
+    item.value = item.score
+    delete item.checkAreaName
+    delete item.ranking
+    delete item.score
+    newChinaData.value.push(item)
+ })
+ }
+
+ getRankData().then(res => {
+   chart.value = echarts.init(myMap.value, 'macarons')
+    chart.value.setOption(mapOption.value)
+ })
 // 中国地图
 const mapOption = ref({
   backgroundColor: '#FFFFFF',
@@ -60,69 +79,27 @@ const mapOption = ref({
   // 配置属性
   series: [
     {
-      name: '数据',
+      name: '评分',
       type: 'map',
       roam: false,
       geoIndex: 0,
       label: {
-        show: false, // 省份名称,
+        show: true, // 省份名称,
         emphasis: {
           show: false
         }
       },
-      data: [
-        { name: '北京', value: Math.round(Math.random() * 1000) },
-        { name: '天津', value: Math.round(Math.random() * 500) },
-        { name: '上海', value: Math.round(Math.random() * 500) },
-        { name: '重庆', value: Math.round(Math.random() * 500) },
-        { name: '河北', value: Math.round(Math.random() * 500) },
-        { name: '河南', value: Math.round(Math.random() * 500) },
-        { name: '云南', value: Math.round(Math.random() * 500) },
-        { name: '辽宁', value: Math.round(Math.random() * 500) },
-        { name: '黑龙江', value: Math.round(Math.random() * 500) },
-        { name: '湖南', value: Math.round(Math.random() * 500) },
-        { name: '安徽', value: Math.round(Math.random() * 500) },
-        { name: '山东', value: Math.round(Math.random() * 500) },
-        { name: '新疆', value: Math.round(Math.random() * 500) },
-        { name: '江苏', value: Math.round(Math.random() * 500) },
-        { name: '浙江', value: Math.round(Math.random() * 500) },
-        { name: '江西', value: Math.round(Math.random() * 500) },
-        { name: '湖北', value: Math.round(Math.random() * 500) },
-        { name: '广西', value: Math.round(Math.random() * 500) },
-        { name: '甘肃', value: Math.round(Math.random() * 500) },
-        { name: '山西', value: Math.round(Math.random() * 500) },
-        { name: '内蒙古', value: Math.round(Math.random() * 500) },
-        { name: '陕西', value: Math.round(Math.random() * 500) },
-        { name: '吉林', value: Math.round(Math.random() * 500) },
-        { name: '福建', value: Math.round(Math.random() * 500) },
-        { name: '贵州', value: Math.round(Math.random() * 500) },
-        { name: '广东', value: Math.round(Math.random() * 500) },
-        { name: '青海', value: Math.round(Math.random() * 500) },
-        { name: '西藏', value: Math.round(Math.random() * 500) },
-        { name: '四川', value: Math.round(Math.random() * 500) },
-        { name: '宁夏', value: Math.round(Math.random() * 500) },
-        { name: '海南', value: Math.round(Math.random() * 500) },
-        { name: '台湾', value: Math.round(Math.random() * 500) },
-        { name: '香港', value: Math.round(Math.random() * 500) },
-        { name: '澳门', value: Math.round(Math.random() * 500) }
-      ] // 数据
+      data: newChinaData.value// 数据
     }
   ]
 })
 const chart = ref(null)
-onMounted(() => {
-  setTimeout(() => {
-    chart.value = echarts.init(
-        document.getElementById('myMap'),
-        'macarons'
-      )
-      chart.value.setOption(mapOption.value)
-  }, 10)
-    })
+const myMap = ref()
+
 </script>
 
 <style scoped>
-#myMap {
+.border {
   flex: 1;
   width: 100%;
   height: 600px;

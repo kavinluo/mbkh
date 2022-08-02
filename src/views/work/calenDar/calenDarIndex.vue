@@ -7,7 +7,7 @@
 -->
 <template>
   <el-row>
-    <el-col :span="4.5">
+    <el-col :xs="3" :sm="4" :md="5" :lg="6" :xl="5">
       <div class="box-card">
         <span>日历 <img src="@/assets/img/calenDar.png" style="float:right;margin-right:15px" @click="addcalenDar"></span>
         <el-calendar ref="calendar">
@@ -33,7 +33,7 @@
         </div>
       </div>
     </el-col>
-    <el-col :span="19">
+    <el-col :xs="10" :sm="10" :md="10" :lg="18" :xl="18">
       <el-tabs v-model="activeName" class="use-tabs">
         <el-tab-pane label="考区日程" name="etsSchedule">
           <etsScheduleManage v-if="activeName === 'etsSchedule'" />
@@ -57,10 +57,8 @@ const handleChange = (val) => {
   console.log(val)
 }
 const addcalenDar = () => {
-  console.log(123)
 }
 const add = () => {
-  console.log('新增')
 }
 </script>
 

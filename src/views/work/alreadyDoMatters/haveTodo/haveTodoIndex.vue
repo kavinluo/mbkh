@@ -36,6 +36,7 @@
 </template>
 
 <script setup>
+import { useRouter } from 'vue-router'
 import { targetList } from './config/dataConfig'
 import { getalready } from '@/api/todoList'
 import { formatTimestamp } from '@/utils/formatDate.js'
@@ -43,11 +44,11 @@ import { handels } from './config/hooks'
 import { handeles } from '../comMission/config/hooks'
 import editTarget from '@/views/evaluationProcess/alltheTarget/theoverallgoal/editTarget.vue'
 import handleacmManage from '../../bounced/handleAcm.vue'
-
+const $router = useRouter()
 const handleSelectionChange = () => {}
 const {
   cancel,
-  handleAddTemplate,
+  // handleAddTemplate,
   searchConfig,
   subRowData,
   editDialog,
@@ -55,6 +56,16 @@ const {
   subRowDatas
 } = handels()
 const { onSubmit, formData } = handeles()
+const handleAddTemplate = (row) => {
+      // 跳转到评价过程
+      $router.push({
+        path: '/manage/assessMent',
+        query: {
+          id: row.detailId,
+          where: 'work'
+        }
+      })
+    }
 </script>
 
 <style scoped>

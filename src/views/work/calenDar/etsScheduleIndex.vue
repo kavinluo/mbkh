@@ -6,7 +6,7 @@
         <span>{{ date }}</span>
         <span @click="selectDate('next-month')"> ＞＞ </span>
       </div>
-      <div style="position:absolute; right:20px; top: 4px;">
+      <!-- <div style="position:absolute; right:20px; top: 4px;">
         <el-button
           type="primary"
           round
@@ -17,7 +17,7 @@
         <el-button>月</el-button>
         <el-button>周</el-button>
         <el-button>日</el-button>
-      </div>
+      </div> -->
       <kvDialog v-bind="editDialog" v-model="editDialog.dialogVisible">
         <add @cancel="cancel" />
       </kvDialog>
@@ -36,7 +36,7 @@ const selectDate = (val) => {
 
  const {
    editDialog,
-  addSchedule,
+  // addSchedule,
   cancel
  } = handels()
 </script>

@@ -2,7 +2,7 @@
  * @Author: kevin
  * @Date: 2022-04-12 09:33:27
  * @LastEditors: kevin
- * @LastEditTime: 2022-05-20 10:17:20
+ * @LastEditTime: 2022-07-22 11:53:22
  * @Description: 二级目标
 -->
 <template>
@@ -15,7 +15,7 @@
     </el-table-column>
     <el-table-column label="操作" width="180" align="center">
       <template #default="scope">
-        <div v-if="scope.row.parentId > 0">
+        <div v-if="scope.row.type === 2">
           <el-link type="primary" size="small" icon="view" @click="handleEdit(scope.row, 'view')">查看</el-link>&nbsp;&nbsp;
           <el-link type="primary" size="small" :disabled="scope.row.status === 1 && role.userType !== 1 || role.userType === 1 && scope.row.status !== 1" icon="edit" @click="handleEdit(scope.row, 'edit')">编辑</el-link>&nbsp;&nbsp;
           <el-link type="primary" size="small" v-if="role.userType !== 1" :disabled="scope.row.status === 1" icon="promotion" @click="handleReport(scope.row)">上报</el-link>

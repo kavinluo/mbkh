@@ -35,7 +35,7 @@
 </template>
 
 <script setup>
-  import { ref, watch } from 'vue'
+  import { ref, watch, nextTick } from 'vue'
   import { propsList } from './props'
 
   const props = defineProps(propsList)
@@ -56,6 +56,18 @@
   watch(filterText, (val) => {
     treeRef.value?.filter(val)
   })
+
+// 默认高亮第一个
+  watch(
+    () => props.treeData,
+    () => {
+    nextTick(() => {
+    const id = props.treeData.length ? props.treeData[0].id : ''
+    console.log(id)
+    treeRef.value.setCurrentKey(id)
+  })
+    }
+  )
   const handleAdd = () => {
     emit('add', treeRef.value.getCurrentNode(), 'add')
   }

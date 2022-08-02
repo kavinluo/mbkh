@@ -24,13 +24,14 @@ export const organization = {
         trigger: 'blur',
         message: '请输入机构名称'
       }
-    }, {
-      field: 'parentId',
-      type: 'slot',
-      label: '父级菜单',
-      placeholder: '请选择',
-      slotName: 'parentId'
     }
+    // , {
+    //   field: 'parentId',
+    //   type: 'slot',
+    //   label: '父级菜单',
+    //   placeholder: '请选择',
+    //   slotName: 'parentId'
+    // }
   ]
 }
 
@@ -63,13 +64,13 @@ export const account = {
     {
       field: 'account',
       type: 'input',
-      label: '登陆账号',
+      label: '登录账号',
       rules: {
         required: true,
-        message: '请输入登陆账号',
+        message: '请输入登录账号',
         trigger: 'blur'
       },
-      placeholder: '请输入登陆账号'
+      placeholder: '请输入登录账号'
     }, {
       field: 'name',
       type: 'input',
@@ -113,13 +114,13 @@ export const account = {
     }, {
       field: 'password',
       type: 'password',
-      label: '登陆密码',
-      placeholder: '请输入登陆密码',
-      rules: {
-        required: true,
-        message: '请输入密码',
-        trigger: 'blur'
-      }
+      label: '登录密码',
+      placeholder: '默认密码：666666，若要修改请输入'
+      // rules: {
+      //   required: true,
+      //   message: '请输入密码',
+      //   trigger: 'blur'
+      // }
     }, {
       field: 'enable',
       type: 'slot',

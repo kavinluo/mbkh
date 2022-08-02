@@ -2,7 +2,7 @@
  * @Author: kevin
  * @Date: 2022-04-19 16:26:46
  * @LastEditors: kevin
- * @LastEditTime: 2022-05-13 16:38:32
+ * @LastEditTime: 2022-07-22 11:54:08
  * @Description: 二级目标
  */
 import { targetModelConfig, reportDialogConfig } from './dialogConfig'
@@ -13,6 +13,7 @@ import { report, getListPage } from '@/api/process'
 import { updateList } from '@/store'
 export const levelSecond = (data) => {
   const dfDataType = ref(null)
+  const expandRowKeys = ref([])
   const targetDialog = reactive(targetModelConfig)
   const reportDialog = reactive(reportDialogConfig)
   const subRowData = ref(null)
@@ -22,7 +23,10 @@ export const levelSecond = (data) => {
     targetDialog.dialogVisible = false
     updateList(getListPage, formData.value)
   }
-  const handleEdit = (row, type, df) => {
+  const handleEdit = (row, type, df, scope) => {
+    if (scope) {
+      expandRowKeys.value = [scope.id] // 记录当前被点击行的父节点 id
+    }
     targetDialog.dialogVisible = true
     row.modelType = type
     subRowData.value = row
@@ -35,7 +39,10 @@ export const levelSecond = (data) => {
     }
   }
   const formData = ref(formOriginData)
-  const handleReport = (row) => {
+  const handleReport = (row, scope) => {
+    if (scope) {
+      expandRowKeys.value = [scope.id] // 记录当前被点击行的父节点 id
+    }
     reportDialog.dialogVisible = true
     reportDialog.params = row.id
     reportDialog.useFn = report
@@ -54,7 +61,8 @@ export const levelSecond = (data) => {
     targetDialog,
     reportDialog,
     searchConfig,
-    dfDataType
+    dfDataType,
+    expandRowKeys
     }
 }
 

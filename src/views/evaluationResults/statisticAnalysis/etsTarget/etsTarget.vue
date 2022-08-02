@@ -18,11 +18,9 @@
         <p>最&nbsp;高&nbsp;分&nbsp;：<span style="color:#008000;font-weight:400">{{ showDatas.highScore }}</span></p>
         <p>最&nbsp;低&nbsp;分&nbsp;：<span style="color:#008000;font-weight:400">{{ showDatas.lowScore }}</span></p>
         <p>平&nbsp;均&nbsp;分&nbsp;：<span style="color:#008000;font-weight:400">{{ showDatas.average }}</span></p>
-
       </div>
     </el-tabs>
-    <div id="myChart12" class="echart"></div>
-
+    <div ref="chartColumnar" class="echart"></div>
   </div>
   <div class="box-card">
     <el-tabs class="use-tabs">
@@ -43,68 +41,66 @@
 import * as echarts from 'echarts'
 import { onMounted, ref } from 'vue'
 import { getArea } from '@/api/statistical.js'
+
 const showData = ref(null)
 const showDatas = ref({})
-// const getData = async () => {
-//   const { data } = await getArea()
-//   showDatas.value = data
-//   showData.value = data.infoDtoList
-//   }
-// getData()
-onMounted(() => { // 需要获取到element,所以是onMounted的Hook
 const echartData = ref([])
 const echartDatas = ref([])
-const getData = async () => {
-  const { data } = await getArea()
-   showDatas.value = data
-    showData.value = data.infoDtoList
-    data.infoDtoList.forEach(item => {
-       echartData.value.push(item.areaName)
-       echartDatas.value.push(item.score)
-  })
-  const myChart = echarts.init(document.getElementById('myChart12'))
-  // 绘制图表
-  myChart.setOption({
-    tooltip: {
-      trigger: 'axis',
-      axisPointer: {
-        type: 'shadow'
-      }
-    },
-    grid: {
-      left: '3%',
-      right: '4%',
-      bottom: '3%',
-      containLabel: true
-    },
-    xAxis: [
-      {
-        type: 'category',
-        data: echartData._rawValue,
-        axisTick: {
-          alignWithLabel: true
+const chartColumnar = ref()
+onMounted(() => { // 需要获取到element,所以是onMounted的Hook
+  const getData = async () => {
+    const { data } = await getArea()
+      showDatas.value = data
+      showData.value = data.infoDtoList
+      data.infoDtoList.forEach(item => {
+          echartData.value.push(item.areaName)
+          echartDatas.value.push(item.score)
+    })
+    const chartsData = {
+      tooltip: {
+        trigger: 'axis',
+        axisPointer: {
+          type: 'shadow'
         }
-      }
-    ],
-    yAxis: [
-      {
-        type: 'value'
-      }
-    ],
-    series: [
-      {
-        name: '考取得分',
-        type: 'bar',
-        barWidth: '60%',
-        data: echartDatas._rawValue
-      }
-    ]
-  })
-  window.onresize = function () { // 自适应大小
-    myChart.resize()
-  }
+      },
+      grid: {
+        left: '3%',
+        right: '4%',
+        bottom: '3%',
+        containLabel: true
+      },
+      xAxis: [
+        {
+          type: 'category',
+          data: echartData.value,
+          axisTick: {
+            alignWithLabel: true
+          }
+        }
+      ],
+      yAxis: [
+        {
+          type: 'value'
+        }
+      ],
+      series: [
+        {
+          name: '考取得分',
+          type: 'bar',
+          barWidth: 50,
+          data: echartDatas.value
+        }
+      ]
     }
-getData()
+    return chartsData
+  }
+  getData().then((res) => {
+    const myChart = echarts.init(chartColumnar.value)
+    myChart.setOption(res)
+    window.onresize = function () { // 自适应大小
+      myChart.resize()
+    }
+  })
 })
 
 </script>

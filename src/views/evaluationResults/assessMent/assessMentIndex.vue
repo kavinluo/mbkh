@@ -2,11 +2,10 @@
  * @Author: kevin
  * @Date: 2022-4-22 11:00:00
  * @LastEditors: kevin
- * @LastEditTime: 2022-05-20 14:50:35
+ * @LastEditTime: 2022-07-22 11:18:00
  * @Description: 评价结果
 -->
 <template>
-
   <kv-form v-bind="searchConfig" v-model="formData">
     <template #searchBtn>
       <el-button style="margin-left: 10px" type="primary" @click.prevent="onSubmit">搜索</el-button>
@@ -15,6 +14,7 @@
   <kv-table
     v-if="role.userType === 1"
     :propList="targetList"
+    :expandRowKeys="expandRowKeys"
     :getDataFn="getListPage"
     @handleSelectionChange="handleSelectionChange">
     <template #updateTime="scope">
@@ -38,24 +38,15 @@
           {{ formatTimestamp(scope.row.updateTime, 'YYYY-MM-DD') }}
         </el-table-column>
         <el-table-column label="" prop="repeatedScore" align="center" />
-        <el-table-column label="评分结果" prop="status" align="center">
-          <template #default="props">
-            <span v-if="props.row.repeatedScore <= 59">限期整改</span>
-            <span v-if="props.row.repeatedScore <= 79 && props.row.repeatedScore >= 60">合格</span>
-            <span v-if="props.row.repeatedScore >= 100 && props.row.repeatedScore >= 80">优秀</span>
-          </template>
+        <el-table-column label="评价结果" prop="scoreResult" align="center">
         </el-table-column>
       </el-table>
-    </template>
-    <template #results="props">
-      <span v-if="props.row.repeatedScore <= 59">限期整改</span>
-      <span v-if="props.row.repeatedScore <= 79 && props.row.repeatedScore >= 60">合格</span>
-      <span v-if="props.row.repeatedScore >= 100 && props.row.repeatedScore >= 80">优秀</span>
     </template>
   </kv-table>
   <kv-table
     v-if="role.userType === 2"
     :propList="targetList"
+    :expandRowKeys="expandRowKeys"
     :getDataFn="getListPage"
     @handleSelectionChange="handleSelectionChange">
     <template #updateTime="scope">
@@ -70,8 +61,8 @@
         </el-table-column>
         <el-table-column label="" width="180" align="center">
           <template #default="props">
-            <el-link v-if="props.row.parentId > 0" type="primary" size="small" icon="view" @click="handleEdit(props.row, 'view')">查看</el-link>
-            <el-link v-else type="primary" size="small" icon="view" @click="handleEdit(props.row,'view', 'DF')">查看</el-link>
+            <el-link v-if="props.row.type === 2" type="primary" size="small" icon="view" @click="handleEdit(props.row, 'view', null, scope.row)">查看</el-link>
+            <el-link v-else type="primary" size="small" icon="view" @click="handleEdit(props.row,'view', 'DF', scope.row)">查看</el-link>
           </template>
         </el-table-column>
         <el-table-column label="考区" v-if="role.userType === 1" prop="checkAreaName" align="center" />
@@ -80,12 +71,10 @@
           {{ formatTimestamp(scope.row.updateTime, 'YYYY-MM-DD') }}
         </el-table-column>
         <el-table-column label="" prop="" align="center" />
-        <el-table-column label="" prop="status" align="center">
+        <el-table-column label="" prop="scoreResult" align="center">
           <template #default="props">
-            <template v-if="props.row.parentId > 0">
-              <span v-if="props.row.repeatedScore <= 59">限期整改</span>
-              <span v-if="props.row.repeatedScore <= 79 && props.row.repeatedScore >= 60">合格</span>
-              <span v-if="props.row.repeatedScore >= 100 && props.row.repeatedScore >= 80">优秀</span>
+            <template v-if="props.row.type === 2">
+              {{ props.row.scoreResult }}
             </template>
             <template v-else>
               -
@@ -97,11 +86,11 @@
     <template #handler="scope" v-if="role.userType === 2">
       <el-link type="primary" size="small" icon="promotion" @click="handleReport(scope.row)">上报</el-link>
     </template>
-    <template #results="props">
+    <!-- <template #results="props">
       <span v-if="props.row.repeatedScore <= 59">限期整改</span>
       <span v-if="props.row.repeatedScore <= 79 && props.row.repeatedScore >= 60">合格</span>
       <span v-if="props.row.repeatedScore >= 100 && props.row.repeatedScore >= 80">优秀</span>
-    </template>
+    </template> -->
   </kv-table>
   <kvDialog v-bind="targetDialog" v-model="targetDialog.dialogVisible">
     <set-df v-if="dfDataType" :rowData="subRowData" @callBack="cancel" />
@@ -111,6 +100,7 @@
 
 <script setup>
 import { ref } from 'vue'
+import { useRoute } from 'vue-router'
 import setDf from '@/views/evaluationProcess/alltheTarget/theoverallgoal/setScore.vue'
 // import editTarget from './editTarget.vue'
  import editTarget from '@/views/evaluationProcess/alltheTarget/theoverallgoal/editTarget.vue'
@@ -120,7 +110,7 @@ import { useState } from '@/hooks/index'
 import { formatTimestamp } from '@/utils/formatDate'
 import { levelSecond } from './config/levelSecond'
 const emit = defineEmits(['callback'])
-
+const $route = useRoute()
 const { userInfo } = useState(['userInfo'], 'user')
 const role = ref(userInfo.value)
 const handleSelectionChange = () => {
@@ -138,8 +128,14 @@ const score = (row = []) => {
     dfDataType,
     onSubmit,
     cancel,
-    handleEdit
+    handleEdit,
+    expandRowKeys
  } = levelSecond()
+
+ if ($route.query?.where) {
+    expandRowKeys.value = [$route.query.id]
+    // handleEdit({ id: $route.query.id }, 'edit', null)
+  }
 </script>
 
 <style>

@@ -30,7 +30,7 @@
       <add v-if="addModel" :inputType="inputType" :rowData="rowData" @cancel="cancel" @callBack="callBack" />
     </kvDialog>
 
-    <kvDialog v-bind="kvDialogConfig" v-if="kvDialogConfig.dialogVisible" @callBack="confirm" @cancel="cancel"/>
+    <kvDialog v-bind="kvDialogConfig" v-model="kvDialogConfig.dialogVisible" v-if="kvDialogConfig.dialogVisible" @callBack="confirm" @cancel="cancel"/>
 
   </div>
 </template>
@@ -65,6 +65,7 @@
     rowData.value = row
     addModel.value = true
     inputType.value = 'edit'
+    modelConfig.value.title = '编辑账号'
   }
   const handleRemove = (row) => {
     kvDialogConfig.value.params = row.id
@@ -84,6 +85,7 @@
   const handleAdd = () => {
     addModel.value = true
     inputType.value = 'add'
+    modelConfig.value.title = '添加账号'
   }
 const cancel = () => {
   addModel.value = false

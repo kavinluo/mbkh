@@ -9,26 +9,34 @@ export const publishList = [
  {
     label: '标题',
     prop: 'title',
-    slotName: 'title'
+    slotName: 'title',
+    align: 'left',
+    minWidth: 220
   }, {
     label: '公告范围',
-    prop: 'checkAreaName'
+    prop: 'checkAreaName',
+    minWidth: 120
   }, {
     label: '发布时间',
     prop: 'times',
-    slotName: 'times'
+    slotName: 'times',
+    minWidth: 150
   }, {
     label: '置顶',
     prop: 'top',
-    slotName: 'top'
+    slotName: 'top',
+    width: 100
   }, {
     label: '状态',
     prop: 'status',
-    slotName: 'status'
+    slotName: 'status',
+    width: 100
   },
   {
     label: '操作',
-    slotName: 'handle'
+    slotName: 'handle',
+    fixed: 'right',
+    width: 200
   }
 ]
 export const sendList = [

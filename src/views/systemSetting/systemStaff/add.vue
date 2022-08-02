@@ -40,12 +40,16 @@ import { ref } from 'vue'
 import { organization, account } from './formConfig'
 import { add, get, modify } from '@/api/organization'
 
-const { rowData, inputType, addType, menuList } = defineProps({
+const { rowData, inputType, addType, menuList, accountRowData } = defineProps({
     menuList: {
       type: Array,
       default: () => []
     },
     rowData: {
+      type: Object,
+      default: null
+    },
+    accountRowData: {
       type: Object,
       default: null
     },
@@ -58,27 +62,9 @@ const { rowData, inputType, addType, menuList } = defineProps({
       default: 'account'
     }
   })
+  console.log('rowData', rowData, accountRowData)
   const emit = defineEmits(['resetBtnClick', 'queryBtnClick', 'cancel', 'callBack'])
 
-  if (inputType === 'edit' && addType === 'account') {
-      // 编辑账号的时候不需要密码
-      account.formItems = account.formItems.filter(item => item.field !== 'password')
-    } else {
-     const find = account.formItems.find(item => item.field === 'password')
-     if (!find) {
-       account.formItems.push({
-        field: 'password',
-        type: 'password',
-        label: '登陆密码',
-        placeholder: '请输入登陆密码',
-        rules: {
-          required: true,
-          message: '请输入密码',
-          trigger: 'blur'
-        }
-      })
-     }
-    }
     const select = ref({
       account,
       organization
@@ -105,15 +91,21 @@ const { rowData, inputType, addType, menuList } = defineProps({
       emitPath: false // 只保留当前选中的i/d
     })
     if (inputType === 'edit') {
+      console.log('addType', addType);
       (async () => {
-        const dealit = await get(rowData?.id, addType)
+        const dealit = await get(accountRowData?.id, addType)
         formData.value = dealit.data
+        formData.value.password = ''
       })()
     }
   const fn = inputType === 'edit' ? modify : add
    const onSubmit = (formEl) => {
      formEl.$refs.ruleFormRef?.validate((valid) => {
         if (valid) {
+          if (inputType === 'add') {
+            // 添加如果是空 默认666666
+            formData.value.password = formData.value.password ? formData.value.password : '666666'
+          }
           fn(formData.value, addType).then((res) => {
             const { status } = res
             if (status?.code === '0') {

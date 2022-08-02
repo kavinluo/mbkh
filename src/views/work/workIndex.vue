@@ -18,7 +18,7 @@
       </div>
       <!-- 日程表 -->
       <div>
-        <span style="font-size:20px;color:#4b9cfe;margin-left:20px"><img src="@/assets/img/computer.png" alt="" class="images">日程表</span>
+        <span style="font-size:20px;color:#4b9cfe;margin-left:20px;cursor: pointer;" @click="calenDar"><img src="@/assets/img/computer.png" alt="" class="images">日程表</span>
         <div class="calendar" @click="calenDar">
           <div class="time-bottom">
             <div class="week">
@@ -50,7 +50,7 @@
         </div>
         <!-- echarts图表 -->
         <div @click="card">
-          <span class="evaluation"><img src="@/assets/img/computer.png" alt="" class="images">评价排名</span>
+          <span class="evaluation" style="cursor: pointer;"><img src="@/assets/img/computer.png" alt="" class="images">评价排名</span>
           <rankingecharts-manage/>
         </div>
       </div>
@@ -166,7 +166,8 @@ import { useRouter } from 'vue-router'
 	line-height:1.2rem;
 }
 .library{
-  color:#6d6d6d
+  color:#6d6d6d;
+  cursor: pointer;
 }
 .scrollbar-demo-item {
   display: flex;

@@ -8,7 +8,7 @@
 <template>
   <el-row :gutter="20">
     <el-col :span="10"><h4 style="margin: 0;"> {{ showData.title }}</h4></el-col>
-    <el-col :span="9">负责人：{{ showData.directorName?.replaceAll(/,null|null,/g, '') }}</el-col>
+    <el-col :span="9">负责人：{{ formatName(showData) }}</el-col>
     <el-col :span="5" algin="right" v-if="role.userType === 1">总评分：{{ showData.repeatedScore }}</el-col>
     <el-col :span="5" algin="right" v-if="role.userType === 2">总评分：{{ showData.selfScore }}</el-col>
     <br><br>
@@ -152,6 +152,13 @@
      showTableData.value = tableData
   }
   getTargetData()
+
+  const formatName = (showData) => {
+    const name = showData.directorName?.replaceAll(/,null|null,/g, '')
+    if (name === 'null') {
+      return '-'
+    } else return name
+  }
 
 </script>
 

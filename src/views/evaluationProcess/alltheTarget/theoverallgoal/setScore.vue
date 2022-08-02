@@ -2,13 +2,13 @@
  * @Author: kevin
  * @Date: 2022-05-11 11:06:43
  * @LastEditors: kevin
- * @LastEditTime: 2022-07-11 17:57:33
+ * @LastEditTime: 2022-08-02 09:39:52
  * @Description: Do not edit
 -->
 <template>
   <el-row :gutter="20">
     <el-col :span="10"><h4 style="margin: 0;"> {{ showData.title }}</h4></el-col>
-    <el-col :span="9">负责人：{{ showData.directorName?.replaceAll('/,null|null,/g', '') }}</el-col>
+    <el-col :span="9">负责人：{{ formatName(showData) }}</el-col>
     <!-- <el-col :span="5" algin="right" v-if="role.userType === 1">总评分：{{ showData.repeatedScore }}</el-col>
     <el-col :span="5" algin="right" v-if="role.userType === 2">总评分：{{ showData.selfScore }}</el-col> -->
     <br><br>
@@ -26,7 +26,7 @@
         <el-table-column prop="repeatedScore" label="复评分" align="center">
           <template #default="scope">
             <span v-if="rowData.modelType === 'view'">{{ scope.row.repeatedScore }}</span>
-            <el-input type="number" v-else :disabled="role.userType !==1" v-model="scope.row.repeatedScore"></el-input>
+            <el-input type="number" @change="verifyCount(scope.row)" v-else :disabled="role.userType !==1" v-model="scope.row.repeatedScore"></el-input>
           </template>
         </el-table-column>
 
@@ -50,37 +50,37 @@
         <el-table-column prop="prepare" label="考前准备" align="center">
           <template #default="scope">
             <span v-if="rowData.modelType === 'view'">{{ scope.row.prepare }}</span>
-            <el-input v-else type="number" :disabled="role.userType === 1" v-model="scope.row.prepare" @change="count(key, scope.$index)"></el-input>
+            <el-input v-else type="number" @keyup="preventE" :disabled="role.userType === 1" v-model="scope.row.prepare" @change="count(key, scope.$index)"></el-input>
           </template>
         </el-table-column>
         <el-table-column prop="implement" label="考试实施" align="center">
           <template #default="scope">
             <span v-if="rowData.modelType === 'view'">{{ scope.row.implement }}</span>
-            <el-input v-else type="number" :disabled="role.userType === 1" v-model="scope.row.implement" @change="count(key, scope.$index)"></el-input>
+            <el-input v-else type="number" @keyup="preventE" :disabled="role.userType === 1" v-model="scope.row.implement" @change="count(key, scope.$index)"></el-input>
           </template>
         </el-table-column>
         <el-table-column prop="ending" label="考后收尾" align="center">
           <template #default="scope">
             <span v-if="rowData.modelType === 'view'">{{ scope.row.ending }}</span>
-            <el-input v-else type="number" :disabled="role.userType === 1" v-model="scope.row.ending" @change="count(key, scope.$index)"></el-input>
+            <el-input v-else type="number" @keyup="preventE" :disabled="role.userType === 1" v-model="scope.row.ending" @change="count(key, scope.$index)"></el-input>
           </template>
         </el-table-column>
         <el-table-column prop="secrecy" label="安全保密" align="center">
           <template #default="scope">
             <span v-if="rowData.modelType === 'view'">{{ scope.row.secrecy }}</span>
-            <el-input v-else type="number" :disabled="role.userType === 1" v-model="scope.row.secrecy" @change="count(key, scope.$index)"></el-input>
+            <el-input v-else type="number" @keyup="preventE" :disabled="role.userType === 1" v-model="scope.row.secrecy" @change="count(key, scope.$index)"></el-input>
           </template>
         </el-table-column>
         <el-table-column prop="discipline" label="考风考纪" align="center">
           <template #default="scope">
             <span v-if="rowData.modelType === 'view'">{{ scope.row.discipline }}</span>
-            <el-input v-else type="number" :disabled="role.userType === 1" v-model="scope.row.discipline" @change="count(key, scope.$index)"></el-input>
+            <el-input v-else type="number" @keyup="preventE" :disabled="role.userType === 1" v-model="scope.row.discipline" @change="count(key, scope.$index)"></el-input>
           </template>
         </el-table-column>
         <el-table-column prop="analyse" label="数据分析" align="center">
           <template #default="scope">
             <span v-if="rowData.modelType === 'view'">{{ scope.row.analyse }}</span>
-            <el-input v-else type="number" :disabled="role.userType === 1" v-model="scope.row.analyse" @change="count(key, scope.$index)"></el-input>
+            <el-input v-else type="number" @keyup="preventE" :disabled="role.userType === 1" v-model="scope.row.analyse" @change="count(key, scope.$index)"></el-input>
           </template>
         </el-table-column>
         <el-table-column prop="score" label="总分" align="center" />
@@ -113,9 +113,14 @@
         default: () => (null)
       }
   })
-
+  const showData = ref({})
   const cancelTargetModle = () => {
       emit('callBack')
+  }
+  const preventE = (event) => {
+    if (event.keyCode === 69) {
+      event.target.value = ''
+    }
   }
   const {
      selfListData,
@@ -124,14 +129,20 @@
      pushFn,
      deleteFn,
      count,
-     submitHandle
+     submitHandle,
+     verifyCount
   } = setScoreFn(cancelTargetModle, rowData)
-  const showData = ref({})
   const getTargetData = async () => {
     const { data } = await getTarget({ id: rowData.id })
     showData.value = data || {}
   }
   getTargetData()
+  const formatName = (showData) => {
+    const name = showData.directorName?.replaceAll(/,null|null,/g, '')
+    if (name === 'null') {
+      return '-'
+    } else return name
+  }
 
 </script>
 

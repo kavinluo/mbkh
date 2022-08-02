@@ -48,25 +48,25 @@ const { rowData, inputType, addType } = defineProps({
   })
 const emit = defineEmits(['resetBtnClick', 'queryBtnClick', 'cancel', 'callBack'])
 
-  if (inputType === 'edit') {
-      // 编辑账号的时候不需要密码
-      account.formItems = account.formItems.filter(item => item.field !== 'password')
-    } else {
-     const find = account.formItems.find(item => item.field === 'password')
-     if (!find) {
-       account.formItems.push({
-        field: 'password',
-        type: 'password',
-        label: '登陆密码',
-        placeholder: '请输入登陆密码',
-        rules: {
-          required: true,
-          message: '请输入密码',
-          trigger: 'blur'
-        }
-      })
-     }
-    }
+  // if (inputType === 'edit') {
+  //     // 编辑账号的时候不需要密码
+  //     account.formItems = account.formItems.filter(item => item.field !== 'password')
+  //   } else {
+  //    const find = account.formItems.find(item => item.field === 'password')
+  //    if (!find) {
+  //      account.formItems.splice(5, 0, {
+  //       field: 'password',
+  //       type: 'password',
+  //       label: '登录密码',
+  //       placeholder: '请输入登录密码',
+  //       rules: {
+  //         required: true,
+  //         message: '请输入密码',
+  //         trigger: 'blur'
+  //       }
+  //     })
+  //    }
+  //   }
     const formItems = account?.formItems ?? []
     const formOriginData = {
       userType: 1
@@ -84,14 +84,19 @@ const emit = defineEmits(['resetBtnClick', 'queryBtnClick', 'cancel', 'callBack'
     if (inputType === 'edit') {
       (async () => {
         const dealit = await get(rowData?.id, 'account')
-        delete dealit.data.password
+        // delete dealit.data.password
         formData.value = dealit.data
+        formData.value.password = ''
       })()
     }
     const fn = inputType === 'edit' ? modify : add
     const onSubmit = (formEl) => {
       formEl.$refs.ruleFormRef?.validate((valid) => {
         if (valid) {
+          if (inputType === 'add') {
+            // 添加如果是空 默认666666
+            formData.value.password = formData.value.password ? formData.value.password : '666666'
+          }
           fn(formData.value, '/account').then((res) => {
             const { status } = res
             if (status?.code === '0') {

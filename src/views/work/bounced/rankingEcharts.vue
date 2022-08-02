@@ -1,27 +1,24 @@
 <template>
-  <div id="myChart12" class="echart"> </div>
+  <div ref="chartsColumnar" id="myChart12"> </div>
 </template>
 
 <script setup>
 import { onMounted, ref } from 'vue'
+import * as echarts from 'echarts'
 import { getRanking } from '@/api/statistical.js'
 
-import * as echarts from 'echarts'
-
+ const chartsColumnar = ref()
  onMounted(() => {
       const echartData = ref([])
       const echateNum = ref([])
       const getRankData = async () => {
       const { data } = await getRanking()
-      console.log(data, 'getRanking')
       data.forEach(item => {
         echartData.value.push(item.checkAreaName)
         echateNum.value.push(item.score)
       })
-      console.log(echartData)
-
       // 需要获取到element,所以是onMounted的Hook
-      const myChart = echarts.init(document.getElementById('myChart12'))
+      const myChart = echarts.init(chartsColumnar.value)
       // 绘制图表
       myChart.setOption({
         color: ['#3398DB'],
@@ -38,7 +35,7 @@ import * as echarts from 'echarts'
         xAxis: [
           {
             type: 'category',
-            data: echartData._rawValue,
+            data: echartData.value,
 
             axisTick: {
               alignWithLabel: true
@@ -55,12 +52,12 @@ import * as echarts from 'echarts'
             name: '考区分数',
             type: 'bar',
             barWidth: '60%',
-            data: echateNum._rawValue
+            data: echateNum.value
           }
         ]
       })
-         }
-    getRankData()
+       }
+     getRankData()
     })
 </script>
 

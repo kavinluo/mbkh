@@ -10,9 +10,7 @@ import UserIcon from '@/components/kvIcon/kvIcon.js'
 import keTable from '@/components/kvTable'
 import KvFrom from '@/components/kvform'
 import kvDialog from '@/components/kvDialog'
-const userComponentlist = [keTable, KvFrom, kvDialog]
-const concatComponent = components.concat(userComponentlist)
-
+const concatComponent = [...components, keTable, KvFrom, kvDialog]
 function globalRegisterComponent (app) {
   for (const component of concatComponent) {
     if (component.name === 'Menu') { // Menu组件名称和html本身标签重名

@@ -1,6 +1,6 @@
 <template>
   <div class="box-card3">
-    <p style="color: #65a7fe" @click="todo"><img src="@/assets/img/computer.png" alt="" class="images">代办/已办事宜</p>
+    <p style="color: #65a7fe;" @click="todo"><span style="cursor: pointer;"><img src="@/assets/img/computer.png" alt="" class="images">代办/已办事宜</span></p>
     <div v-if="watiList.length < 1"><img src="@/assets/img/temporarily.png" style="padding:5% 0 0 10%"></div>
     <div class="handle" v-for="item in watiList.slice(0,3)" :key="item.number">
       <el-row :gutter="20">
@@ -15,7 +15,7 @@
     </div>
   </div>
   <div class="box-card4">
-    <p style="color: #65a7fe" @click="notice"> <img src="@/assets/img/computer.png" alt="" class="images">公告</p>
+    <p style="color: #65a7fe;" @click="notice"><span style="cursor: pointer;"><img src="@/assets/img/computer.png" alt="" class="images">公告</span></p>
     <div v-if="unReadList.length === 0"><img src="@/assets/img/temporarily.png" style="padding:5% 0 0 10%"></div>
     <div class="handle" v-for="item in unReadList.slice(0,3)" :key="item.id" >
       <el-row :gutter="20" >

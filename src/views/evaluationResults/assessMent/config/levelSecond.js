@@ -13,7 +13,7 @@ import { reactive, ref } from 'vue'
 import { report } from '@/api/process'
 export const levelSecond = (data) => {
   const dfDataType = ref(null)
-
+  const expandRowKeys = ref([])
   const targetDialog = reactive(targetModelConfig)
   const reportDialog = reactive(reportDialogConfig)
   const formItems = searchConfig?.formItems ?? []
@@ -29,7 +29,10 @@ export const levelSecond = (data) => {
     reportDialog.dialogVisible = false
     targetDialog.dialogVisible = false
   }
-  const handleEdit = (row, type, df) => {
+  const handleEdit = (row, type, df, scope) => {
+    if (scope) {
+      expandRowKeys.value = [scope.id] // 记录当前被点击行的父节点 id
+    }
     targetDialog.dialogVisible = true
     row.modelType = type
     subRowData.value = row
@@ -53,6 +56,7 @@ export const levelSecond = (data) => {
     reportDialog,
     searchConfig,
     formData,
-    dfDataType
+    dfDataType,
+    expandRowKeys
   }
 }

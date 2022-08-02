@@ -54,11 +54,59 @@ export const setScoreFn = (cancelTargetModle, targetData) => {
     selfListData.value[key].splice(index, 1)
     count(key)
   }
+  const verifyCount = (row) => {
+    const quantityScale = 2
+    const re = new RegExp('^(0|[1-9][0-9]*)(\\.[0-9]{0,' + quantityScale + '})?$')
+    if (row.repeatedScore < 0) {
+      proxy.$message.warning('复评分不能小于0！')
+      row.repeatedScore = ''
+    }
+    if (row.repeatedScore !== '' && !re.test(row.repeatedScore)) {
+      proxy.$message.warning('输入不正确！')
+      row.repeatedScore = ''
+      console.log(88888)
+    }
+  }
   // 计算总分
   const count = (key, index) => {
-    selfListData.value[key].forEach(item => {
-      item.score = +item.analyse + (+item.discipline) + (+item.ending) + (+item.implement) + (+item.prepare) + (+item.secrecy)
-    })
+    const quantityScale = 2
+    const re = new RegExp('^(0|[1-9][0-9]*)(\\.[0-9]{0,' + quantityScale + '})?$')
+    let status = true
+    for (const td of selfListData.value[key]) {
+      const keys = {
+        prepare: '0',
+        implement: '0',
+        ending: '0',
+        secrecy: '0',
+        discipline: '0',
+        analyse: '0'
+      }
+      for (const keyword in td) {
+        if (keyword in keys) {
+          keys[keyword] = td[keyword]
+        }
+      }
+      for (const keyword in keys) {
+        const f = keys[keyword] + ''.toString()
+        if (f !== '' && !re.test(f)) {
+          td[keyword] = ''
+          proxy.$message.warning('输入不正确！')
+          status = false
+        }
+      }
+    }
+    if (status) {
+      selfListData.value[key].forEach(item => {
+        item.score = toDecimal2NoZero(+item.analyse + (+item.discipline) + (+item.ending) + (+item.implement) + (+item.prepare) + (+item.secrecy))
+      })
+    }
+  }
+
+  // 保留2位小数，如：2，还会保留2 不会补0
+  const toDecimal2NoZero = (x) => {
+    var f = Math.round(x * 100) / 100
+    var s = f.toString()
+    return s
   }
   //  提交
   const submitHandle = () => {
@@ -89,7 +137,8 @@ export const setScoreFn = (cancelTargetModle, targetData) => {
     deleteFn,
     count,
     submitHandle,
-    evaluateSelf
+    evaluateSelf,
+    verifyCount
   }
 }
 

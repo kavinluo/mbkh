@@ -95,12 +95,25 @@ import { axios } from '@/utils/request'
  /**
   * 导出
   */
-  export function exportAccount (ids) {
+  export function exportAccount (id) {
     return axios({
-      url: `${baseURL}/export`, //
+      url: `${baseURL}/export?area=${id}`, //
       method: 'post',
       responseType: 'blob',
       successTitle: '导出成功！',
       errorTitle: '导出失败！'
+    })
+  }
+
+  /*
+    设置负责人
+  */
+  export function setModifySuper (id) {
+    return axios({
+      url: `${baseURL}/modifySuper/${ id }`,
+      method: 'put',
+      data: '',
+      successTitle: '设置成功！',
+      errorTitle: '设置失败！'
     })
   }

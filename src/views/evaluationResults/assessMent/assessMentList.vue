@@ -2,7 +2,7 @@
  * @Author: kevin
  * @Date: 2022-04-22 09:33:27
  * @LastEditors: kevin
- * @LastEditTime: 2022-05-20 14:44:42
+ * @LastEditTime: 2022-07-22 11:17:25
  * @Description: 二级目标
 -->
 <template>
@@ -16,7 +16,7 @@
     </el-table-column>
     <el-table-column label="操作" width="180" align="center">
       <template #default="scope">
-        <el-link v-if="scope.row.parentId > 0" type="primary" size="small" icon="view" @click="handleEdit(scope.row, 'view')">查看</el-link>&nbsp;&nbsp;
+        <el-link v-if="scope.row.type === 2" type="primary" size="small" icon="view" @click="handleEdit(scope.row, 'view')">查看</el-link>&nbsp;&nbsp;
         <el-link v-else type="primary" size="small" icon="view" @click="handleEdit(scope.row, 'view','DF')">查看</el-link>
       </template>
     </el-table-column>
@@ -28,12 +28,10 @@
     </el-table-column>
     <el-table-column label="自评分" prop="selfScore" align="center" />
     <el-table-column label="评分" prop="repeatedScore" align="center" />
-    <el-table-column label="评价结果" prop="status" align="center">
+    <el-table-column label="评价结果" prop="scoreResult" align="center">
       <template #default="scope">
-        <template v-if="scope.row.parentId > 0">
-          <span v-if="scope.row.repeatedScore <= 59 && scope.row.repeatedScore > 0">限期整改</span>
-          <span v-if="scope.row.repeatedScore <= 79 && scope.row.repeatedScore >= 60">合格</span>
-          <span v-if="scope.row.repeatedScore >= 100 && scope.row.repeatedScore >= 80">优秀</span>
+        <template v-if="scope.row.type === 2">
+          {{ scope.row.scoreResult }}
         </template>
         <template v-else>
           -
@@ -47,8 +45,8 @@
   </kvDialog>
   <kvDialog v-bind="reportDialog" v-model="reportDialog.dialogVisible" @callBack="cancel"></kvDialog>
 </template>
-
 <script setup>
+
 // import * as XLSX from 'xlsx'
 // import FileSaver from 'file-saver'
 import setDf from '@/views/evaluationProcess/alltheTarget/theoverallgoal/setScore.vue'

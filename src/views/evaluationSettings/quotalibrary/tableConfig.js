@@ -7,7 +7,7 @@
  */
  export default [
     {
-      label: '登陆账号',
+      label: '登录账号',
       prop: 'account'
     }, {
       label: '姓名',

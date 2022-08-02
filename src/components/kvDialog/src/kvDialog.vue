@@ -22,8 +22,10 @@
           <el-upload
             style="display: inline"
             class="upload-demo"
+            v-model:file-list="fileList"
             :action="importAPI"
             :on-success="onSuccess"
+            :on-change="onChange"
             :headers="{token: getCookie('Token')}"
           >
             <el-button type="primary">选择文件</el-button>
@@ -57,7 +59,7 @@
 
   const props = defineProps(propsList)
   const emit = defineEmits(['cancel', 'callBack'])
-
+  const fileList = ref([])
   const dialog = ref(props.dialogVisible)
   const isShowFooterStatus = ref(false)
   isShowFooterStatus.value = props.modeType === 'remove' ? true : props.isShowFooter
@@ -89,9 +91,14 @@
     }
     dialog.value = false
   }
+  const onChange = (res) => {
+
+  }
   const onSuccess = (res) => {
     if (res.status.code !== '0') {
+      fileList.value = []
       ElMessage.error(res.status.msg)
+      return
     }
       ElMessage.success('上传成功！')
   }

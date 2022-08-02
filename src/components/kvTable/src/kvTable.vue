@@ -11,7 +11,7 @@
     ref="multipleTableRef"
     :data="tableData"
     v-bind="tableOtherOption"
-    :expand-row-keys="props.expandRowKeys"
+    :expand-row-keys="expandRowKeys"
     row-key="id"
     @current-change="handleCurrentChangeRadio"
     :highlight-current-row="isRadio"
@@ -29,7 +29,7 @@
       </template>
     </el-table-column>
     <template v-for="item in propList" :key="item.prop">
-      <el-table-column v-bind="item" align="center">
+      <el-table-column v-bind="item" :align="item.align ? item.align : 'center'">
         <template #default="scope">
           <slot :name="item.slotName" :row="scope.row">
             {{ scope.row[item.prop] }}

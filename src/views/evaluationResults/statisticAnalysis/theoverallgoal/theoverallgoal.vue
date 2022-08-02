@@ -11,15 +11,11 @@
       <el-tab-pane label="整体统计分析" :lazy="true">
       </el-tab-pane>
       <div class="bottom-list">
-        <div style="background: #f9f9f9; display: flex; justify-content: center">
+        <div style="display: flex; justify-content: center">
           <div class="t-b-1">考区总平均分</div>
-          <div class="t-b-1">
-            <li style="line-height: 40px">差错率</li>
-          </div>
         </div>
         <div style="background: #fff; display: flex; justify-content: center">
           <div class="t-b-2">{{ showData.meanValue }}</div>
-          <div class="t-b-2">{{ showData.errorRate }}</div>
         </div>
       </div>
     </el-tabs>
@@ -34,9 +30,9 @@
         <el-table-column prop="proportion" label="占比" align="center" width="200"/>
       </el-table>
     </el-tabs>
-    <div id="myChart123" class="right"></div>
+    <div ref="chartDomR" class="right"></div>
   </div>
-  <div class="box-card">
+  <div class="box-card" v-if="userInfo.userType === 1">
     <el-tabs class="use-tabs">
       <el-tab-pane
         label="未提交评分（未结束）的指标"
@@ -49,15 +45,11 @@
           <div class="t-b-1">指标总数</div>
           <div class="t-b-1">国家层级 </div>
           <div class="t-b-1">考区层级 </div>
-          <div class="t-b-1">考点层级 </div>
-          <div class="t-b-1">考试基地层级 </div>
         </div>
         <div style="background: #fff; display: flex; justify-content: center">
           <div class="t-b-2">{{ showData.unSubmitted }}</div>
           <div class="t-b-2">{{ showData.nation }}</div>
           <div class="t-b-2">{{ showData.testArea }}</div>
-          <div class="t-b-2">{{ showData.testCenter }}</div>
-          <div class="t-b-2">{{ showData.base }}</div>
         </div>
       </div>
     </el-tabs>
@@ -68,62 +60,63 @@
 import * as echarts from 'echarts'
 import { ref, onMounted } from 'vue'
 import { getquery } from '@/api/statistical.js'
+import { useState } from '@/hooks/index'
+const { userInfo } = useState(['userInfo'], 'user')
+console.log(userInfo.value.userType)
 const showData = ref({})
 const showDatas = ref([])
 const echartsDatas = ref([])
-
+const chartDomR = ref()
 onMounted(() => {
   const getData = async () => {
-  const { data } = await getquery()
-  showData.value = data
-  showDatas.value = data.proportion
-  echartsDatas.value = showDatas.value.map(item => {
-    return { value: item.targetSum, name: item.coreInterval }
-  })
-  // 需要获取到element,所以是onMounted的Hook
-  const myChart = echarts.init(document.getElementById('myChart123'))
-  // 绘制图表
-  myChart.setOption({
-    tooltip: {
-      trigger: 'item',
-      formatter: '{a} <br/>{b}: {c} ({d}%)'
-    },
-    legend: {
-      orient: 'vertical',
-      right: 10
-      // data: ['10', '20', '30']
-      // data: showData.coreInterval
-    },
-    series: [
-      {
-        name: '访问来源',
-        type: 'pie',
-        radius: ['50%', '70%'],
-        avoidLabelOverlap: false,
-        label: {
-          show: false,
-          position: 'center'
-        },
-        emphasis: {
+    const { data } = await getquery()
+    showData.value = data
+    showDatas.value = data.proportion
+    echartsDatas.value = showDatas.value.map(item => {
+      return { value: item.targetSum, name: item.coreInterval }
+    })
+    // 需要获取到element,所以是onMounted的Hook
+    const myChart = echarts.init(chartDomR.value)
+    // 绘制图表
+    myChart.setOption({
+      tooltip: {
+        trigger: 'item',
+        formatter: '{a} <br/>{b}: {c} ({d}%)'
+      },
+      legend: {
+        orient: 'vertical',
+        right: 10
+      },
+      series: [
+        {
+          name: '访问来源',
+          type: 'pie',
+          radius: ['50%', '70%'],
+          avoidLabelOverlap: false,
           label: {
-            show: true,
-            fontSize: '20',
-            fontWeight: 'bold'
-          }
-        },
-        labelLine: {
-          show: false
-        },
-        data: echartsDatas._rawValue
-      }
-    ]
-  })
-  window.onresize = function () {
-    // 自适应大小
-    myChart.resize()
+            show: false,
+            position: 'center'
+          },
+          emphasis: {
+            label: {
+              show: true,
+              fontSize: '20',
+              fontWeight: 'bold'
+            }
+          },
+          labelLine: {
+            show: false
+          },
+          data: echartsDatas.value
+        }
+      ]
+    })
+    window.onresize = function () {
+      // 自适应大小
+      myChart.resize()
+    }
   }
-}
-getData()
+  getData()
 })
 
 </script>
@@ -161,6 +154,7 @@ getData()
   width: 600px;
 }
 .bottom-list .t-b-1 {
+  background: #f9f9f9;
   border: 1px solid #f0f0f0;
   width: 50%;
   height: 50px;

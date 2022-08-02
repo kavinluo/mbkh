@@ -2,7 +2,7 @@
  * @Author: kevin
  * @Date: 2022-4-2 11:00:00
  * @LastEditors: kevin
- * @LastEditTime: 2022-07-19 17:43:08
+ * @LastEditTime: 2022-07-22 11:52:15
  * @Description: 一级目标列表
 -->
 <template>
@@ -14,6 +14,7 @@
   <kv-table
     v-if="role.userType === 1"
     :propList="targetList"
+    :expandRowKeys="expandRowKeys"
     :getDataFn="getListPage">
     <template #expand="scope">
       <el-table :data="scope.row.evaluateCheckTargetDtoList" style="width: 100%">
@@ -64,16 +65,16 @@
         <el-table-column label="" prop="index" width="50" align="center" />
         <el-table-column label="操作" width="180" align="center">
           <template #default="props">
-            <div v-if="props.row.parentId > 0">
-              <el-link type="primary" size="small" icon="view" @click="handleEdit(props.row, 'view', null)">查看</el-link>&nbsp;&nbsp;
-              <el-link type="primary" size="small" :disabled="props.row.status === 1" icon="edit" @click="handleEdit(props.row,'edit', null)">编辑</el-link>&nbsp;&nbsp;
-              <el-link type="primary" size="small" :disabled="props.row.status === 1" icon="promotion" @click="handleReport(props.row)">上报</el-link>
+            <!-- props.row.type === 2 考区列表 -->
+            <div v-if="props.row.type === 2">
+              <el-link type="primary" size="small" icon="view" @click="handleEdit(props.row, 'view', null, scope.row)">查看</el-link>&nbsp;&nbsp;
+              <el-link type="primary" size="small" :disabled="props.row.status === 1" icon="edit" @click="handleEdit(props.row,'edit', null, scope.row)">编辑</el-link>&nbsp;&nbsp;
+              <el-link type="primary" size="small" :disabled="props.row.status === 1" icon="promotion" @click="handleReport(props.row, scope.row)">上报</el-link>
             </div>
             <div v-else>
-              <el-link type="primary" size="small" icon="view" @click="handleEdit(props.row, 'view', 'DF')">查看</el-link>&nbsp;&nbsp;
-              <el-link type="primary" size="small" :disabled="props.row.status === 1" icon="edit" @click="handleEdit(props.row,'edit', 'DF')">编辑</el-link>&nbsp;&nbsp;
-              <el-link type="primary" size="small" :disabled="props.row.status === 1" icon="promotion" @click="handleReport(props.row)">上报</el-link>
-
+              <el-link type="primary" size="small" icon="view" @click="handleEdit(props.row, 'view', 'DF', scope.row)">查看</el-link>&nbsp;&nbsp;
+              <el-link type="primary" size="small" :disabled="props.row.status === 1" icon="edit" @click="handleEdit(props.row,'edit', 'DF', scope.row)">编辑</el-link>&nbsp;&nbsp;
+              <el-link type="primary" size="small" :disabled="props.row.status === 1" icon="promotion" @click="handleReport(props.row, scope.row)">上报</el-link>
             </div>
           </template>
         </el-table-column>
@@ -124,7 +125,7 @@ const emit = defineEmits(['callback'])
 const { userInfo } = useState(['userInfo'], 'user')
 const role = ref(userInfo.value)
 const $route = useRoute()
-const expandRowKeys = ref([])
+// const expandRowKeys = ref([])
 // 去二级评分
 const goToEdit = (row = []) => {
   emit('callback', 'levelSecond', row)
@@ -141,11 +142,12 @@ const goToEdit = (row = []) => {
     handleEdit,
     handleReport,
     formData,
-    onSubmit
+    onSubmit,
+    expandRowKeys
  } = levelSecond()
 
   if ($route.query?.where) {
-    expandRowKeys.value.push($route.query.id)
+    expandRowKeys.value = [$route.query.id]
     // handleEdit({ id: $route.query.id }, 'edit', null)
   }
 </script>

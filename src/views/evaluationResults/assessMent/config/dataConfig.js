@@ -24,8 +24,8 @@ export const targetList = [
     prop: 'repeatedScore'
   }, {
     label: '评价结果',
-    prop: 'results',
-    slotName: 'results'
+    prop: 'scoreResult',
+    slotName: 'scoreResult'
   }
 ]
 
