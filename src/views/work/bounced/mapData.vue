@@ -6,19 +6,12 @@
       >{{ showDatas.sumTestArea }}</span
       >
     </p>
-    <p>
-      优&nbsp;&nbsp;&nbsp;&nbsp;秀&nbsp;:&nbsp;<span style="color: #008000; font-weight: 400">{{ showDatas.fine }}</span >
-    </p>
-    <p>
-      合&nbsp;&nbsp;&nbsp;&nbsp;格&nbsp;:&nbsp;<span
+    <p v-for="(item,index) in scoreLevelDtoList" :key="index">{{ item.scoreLevelName }}:
+      &nbsp;
+      <span
         style="color: #008000; font-weight: 400"
-      >{{ showDatas.eligible }}</span
+      >{{ item.amount }}</span
       >
-    </p>
-    <p>
-      限 期 整 改:&nbsp;<span style="color: #008000; font-weight: 400">
-        {{ showDatas.change }}
-      </span>
     </p>
     <p>
       最&nbsp;高&nbsp;分:&nbsp;<span
@@ -45,14 +38,21 @@
 import { getArea } from '@/api/statistical.js'
 import { ref } from 'vue'
     const showDatas = ref({})
+    const scoreLevelDtoList = ref([])
     const getData = async () => {
     const { data } = await getArea()
      showDatas.value = data
+     scoreLevelDtoList.value = data.scoreLevelDtoList
+     console.log(scoreLevelDtoList)
   }
+
    getData()
 
 </script>
 
-<style>
-
+<style scoped>
+  p {
+    margin-left: 25%;
+    font-weight: 700;
+  }
 </style>

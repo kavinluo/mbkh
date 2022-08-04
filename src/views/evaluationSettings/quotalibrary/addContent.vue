@@ -2,7 +2,7 @@
  * @Author: kevin
  * @Date: 2022-03-25 11:37:20
  * @LastEditors: kevin
- * @LastEditTime: 2022-04-29 13:49:09
+ * @LastEditTime: 2022-08-02 16:16:57
  * @Description: 新增考核内容
 -->
 <template>
@@ -25,12 +25,12 @@
                 />
               </el-select>
             </template>
-            <el-input v-else :placeholder="item.tips" :type="item.attributeType" v-model="item.content" />
+            <el-input v-else :placeholder="item.tips" :type="item.attributeType" v-model.trim="item.content" />
           </td>
         </template>
         <template v-for="(item, index) in tableData" :key="index">
           <td v-if="index === tableData.length - 1" style="width: 100px">
-            <el-input placeholder="输入分数" type="number" v-model="score" />
+            <el-input @keyup="preventE" placeholder="输入分数" @change="verify" type="number" v-model="score" />
           </td>
         </template>
       </tr>
@@ -45,7 +45,7 @@
 </template>
 
 <script setup>
-  import { ref } from 'vue'
+  import { ref, getCurrentInstance } from 'vue'
   import { getAttrListPage } from '@/api/template'
   import { useStore } from '@/store'
 
@@ -64,7 +64,7 @@
       }
     })
   const emit = defineEmits(['change', 'callBack', 'cancel'])
-
+  const { proxy } = getCurrentInstance()
   const tableData = ref([])
   const score = ref(0)
   const store = useStore()
@@ -108,13 +108,31 @@
       getData()
     }
   const handleConfirm = () => {
+    for (const item of tableData.value) {
+      if (item.required === 1 && !item.content) {
+        proxy.$message.warning(`${item.title}不能为空！`)
+        return
+      }
+    }
     tableData.value.forEach(item => {
       item.score = score.value
     })
     emit('callBack', tableData.value)
   }
+  const verify = () => {
+    if (score.value < 0) {
+      proxy.$message.warning(`分数不能小于0！`)
+      score.value = 0
+    }
+  }
   const cancel = (row) => {
     emit('cancel')
+  }
+  // 阻止输入E
+  const preventE = (event) => {
+    if (event.keyCode === 69) {
+      event.target.value = ''
+    }
   }
 </script>
 

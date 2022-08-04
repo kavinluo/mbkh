@@ -2,7 +2,7 @@
  * @Author: kevin
  * @Date: 2022-04-08 16:11:57
  * @LastEditors: kevin
- * @LastEditTime: 2022-07-15 17:43:42
+ * @LastEditTime: 2022-08-02 14:25:29
  * @Description: 目标编辑
 -->
 <template>
@@ -40,7 +40,7 @@
           <td style="text-align: center;">{{ item.quotaName2 }}</td>
           <template v-for="(s, i) in item.detailedDto" :key="i">
             <td v-if="s.templateName === '考评方式'">
-              <el-button v-if="item.materialType!==0" @click="handelS(index, item.materialType, item.material)" type="primary" size="small">
+              <el-button v-if="item.materialType!==0" :disabled="item.isExpired === 1" @click="handelS(index, item.materialType, item.material)" type="primary" size="small">
                 <span v-if="item.materialType === 1">资料上传</span>
                 <span v-if="item.materialType === 2">人员资料</span>
                 <span v-if="item.materialType === 3">实地考察</span>

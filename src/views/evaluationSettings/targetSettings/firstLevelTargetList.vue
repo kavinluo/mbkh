@@ -2,7 +2,7 @@
  * @Author: kevin
  * @Date: 2022-03-14 09:39:40
  * @LastEditors: kevin
- * @LastEditTime: 2022-07-19 16:00:12
+ * @LastEditTime: 2022-08-02 16:58:24
  * @Description: 一级级目标列表
 -->
 <template>
@@ -26,9 +26,9 @@
       {{ formatTimestamp(scope.row.updateTime, 'YYYY-MM-DD HH:mm') }}
     </template>
     <template #handler="scope">
-      <el-link type="primary" size="small" @click="handlePublish(scope.row, scope.row.isPublish === 1 ? 'revokePublish' : 'publish')" underline :icon="scope.row.isPublish === 1 ? 'refresh' : 'position'">{{ scope.row.isPublish === 1 ? `撤销发布` : `发布` }}</el-link>&nbsp;&nbsp;&nbsp;
-      <el-link type="primary" size="small" @click="handleSetting(scope.row)" underline icon="setting">配置</el-link>&nbsp;&nbsp;&nbsp;
-      <el-link type="primary" :disabled="scope.row.isPublish === 1" size="small" @click="handleEdit(scope.row)" underline icon="edit">编辑</el-link>&nbsp;&nbsp;&nbsp;
+      <el-link type="primary" size="small" @click="handlePublish(scope.row, scope.row.isPublish === 1 ? 'revokePublish' : 'publish')" underline :icon="scope.row.isPublish === 1 ? 'refresh' : 'position'">{{ scope.row.isPublish === 1 ? `撤销发布` : `发布` }}</el-link>&nbsp;&nbsp;
+      <el-link type="primary" size="small" @click="handleSetting(scope.row)" underline icon="setting">配置</el-link>&nbsp;&nbsp;
+      <el-link type="primary" :disabled="scope.row.isPublish === 1" size="small" @click="handleEdit(scope.row)" underline icon="edit">编辑</el-link>&nbsp;&nbsp;
       <el-link type="danger" :disabled="scope.row.isPublish === 1" size="small" @click="handleRemove(scope.row)" underline icon="delete">删除</el-link>
     </template>
   </kv-table>
@@ -51,6 +51,7 @@
   const modelConfig = ref(addModelConfig)
   const removModelConfig = ref(removeModelConfig)
   const rowData = ref(null)
+  // const { proxy } = getCurrentInstance()
   const formItems = indexSearchConfig?.formItems ?? []
   const formOriginData = {
       parentId: 0
@@ -87,6 +88,11 @@
   }
 
   const handlePublish = (row, type) => {
+    // 上报或者部分上报后的不让在撤销
+    // if (type !== 'publish' && row.status !== 0) {
+    //   proxy.$message.warning('已有考区上报不能撤销！')
+    //   return
+    // }
     const fn = type === 'publish' ? publish : revokePublish
     removModelConfig.value.dialogVisible = true
     removModelConfig.value.params = row.id

@@ -2,7 +2,7 @@
  * @Author: kevin
  * @Date: 2022-05-18 15:26:27
  * @LastEditors: kevin
- * @LastEditTime: 2022-07-19 16:06:04
+ * @LastEditTime: 2022-08-02 13:58:54
  * @Description: 二级目标添加
  */
 import { ref, nextTick, getCurrentInstance } from 'vue'
@@ -48,6 +48,8 @@ export const addScondTargetHook = ({ rowData, subRowData, editType, emit }) => {
   const ruleFormRef = ref({})
   const showTableData = ref([])
   const evaluateTargetDtoList = ref([])
+  const useTableData = ref([]) // 获得选择考核内容列表
+  const formData = ref({})
 
   // 过滤上一级选中的考区
   const checkAreaList = rowData.checkArea.split(',').map(item => +item)
@@ -56,11 +58,10 @@ export const addScondTargetHook = ({ rowData, subRowData, editType, emit }) => {
     checkAreaOptions.value = data.filter(item => checkAreaList.includes(item.id))
   }
   getKQ()
-
   // 目标周期列表
-  const formData = ref(getCycle(rowData))
-  const useTableData = ref([]) // 获得选择考核内容列表
-
+  getCycle(rowData).then(res => {
+    formData.value = res
+  })
   // 获得选择考核内容列表
   getQuotaLis().then(res => {
     useTableData.value = formatSelectQuotaList(res, cyListOption.value)
@@ -80,7 +81,7 @@ export const addScondTargetHook = ({ rowData, subRowData, editType, emit }) => {
     isRepeatSelect.value.dialogVisible = false
   }
 
-  formData.value.cycle1 = rowData.id
+  // formData.value.cycle1 = ''
 
   if (editType === 'edit') {
     getList({ id: subRowData.id }).then(res => {
@@ -152,6 +153,10 @@ export const addScondTargetHook = ({ rowData, subRowData, editType, emit }) => {
           targetInfoDtoList: showTableData.value
         }
         const obj = Object.assign({}, formData.value, params)
+        if (!showTableData.value.length) {
+          proxy.$message.error(`请选择考核内容！`)
+          return
+        }
         fn(obj).then(res => {
           const { status } = res
           if (status?.code === '0') {

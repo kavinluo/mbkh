@@ -2,7 +2,7 @@
  * @Author: kevin
  * @Date: 2022-03-04 10:55:07
  * @LastEditors: kevin
- * @LastEditTime: 2022-04-20 17:26:16
+ * @LastEditTime: 2022-08-02 14:58:21
  * @Description: systemAdministratorIndex.vue
 -->
 <template>
@@ -20,7 +20,7 @@
       {{ !scope.row.enable ? '是' : '否' }}
     </template>
     <template #handler="scope">
-      <el-link type="primary" size="small" @click="heandleEdit(scope.row, 'account')" underline icon="edit">编辑</el-link>&nbsp;&nbsp;&nbsp;
+      <el-link type="primary" size="small" @click="heandleEdit(scope.row, 'account')" underline icon="edit">编辑</el-link>&nbsp;&nbsp;
       <el-link type="danger" size="small" @click="handleRemove(scope.row, 'account')" underline icon="delete">删除</el-link>
     </template>
   </kv-table>

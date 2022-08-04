@@ -2,7 +2,7 @@
  * @Author: kevin
  * @Date: 2022-03-21 11:46:11
  * @LastEditors: kevin
- * @LastEditTime: 2022-04-21 17:37:58
+ * @LastEditTime: 2022-08-02 14:57:45
  * @Description: 指标周期
 -->
 <template>
@@ -26,7 +26,7 @@
       {{ scope.row.endTime ? formatTimestamp(scope.row.endTime, "YYYY-MM-DD HH:mm:ss") : '-' }}
     </template>
     <template #handler="scope">
-      <el-link type="primary" size="small" @click="handleEdit(scope.row, 'edit')" underline icon="edit">编辑</el-link>&nbsp;&nbsp;&nbsp;
+      <el-link type="primary" size="small" @click="handleEdit(scope.row, 'edit')" underline icon="edit">编辑</el-link>&nbsp;&nbsp;
       <el-link type="danger" size="small" @click="handleRemove(scope.row)" underline icon="delete">删除</el-link>
     </template>
   </kv-table>

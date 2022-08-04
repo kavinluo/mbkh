@@ -2,7 +2,7 @@
  * @Author: kevin
  * @Date: 2022-03-14 10:13:59
  * @LastEditors: kevin
- * @LastEditTime: 2022-04-28 09:44:39
+ * @LastEditTime: 2022-08-02 15:44:04
  * @Description: 添加指标库
 -->
 
@@ -10,6 +10,7 @@
   <kv-form v-bind="selectQuota" v-model="formData" ref="ruleFormRef">
     <template #parentId>
       <el-cascader
+        :disabled="quotaData.level === 0 && inuptType === 'edit'"
         style="width: 100%"
         v-model="formData.parentId"
         :options="menuList"
@@ -47,7 +48,7 @@
     }
   })
   const emit = defineEmits(['resetBtnClick', 'queryBtnClick', 'cancel', 'callBack'])
-
+ console.log('inuptType', props.inuptType)
   const formItems = selectQuota?.formItems ?? []
   const formOriginData = {
     parentId: 0 // 默认添加是0

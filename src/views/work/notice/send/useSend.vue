@@ -24,8 +24,8 @@
     <template #times="props">
       {{ props.row.times ? formatTimestamp(props.row.times, 'YYYY-MM-DD HH:mm') : '-' }}
     </template>
-    <template #status="props">
-      {{ status[props.row.status] }}
+    <template #isPublish="props">
+      {{ props.row.isPublish === 0 ? '未发布': '已发布' }}
     </template>
   </kv-table>
 </template>
@@ -44,7 +44,6 @@ const handleSelectionChange = () => {
     searchConfig,
     // reportDialog,
     formData,
-    status,
     onSubmit,
     handleEdit
  } = handels()

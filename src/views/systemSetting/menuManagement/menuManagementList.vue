@@ -2,7 +2,7 @@
  * @Author: kevin
  * @Date: 2022-02-24 10:05:17
  * @LastEditors: kevin
- * @LastEditTime: 2022-07-05 18:06:53
+ * @LastEditTime: 2022-08-02 14:58:14
  * @Description: 菜单列表
 -->
 <template>
@@ -19,7 +19,7 @@
       {{ scope.row.isSee ? '是' : '否' }}
     </template>
     <template #handler="scope">
-      <el-link type="primary" size="small" @click="heandleEdit(scope.row)" underline icon="edit">编辑</el-link>&nbsp;&nbsp;&nbsp;
+      <el-link type="primary" size="small" @click="heandleEdit(scope.row)" underline icon="edit">编辑</el-link>&nbsp;&nbsp;
       <el-link type="danger" size="small" @click="handleRemove(scope.row)" underline icon="delete">删除</el-link>
     </template>
   </kv-table>

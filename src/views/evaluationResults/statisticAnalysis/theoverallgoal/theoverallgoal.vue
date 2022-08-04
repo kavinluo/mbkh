@@ -35,14 +35,14 @@
   <div class="box-card" v-if="userInfo.userType === 1">
     <el-tabs class="use-tabs">
       <el-tab-pane
-        label="未提交评分（未结束）的指标"
+        label="未提交评分（未结束）的目标"
         name="unsubmittedScore"
         :lazy="true"
       >
       </el-tab-pane>
       <div class="bottom-list">
         <div style="background: #f9f9f9; display: flex; justify-content: center">
-          <div class="t-b-1">指标总数</div>
+          <div class="t-b-1">目标总数</div>
           <div class="t-b-1">国家层级 </div>
           <div class="t-b-1">考区层级 </div>
         </div>

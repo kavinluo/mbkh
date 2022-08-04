@@ -43,26 +43,37 @@
 <script setup>
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
-import { useState } from '@/hooks/index'
-import { unReadAcceptList } from '@/api/notice.js'
+import { releaseListPage, unReadAcceptList } from '@/api/notice.js'
 import { formatTimestamp } from '@/utils/formatDate.js'
 import { handeles } from '../config/hooks'
 import { getwatiList } from '@/api/todoList.js'
+import { useState } from '@/hooks/index'
 import editTargetManage from '@/views/evaluationProcess/alltheTarget/theoverallgoal/editTarget.vue'
 import handleAcmManage from './handleAcm.vue'
-    const { userInfo } = useState(['userInfo'], 'user')
+  const { userInfo } = useState(['userInfo'], 'user')
+  const role = ref(userInfo.value)
     const $router = useRouter()
     const getTargetData = async () => {
     const { data } = await getwatiList({ pageSize: 10, curPage: 1 })
        watiList.value = data || []
    }
     getTargetData()
-    const role = ref(userInfo.value)
-    const unReadAcceptData = async () => {
-      const { data } = await unReadAcceptList({ pageSize: 10, curPage: 1 })
-       unReadList.value = data.list || []
+
+    // 超级管理员进入
+    const releaseListData = async () => {
+      const { data } = await releaseListPage({ pageSize: 10, curPage: 1 })
+      unReadList.value = data.list.filter(item => {
+       return item.isPublish === 1
+      })
      }
-    if (role.value.id !== 1) {
+     // 考区进入 未读接口数据
+    const unReadAcceptData = async () => {
+     const { data } = await unReadAcceptList({ pageSize: 10, curPage: 1 })
+      unReadList.value = data.list
+     }
+    if (role.value.userType === 1) {
+      releaseListData()
+    } else {
       unReadAcceptData()
     }
       // 待办

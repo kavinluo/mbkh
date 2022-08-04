@@ -14,6 +14,7 @@ import { searchConfig } from '../alreadyDoMatters/comMission/config/dataConfig'
 import { getwatiList } from '@/api/todoList'
 import formConfig from './viewFormConfig'
 import { updateList } from '@/store'
+import { useState } from '@/hooks/index'
 const watiList = ref([])
 const unReadList = ref([])
 export const handeles = () => {
@@ -23,6 +24,8 @@ export const handeles = () => {
   const handleDialog = ref(editModelConfig)
   const acmDialog = ref(acmModelConfig)
   const viewDialog = ref(viewModelConfig)
+  const { userInfo } = useState(['userInfo'], 'user')
+  const role = ref(userInfo.value)
 
   const handleView = (row) => {
     viewDialog.value.dialogVisible = true
@@ -39,7 +42,9 @@ export const handeles = () => {
       const { data } = await unReadAcceptList({ pageSize: 10, curPage: 1 })
        unReadList.value = data.list
      }
+    if (role.value.userType !== 1) {
      unReadAcceptData()
+    }
   }
   const cancel = () => {
     handleDialog.value.dialogVisible = false

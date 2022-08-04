@@ -2,7 +2,7 @@
  * @Author: kevin
  * @Date: 2022-03-15 15:15:26
  * @LastEditors: kevin
- * @LastEditTime: 2022-04-11 14:49:47
+ * @LastEditTime: 2022-08-02 14:57:52
  * @Description: 模板管理
 -->
 <template>
@@ -20,8 +20,8 @@
   </kv-Form>
   <kv-table :propList="templateList" :getDataFn="getListPage" @handleSelectionChange="handleSelectionChange">
     <template #handler="scope">
-      <el-link type="primary" size="small" @click="handleAddTemplate(scope.row)" underline icon="edit">修改</el-link>&nbsp;&nbsp;&nbsp;
-      <el-link type="primary" size="small" @click="handleSetting(scope.row)" underline icon="setting">设置</el-link>&nbsp;&nbsp;&nbsp;
+      <el-link type="primary" size="small" @click="handleAddTemplate(scope.row)" underline icon="edit">修改</el-link>&nbsp;&nbsp;
+      <el-link type="primary" size="small" @click="handleSetting(scope.row)" underline icon="setting">设置</el-link>&nbsp;&nbsp;
       <el-link type="danger" size="small" @click="handleRemove(scope.row)" underline icon="delete">删除</el-link>
     </template>
   </kv-table>

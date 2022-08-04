@@ -2,7 +2,7 @@
  * @Author: kevin
  * @Date: 2022-03-07 10:35:00
  * @LastEditors: kevin
- * @LastEditTime: 2022-04-20 14:56:56
+ * @LastEditTime: 2022-08-02 14:43:31
  * @Description: table数据
  */
  export const indexTableConfig = [

@@ -9,9 +9,7 @@ export const publishList = [
  {
     label: '标题',
     prop: 'title',
-    slotName: 'title',
-    align: 'left',
-    minWidth: 220
+    slotName: 'title'
   }, {
     label: '公告范围',
     prop: 'checkAreaName',
@@ -19,8 +17,7 @@ export const publishList = [
   }, {
     label: '发布时间',
     prop: 'times',
-    slotName: 'times',
-    minWidth: 150
+    slotName: 'times'
   }, {
     label: '置顶',
     prop: 'top',
@@ -28,8 +25,8 @@ export const publishList = [
     width: 100
   }, {
     label: '状态',
-    prop: 'status',
-    slotName: 'status',
+    prop: 'isPublish',
+    slotName: 'isPublish',
     width: 100
   },
   {
@@ -57,8 +54,8 @@ export const sendList = [
      slotName: 'top'
    }, {
      label: '状态',
-     prop: 'status',
-     slotName: 'status'
+     prop: 'isPublish',
+     slotName: 'isPublish'
    }
  ]
  export const typeTableList = [{

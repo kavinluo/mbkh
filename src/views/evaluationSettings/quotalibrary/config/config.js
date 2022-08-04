@@ -2,7 +2,7 @@
  * @Author: kevin
  * @Date: 2022-03-03 12:49:43
  * @LastEditors: kevin
- * @LastEditTime: 2022-05-10 13:48:16
+ * @LastEditTime: 2022-08-02 10:04:55
  * @Description: 表单字段
  */
 // 创建指标
@@ -43,17 +43,22 @@ export const propList = [
     prop: 'title'
   }, {
     label: '总分值',
-    prop: 'countScore'
+    prop: 'countScore',
+    width: 100
   }, {
     label: '创建人',
-    prop: 'createUser'
+    prop: 'createUser',
+    width: 150
   }, {
     label: '更新时间',
     prop: 'updateTime',
-    slotName: 'updateTime'
+    slotName: 'updateTime',
+    width: 180
   }, {
     label: '操作',
-    slotName: 'handler'
+    slotName: 'handler',
+    fixed: 'right',
+    width: 150
   }
 ]
 export const templatePropList = [

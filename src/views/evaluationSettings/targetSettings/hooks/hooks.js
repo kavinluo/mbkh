@@ -2,7 +2,7 @@
  * @Author: kevin
  * @Date: 2022-04-02 17:14:34
  * @LastEditors: kevin
- * @LastEditTime: 2022-05-19 10:57:07
+ * @LastEditTime: 2022-08-02 11:56:30
  * @Description: Do not edit
  */
 import {
@@ -10,31 +10,27 @@ import {
 } from '../config/dataConfig'
 import { getList as getCycleList } from '@/api/cycle'
 import { selectQuotaList } from '@/api/quota'
-export const getCycle = (rowData) => {
+export const getCycle = async (rowData) => {
   const formOriginData = {
     parentId: rowData.id // 默认固定传0
   }
     // 过滤上一级选中的考区
   // const checkAreaList = rowData.checkArea.split(',').map(item => +item)
-  getCycleList().then(res => {
+  const data = await getCycleList()
+  // .then(res => {
     for (const item of addSubFormConfig.formItems) {
       const { field } = item
       formOriginData[field] = ''
       switch (field) {
-        // case 'checkArea':
-        //   getList().then((res) => {
-        //     item.options = res.filter(item => checkAreaList.includes(item.id))
-        //   })
-        // break
-        case 'cycle1':
-          item.options = [rowData] // 整体周期就是上一级
-          break
+        // case 'cycle1':
+        //   item.options = [rowData] // 整体周期就是上一级
+        //   break
         case 'cycle2':
-          item.options = res?.data || []
+          item.options = data?.data || []
       }
     }
-  })
-
+  // })
+  console.log('formOriginData', formOriginData)
   return formOriginData
 }
 

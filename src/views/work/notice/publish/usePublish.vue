@@ -29,14 +29,14 @@
     <template #times="props">
       {{ props.row.times ? formatTimestamp(props.row.times, 'YYYY-MM-DD HH:mm') : '-' }}
     </template>
-    <template #status="props">
-      {{ status[props.row.status] }}
+    <template #isPublish="props">
+      {{ props.row.isPublish === 0 ? '未发布': '已发布' }}
     </template>
     <template #handle="props">
-      <el-link type="primary" size="small" :disabled="props.row.status !== 0" @click="handleEdit(props.row, 'edit')" underline icon="edit">编辑</el-link>&nbsp;&nbsp;
-      <el-link type="danger" size="small" :disabled="props.row.status !== 0" @click="handleRemove(props.row)" underline icon="delete">删除</el-link>&nbsp;&nbsp;
-      <el-link type="primary" v-if="[0].includes(props.row.status)" icon="position" @click="handlePublish(props.row, annouce)">发布</el-link>
-      <el-link type="primary" v-if="[1,2].includes(props.row.status)" icon="refresh" @click="handlePublish(props.row, revokeAnnouce )">撤销</el-link>
+      <el-link type="primary" size="small" :disabled="props.row.isPublish !== 0" @click="handleEdit(props.row, 'edit')" underline icon="edit">编辑</el-link>&nbsp;&nbsp;
+      <el-link type="danger" size="small" :disabled="props.row.isPublish !== 0" @click="handleRemove(props.row)" underline icon="delete">删除</el-link>&nbsp;&nbsp;
+      <el-link type="primary" v-if="[0].includes(props.row.isPublish)" icon="position" @click="handlePublish(props.row, annouce)">发布</el-link>
+      <el-link type="primary" v-if="[1,2].includes(props.row.isPublish)" icon="refresh" @click="handlePublish(props.row, revokeAnnouce )">撤销</el-link>
     </template>
   </kv-table>
 
@@ -62,7 +62,6 @@
  const {
     searchConfig,
     formData,
-    status,
     removModelConfig,
     confirm,
     handleRemove,

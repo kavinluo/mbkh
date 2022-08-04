@@ -107,7 +107,6 @@ import { useRouter } from 'vue-router'
 }
 .mapchart {
   display:flex;
-  width:100%
 }
 .mapData {
   position: absolute;
@@ -117,7 +116,6 @@ import { useRouter } from 'vue-router'
   height: 14.417em;
   border: 1px solid black;
   margin: 30px 0 0 30px;
-  text-align: center;
 }
 .el-col.el-col-6.is-guttered {
   margin-top: 1.042rem;
@@ -187,7 +185,5 @@ import { useRouter } from 'vue-router'
   position:relative;
   top:5px
 }
-.mapChart{
-  width: 100%;
-}
+
 </style>

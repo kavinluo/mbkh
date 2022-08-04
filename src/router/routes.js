@@ -2,7 +2,7 @@
  * @Author: kevin
  * @Date: 2022-03-04 14:29:18
  * @LastEditors: kevin
- * @LastEditTime: 2022-03-10 16:16:48
+ * @LastEditTime: 2022-08-04 16:28:53
  * @Description: Do not edit
  */
 // import Index from '@/layout/index.vue'
@@ -11,13 +11,14 @@ const routes = [
   {
     path: '/manage',
     name: 'manage',
+    redirect: '/manage/workIndex',
     meta: {},
     component: () => import(/* webpackChunkIndex: "Index" */'@/layout/index.vue')
     // children: []
   },
   {
     path: '/',
-    redirect: '/manage'
+    redirect: '/manage/workIndex'
   },
   {
     path: '/:pathMatch(.*)',

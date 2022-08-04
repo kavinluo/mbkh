@@ -2,7 +2,7 @@
  * @Author: kevin
  * @Date: 2022-03-14 09:33:45
  * @LastEditors: kevin
- * @LastEditTime: 2022-05-20 16:32:01
+ * @LastEditTime: 2022-08-02 14:58:08
  * @Description: 指标库
 -->
 <template>
@@ -14,9 +14,10 @@
         @add="handleEdit"
         @edit="handleEdit"
         @remove="handleRemove"
+        style="min-width: 200px;"
       />
     </el-col>
-    <el-col :span="19">
+    <el-col :span="20">
       <div class="mb10">
         <el-button @click="handleAddTarget(null, 'add')" :disabled="addDateStatus" type="primary">新建</el-button>
       </div>
@@ -34,7 +35,7 @@
           {{ formatTimestamp(scope.row.updateTime, 'YYYY-MM-DD HH:mm') }}
         </template>
         <template #handler="scope">
-          <el-link type="primary" size="small" @click="handleAddTarget(scope.row, 'edit')" underline icon="edit">编辑</el-link>&nbsp;&nbsp;&nbsp;
+          <el-link type="primary" size="small" @click="handleAddTarget(scope.row, 'edit')" underline icon="edit">编辑</el-link>&nbsp;&nbsp;
           <el-link type="danger" size="small" @click="handleRemove(scope.row, 'remove', 'row')" underline icon="delete">删除</el-link>
         </template>
       </kv-table>
@@ -95,6 +96,8 @@
       updateList(getQuotaListPage, { parentId: quotaData.value.id })
     } else {
         getTreeList()
+        // 删除后清空右侧数据
+        updateList(getQuotaListPage, { parentId: 9999999 })
     }
   }
   const targetConfirm = () => {
@@ -136,6 +139,8 @@
        addDateStatus.value = false
     } else {
       addDateStatus.value = true
+      // 点击二级清空右侧数据
+      updateList(getQuotaListPage, { parentId: 9999999 })
     }
     // if (!row.evaluateQuotaDtoList?.length && row.parentId !== null) {
     //   addDateStatus.value = false

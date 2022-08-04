@@ -2,7 +2,7 @@
  * @Author: kevin
  * @Date: 2022-03-15 15:55:22
  * @LastEditors: kevin
- * @LastEditTime: 2022-04-28 09:46:21
+ * @LastEditTime: 2022-08-02 14:57:57
  * @Description: 添加模板
 -->
 <template>
@@ -26,7 +26,7 @@
       {{ optionsObj[scope.row.attributeType] }} ({{ scope.row.attributeType }})
     </template>
     <template #handler="scope">
-      <el-link type="primary" size="small" @click="createAttr(scope.row)" underline icon="edit">编辑</el-link>&nbsp;&nbsp;&nbsp;
+      <el-link type="primary" size="small" @click="createAttr(scope.row)" underline icon="edit">编辑</el-link>&nbsp;&nbsp;
       <el-link type="danger" size="small" @click="handleRemove(scope.row)" underline icon="delete">删除</el-link>
     </template>
   </kv-table>

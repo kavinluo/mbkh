@@ -8,10 +8,10 @@ import * as echarts from 'echarts'
 import china from '@/utils/chinaChange.json'
 import { getRanking } from '@/api/statistical.js'
 echarts.registerMap('china', china)
- const newChinaData = ref([])
- const getRankData = async () => {
-    const { data } = await getRanking()
-    data.forEach((item) => {
+const newChinaData = ref([])
+const getRankData = async () => {
+  const { data } = await getRanking()
+  data.forEach((item) => {
     item.name = item.checkAreaName.replace('省', '')
     item.name = item.name.replace('市', '')
     item.value = item.score
@@ -19,13 +19,13 @@ echarts.registerMap('china', china)
     delete item.ranking
     delete item.score
     newChinaData.value.push(item)
- })
- }
+  })
+}
 
- getRankData().then(res => {
-   chart.value = echarts.init(myMap.value, 'macarons')
-    chart.value.setOption(mapOption.value)
- })
+getRankData().then(() => {
+  chart.value = echarts.init(myMap.value, 'macarons')
+  chart.value.setOption(mapOption.value)
+})
 // 中国地图
 const mapOption = ref({
   backgroundColor: '#FFFFFF',
@@ -75,7 +75,6 @@ const mapOption = ref({
   tooltip: {
     trigger: 'item'
   },
-
   // 配置属性
   series: [
     {
@@ -84,24 +83,22 @@ const mapOption = ref({
       roam: false,
       geoIndex: 0,
       label: {
-        show: true, // 省份名称,
+        show: false, // 省份名称,
         emphasis: {
           show: false
         }
       },
-      data: newChinaData.value// 数据
+      data: newChinaData.value // 数据
     }
   ]
 })
 const chart = ref(null)
 const myMap = ref()
-
 </script>
 
 <style scoped>
 .border {
   flex: 1;
-  width: 100%;
   height: 600px;
 }
 </style>

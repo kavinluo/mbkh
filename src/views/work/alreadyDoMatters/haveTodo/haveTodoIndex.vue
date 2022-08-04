@@ -2,7 +2,7 @@
  * @Author: kevin
  * @Date: 2022-05-13 11:32:12
  * @LastEditors: kevin
- * @LastEditTime: 2022-07-15 17:18:04
+ * @LastEditTime: 2022-08-02 14:58:32
  * @Description: 已办事宜
 -->
 <template>
@@ -24,7 +24,7 @@
       <div v-html="scope.row.content"></div>
     </template>
     <template #handler="scope">
-      <el-link type="primary" size="small" @click="handleAddTemplate(scope.row)" underline icon="view">查看</el-link>&nbsp;&nbsp;&nbsp;
+      <el-link type="primary" size="small" @click="handleAddTemplate(scope.row)" underline icon="view">查看</el-link>&nbsp;&nbsp;
     </template>
   </kv-table>
   <kvDialog v-bind="editDialog" v-model="editDialog.dialogVisible">

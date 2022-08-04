@@ -2,7 +2,7 @@
  * @Author: kevin
  * @Date: 2022-05-09 11:00:36
  * @LastEditors: kevin
- * @LastEditTime: 2022-05-16 17:58:33
+ * @LastEditTime: 2022-08-02 14:58:39
  * @Description: 分类管理
 -->
 <template>
@@ -18,8 +18,8 @@
       :useTableData="tableData"
       @handleSelectionChange="handleSelectionChange">
       <template #handle="props">
-        <el-link type="primary" size="small" @click="handleEdit('edit', props.row)" underline icon="edit">编辑</el-link>&nbsp;&nbsp;&nbsp;
-        <el-link type="danger" size="small" @click="handleRemove(props.row)" underline icon="delete">删除</el-link>&nbsp;&nbsp;&nbsp;
+        <el-link type="primary" size="small" @click="handleEdit('edit', props.row)" underline icon="edit">编辑</el-link>&nbsp;&nbsp;
+        <el-link type="danger" size="small" @click="handleRemove(props.row)" underline icon="delete">删除</el-link>&nbsp;&nbsp;
       </template>
     </kv-table>
   </div>

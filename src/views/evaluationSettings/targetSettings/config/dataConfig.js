@@ -2,7 +2,7 @@
  * @Author: kevin
  * @Date: 2022-03-21 11:49:51
  * @LastEditors: kevin
- * @LastEditTime: 2022-05-23 10:30:05
+ * @LastEditTime: 2022-08-02 14:55:01
  * @Description: 目标相关
  */
 // import { getAccountList } from '@/api/account'
@@ -219,17 +219,17 @@ export const addSubFormConfig = {
         message: '请输入目标名称'
       }
     },
-    {
-      field: 'cycle1',
-      type: 'select',
-      label: '整体周期',
-      placeholder: '整体周期',
-      optionValue: 'id',
-      optionLabel: 'title',
-      align: 'right',
-      disabled: true,
-      options: []
-    },
+    // {
+    //   field: 'cycle1',
+    //   type: 'select',
+    //   label: '整体周期',
+    //   placeholder: '整体周期',
+    //   optionValue: 'id',
+    //   optionLabel: 'title',
+    //   align: 'right',
+    //   disabled: true,
+    //   options: []
+    // },
     {
       field: 'cycle2',
       type: 'select',
@@ -336,7 +336,8 @@ export const indexSearchConfig = {
 export const indexTableConfig = [
   {
     label: '目标名称',
-    prop: 'title'
+    prop: 'title',
+    minWidth: 200
   },
   {
      label: '状态',
@@ -345,10 +346,14 @@ export const indexTableConfig = [
    }, {
     label: '最近更新',
     prop: 'updateTime',
-    slotName: 'updateTime'
+    slotName: 'updateTime',
+    minWidth: 200
   }, {
      label: '操作',
-     slotName: 'handler'
+     slotName: 'handler',
+     align: 'right',
+     width: 280,
+     fixed: 'right'
    }
  ]
  export const TableConfig = [

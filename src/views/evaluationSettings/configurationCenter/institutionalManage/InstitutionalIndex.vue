@@ -2,7 +2,7 @@
  * @Author: kevin
  * @Date: 2022-03-21 11:46:11
  * @LastEditors: kevin
- * @LastEditTime: 2022-04-11 14:49:24
+ * @LastEditTime: 2022-08-02 14:57:40
  * @Description: 机构管理
 -->
 <template>
@@ -20,7 +20,7 @@
     :getDataFn="getListTreePage"
     @handleSelectionChange="handleSelectionChange">
     <template #handler="scope">
-      <el-link type="primary" size="small" @click="handleAddTemplate(scope.row)" underline icon="edit">编辑</el-link>&nbsp;&nbsp;&nbsp;
+      <el-link type="primary" size="small" @click="handleAddTemplate(scope.row)" underline icon="edit">编辑</el-link>&nbsp;&nbsp;
       <el-link type="danger" size="small" @click="handleRemove(scope.row)" underline icon="delete">删除</el-link>
     </template>
   </kv-table>

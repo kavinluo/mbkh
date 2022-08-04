@@ -2,7 +2,7 @@
  * @Author: kevin
  * @Date: 2022-05-11 11:06:43
  * @LastEditors: kevin
- * @LastEditTime: 2022-08-02 09:39:52
+ * @LastEditTime: 2022-08-02 16:10:15
  * @Description: Do not edit
 -->
 <template>
@@ -117,6 +117,7 @@
   const cancelTargetModle = () => {
       emit('callBack')
   }
+  // 阻止输入E
   const preventE = (event) => {
     if (event.keyCode === 69) {
       event.target.value = ''

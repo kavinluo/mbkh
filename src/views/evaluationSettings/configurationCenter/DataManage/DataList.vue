@@ -2,7 +2,7 @@
  * @Author: kevin
  * @Date: 2022-03-15 15:21:16
  * @LastEditors: kevin
- * @LastEditTime: 2022-04-14 16:59:27
+ * @LastEditTime: 2022-08-02 14:58:02
  * @Description: 数据管理
 -->
 <template>
@@ -25,7 +25,7 @@
       最大：{{ scope.row.maxScore }} - 最小：{{ scope.row.minScore || 0 }}
     </template>
     <template #handler="scope">
-      <el-link type="primary" size="small" @click="handleEdit(scope.row)" underline icon="edit">编辑</el-link>&nbsp;&nbsp;&nbsp;
+      <el-link type="primary" size="small" @click="handleEdit(scope.row)" underline icon="edit">编辑</el-link>&nbsp;&nbsp;
       <el-link type="danger" size="small" @click="handleRemove(scope.row)" underline icon="delete">删除</el-link>
     </template>
   </kv-table>

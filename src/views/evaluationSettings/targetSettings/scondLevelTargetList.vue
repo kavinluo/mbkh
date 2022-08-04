@@ -2,7 +2,7 @@
  * @Author: kevin
  * @Date: 2022-03-18 15:59:59
  * @LastEditors: kevin
- * @LastEditTime: 2022-07-19 15:47:56
+ * @LastEditTime: 2022-08-02 14:57:22
  * @Description: 目标设置
 -->
 <template>
@@ -24,8 +24,8 @@
       {{ formatTimestamp(scope.row.updateTime, 'YYYY-MM-DD HH:mm') }}
     </template>
     <template #handler="scope">
-      <el-link type="primary" size="small" v-if="rowData.isPublish === 1" @click="handleEdit(scope.row, 'edit')" underline icon="view">查看</el-link>&nbsp;&nbsp;&nbsp;
-      <el-link type="primary" size="small" v-else @click="handleEdit(scope.row, 'edit')" underline icon="edit">编辑</el-link>&nbsp;&nbsp;&nbsp;
+      <el-link type="primary" size="small" v-if="rowData.isPublish === 1" @click="handleEdit(scope.row, 'edit')" underline icon="view">查看</el-link>&nbsp;&nbsp;
+      <el-link type="primary" size="small" v-else @click="handleEdit(scope.row, 'edit')" underline icon="edit">编辑</el-link>&nbsp;&nbsp;
       <el-link type="danger" size="small" :disabled="rowData.isPublish === 1" @click="handleRemove(scope.row)" underline icon="delete">删除</el-link>
     </template>
   </kv-table>
