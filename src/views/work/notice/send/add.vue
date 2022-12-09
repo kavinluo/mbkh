@@ -2,7 +2,7 @@
  * @Author: kevin
  * @Date: 2022-05-06 15:49:44
  * @LastEditors: kevin
- * @LastEditTime: 2022-05-17 17:04:42
+ * @LastEditTime: 2022-08-08 15:52:28
  * @Description: 添加公告
 -->
 <template>
@@ -49,7 +49,7 @@
       </template>
       <template #footer>
         <div class="handle-btns" style="text-align: center">
-          <el-button type="primary" @click.prevent="onSubmit(ruleFormRef)">提交</el-button>
+          <button class="el-button el-button--primary" v-no-anti-shake @click="onSubmit(ruleFormRef)">提交</button>
           <el-button type="warning" @click="handleResetClick">关闭</el-button>
         </div>
       </template>

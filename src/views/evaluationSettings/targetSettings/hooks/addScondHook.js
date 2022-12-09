@@ -2,7 +2,7 @@
  * @Author: kevin
  * @Date: 2022-05-18 15:26:27
  * @LastEditors: kevin
- * @LastEditTime: 2022-08-02 13:58:54
+ * @LastEditTime: 2022-08-08 11:42:04
  * @Description: 二级目标添加
  */
 import { ref, nextTick, getCurrentInstance } from 'vue'
@@ -28,6 +28,7 @@ export const addScondTargetHook = ({ rowData, subRowData, editType, emit }) => {
       item.disabled = rowData.isPublish === 1
     }
   })
+  const isLoading = ref(false)
   // 是否重新选择
   const isRepeatSelect = ref(repeatTipModelConfig)
   // 指标周期
@@ -157,10 +158,12 @@ export const addScondTargetHook = ({ rowData, subRowData, editType, emit }) => {
           proxy.$message.error(`请选择考核内容！`)
           return
         }
+        isLoading.value = true
         fn(obj).then(res => {
           const { status } = res
           if (status?.code === '0') {
             emit('callBack')
+            isLoading.value = false
           }
         })
       }
@@ -192,6 +195,7 @@ export const addScondTargetHook = ({ rowData, subRowData, editType, emit }) => {
     // cyListOption,
     formData,
     useTable,
-    isView
+    isView,
+    isLoading
   }
 }

@@ -2,7 +2,7 @@
  * @Author: kevin
  * @Date: 2022-03-03 12:49:43
  * @LastEditors: kevin
- * @LastEditTime: 2022-03-29 15:15:12
+ * @LastEditTime: 2022-08-08 16:00:31
  * @Description: 表单字段
  */
 
@@ -122,10 +122,12 @@ export const tablecConfig = [
   }, {
     label: '人员编号',
     prop: 'number'
-  }, {
-    label: '所属机构',
-    prop: 'organization'
-  }, {
+  },
+  // , {
+  //   label: '所属机构',
+  //   prop: 'organizationName'
+  // }
+   {
     label: '操作',
     slotName: 'handler'
   }

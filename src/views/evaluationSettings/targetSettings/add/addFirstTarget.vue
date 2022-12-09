@@ -2,7 +2,7 @@
  * @Author: kevin
  * @Date: 2022-03-17 14:03:23
  * @LastEditors: kevin
- * @LastEditTime: 2022-05-18 17:25:55
+ * @LastEditTime: 2022-08-08 15:41:42
  * @Description: 新增一级目标
 -->
 <template>
@@ -41,7 +41,7 @@
     </template>
     <template #footer>
       <div style="margin-top: 20px;text-align: right">
-        <el-button type="primary" @click.prevent="handleAddTarget(ruleFormRef)">确定</el-button>
+        <button class="el-button el-button--primary" :loading="isLoading" v-no-anti-shake @click="handleAddTarget(ruleFormRef)">确定</button>
       </div>
     </template>
   </kv-form>
@@ -63,7 +63,8 @@
       directorOptions,
       addTargetFormConfig,
       formData,
-      ruleFormRef
+      ruleFormRef,
+      isLoading
 } = addFirstTargetHook(rowData, emit)
 
 </script>

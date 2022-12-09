@@ -2,7 +2,7 @@
  * @Author: kevin
  * @Date: 2022-03-03 13:54:49
  * @LastEditors: kevin
- * @LastEditTime: 2022-07-06 14:58:52
+ * @LastEditTime: 2022-08-08 16:51:52
  * @Description: 确认弹框
 -->
 
@@ -43,7 +43,7 @@
     </template>
     <template #footer v-if="isShowFooterStatus">
       <span class="dialog-footer" style="padding: 10px 20px; display:block;">
-        <el-button type="primary" @click="confirm">确定</el-button>
+        <el-button type="primary" :loading="isLoading" @click="confirm">确定</el-button>
         <el-button @click="handleClose" type="warning" v-if="isShowCancelBtn">关闭</el-button>
       </span>
     </template>
@@ -62,6 +62,7 @@
   const fileList = ref([])
   const dialog = ref(props.dialogVisible)
   const isShowFooterStatus = ref(false)
+  const isLoading = ref(false)
   isShowFooterStatus.value = props.modeType === 'remove' ? true : props.isShowFooter
   const messageType = {
     remove: '删除',
@@ -74,19 +75,22 @@
   const thatMessage = ref(`您确定要${messageType[props.modeType]}吗？`)
   const confirm = () => {
     if (props.modeType === 'remove') { // 删除接口统一 直接掉删除的接口
-    console.log(props.params)
+      isLoading.value = true
       remove(props.baseURL, props.params).then(() => {
         emit('callBack', props.modeType)
+        isLoading.value = false
       })
     } else if (props.useFn) {
-      console.log('props.params', props.params)
+      isLoading.value = true
       if (props.params) {
         props.useFn(props.params).then(() => {
-        emit('callBack', props.modeType)
-      })
+          emit('callBack', props.modeType)
+          isLoading.value = false
+        })
       } else {
         props.useFn(props.params)
         emit('callBack', props.modeType)
+        isLoading.value = false
       }
     }
     dialog.value = false

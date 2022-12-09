@@ -2,13 +2,10 @@
  * @Author: kevin
  * @Date: 2022-02-21 11:54:16
  * @LastEditors: kevin
- * @LastEditTime: 2022-08-02 09:14:09
+ * @LastEditTime: 2022-08-08 14:20:06
  * @Description: 配置文件
  */
 
-// const AutoImport = require('unplugin-auto-import/webpack')
-// const Components = require('unplugin-vue-components/webpack')
-// const { ElementPlusResolver } = require('unplugin-vue-components/resolvers')
   const NodePolyfillPlugin = require('node-polyfill-webpack-plugin') // 针对webpack5 的设置
 
 // const targetIp = 'http://192.168.1.166:11006'
@@ -54,7 +51,7 @@ module.exports = defineConfig({
     // target: 'node'
   },
   devServer: {
-    port: 8083,
+    port: 8082,
     proxy: {
       '/api': {
         target: process.env.VUE_APP_API_BASE_URL,

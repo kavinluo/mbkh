@@ -2,7 +2,7 @@
  * @Author: kevin
  * @Date: 2022-02-21 11:54:16
  * @LastEditors: kevin
- * @LastEditTime: 2022-03-24 09:53:33
+ * @LastEditTime: 2022-08-08 16:52:24
  * @Description: Do not edit
  */
 
@@ -17,7 +17,8 @@ import router from './router/index.js'
 import { axios } from './utils/request'
 import { globalRegisterComponent } from './components/index'
 import store, { setupStore } from './store'
-
+// btn防抖
+import noAntiShake from './utils/directive'
 const app = createApp(App)
 
 app.use(store)
@@ -27,6 +28,7 @@ setupStore() // store刷新后丢失问题
 app.use(router)
 
 app.use(globalRegisterComponent) // 注册element-plus | 其他
+app.use(noAntiShake)
 
 app.mount('#app')
 

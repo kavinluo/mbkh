@@ -2,7 +2,7 @@
  * @Author: kevin
  * @Date: 2022-03-18 15:59:59
  * @LastEditors: kevin
- * @LastEditTime: 2022-08-02 14:57:22
+ * @LastEditTime: 2022-08-09 08:59:05
  * @Description: 目标设置
 -->
 <template>
@@ -79,6 +79,8 @@
   const handleRemove = (row) => {
     removModelConfig.value.dialogVisible = true
     removModelConfig.value.params = row.id
+    removModelConfig.value.modeType = 'remove'
+    removModelConfig.value.useFn = null
   }
   const formData = ref(formOriginData)
   const backIndex = () => {

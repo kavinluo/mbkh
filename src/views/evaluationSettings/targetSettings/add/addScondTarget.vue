@@ -2,7 +2,7 @@
  * @Author: kevin
  * @Date: 2022-04-02 10:27:51
  * @LastEditors: kevin
- * @LastEditTime: 2022-07-15 16:13:43
+ * @LastEditTime: 2022-08-08 11:41:04
  * @Description: 新建二级目标
 -->
 <template>
@@ -87,7 +87,7 @@
         </table>
       </div>
       <div style="margin-top: 20px;text-align: right">
-        <el-button type="primary" v-if="!isView" @click.prevent="handleAddTarget(ruleFormRef)">确定</el-button>
+        <el-button type="primary" v-if="!isView" :loading="isLoading" @click.prevent="handleAddTarget(ruleFormRef)">确定</el-button>
         <el-button type="warning" v-else @click.prevent="cancel1">关闭</el-button>
       </div>
     </template>
@@ -146,7 +146,8 @@
     ruleFormRef,
     formData,
     useTable,
-    isView
+    isView,
+    isLoading
   } = addScondTargetHook({ rowData, subRowData, editType, emit })
 </script>
 

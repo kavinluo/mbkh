@@ -2,7 +2,7 @@
  * @Author: kevin
  * @Date: 2022-03-24 15:52:07
  * @LastEditors: kevin
- * @LastEditTime: 2022-05-10 17:32:20
+ * @LastEditTime: 2022-08-08 15:52:52
  * @Description: 添加指标信息
 -->
 
@@ -38,7 +38,7 @@
       {{ formData.countScore }}
     </el-form-item>
     <el-form-item>
-      <el-button type="primary" @click="onSubmit(ruleFormRef)">提交</el-button>
+      <button class="el-button el-button--primary" v-no-anti-shake @click="onSubmit(ruleFormRef)">提交</button>
       <el-button type="warning" @click="cancelTargetModel">关闭</el-button>
     </el-form-item>
   </el-form>
@@ -251,7 +251,6 @@ const { quotaData, inuptType, quotaRowData } = defineProps({
     const fn = inuptType === 'add' ? add : modify
     const onSubmit = (formEL) => {
       const useList = [] // 将所有的集合展开提交
-      console.log('evaluateQuotaDetailedDtoList', evaluateQuotaDetailedDtoList)
       if (!evaluateQuotaDetailedDtoList.value.length) {
         proxy.$message.warning('请添加考评内容！')
         return

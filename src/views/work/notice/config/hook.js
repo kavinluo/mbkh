@@ -125,7 +125,6 @@ export const addHandels = (editType, row, emit) => {
 
   const fn = editType === 'add' ? add : modify
   const onSubmit = (formEl) => {
-    console.log('formEl', formEl)
     const params = Object.assign({}, formData.value)
     params.checkArea = params.checkArea.join(',')
     formEl.$refs.ruleFormRef?.validate((valid) => {

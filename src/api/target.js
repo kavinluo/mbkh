@@ -18,7 +18,7 @@ const baseURL = '/check/target'
     url: `${useUrl}/add`,
     method: 'post',
     data: parameter,
-    successTitle: '添加成功！'
+    successTitle: parameter.id ? '修改成功!' : '添加成功!'
   })
 }
 

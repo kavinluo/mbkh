@@ -2,7 +2,7 @@
  * @Author: kevin
  * @Date: 2022-03-14 10:13:59
  * @LastEditors: kevin
- * @LastEditTime: 2022-08-02 15:44:04
+ * @LastEditTime: 2022-08-08 15:56:09
  * @Description: 添加指标库
 -->
 
@@ -20,7 +20,7 @@
     </template>
     <template #footer>
       <div class="handle-btns" style="text-align: center">
-        <el-button type="primary" @click.prevent="onSubmit(ruleFormRef)">提交</el-button>
+        <button class="el-button el-button--primary" v-no-anti-shake @click="onSubmit(ruleFormRef)">提交</button>
         <!-- <el-button type="warning" @click="handleResetClick">关闭</el-button> -->
       </div>
     </template>

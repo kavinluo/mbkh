@@ -2,7 +2,7 @@
  * @Author: kevin
  * @Date: 2022-05-18 15:26:27
  * @LastEditors: kevin
- * @LastEditTime: 2022-05-19 10:57:51
+ * @LastEditTime: 2022-08-08 12:01:44
  * @Description: 目标添加
  */
   import { ref } from 'vue'
@@ -10,12 +10,13 @@
     addTargetFormConfig
 } from '../config/dataConfig'
   import { getRoleList } from '@/api/organization'
-  import { add, getList, modify } from '@/api/target'
+  import { add, getList } from '@/api/target'
   import { getSuper } from '@/api/account'
   export const addFirstTargetHook = (rowData, emit) => {
     const ruleFormRef = ref({})
     const directorOptions = ref([]) // 负责人
     const checkAreaOptions = ref([]) // 选择考区
+    const isLoading = ref(false)
     const formOriginData = {
       cycle1: '',
       cycle2: '',
@@ -37,7 +38,7 @@
         formData.value = res.data
       })
     }
-    const fn = rowData ? modify : add
+    const fn = add
     const handleAddTarget = (formEL) => {
       formEL.$refs.ruleFormRef?.validate((valid) => {
         if (valid) {
@@ -46,11 +47,13 @@
             checkArea: checkArea.join(','),
             director: director.join(',')
           }
+          isLoading.value = true
           const obj = Object.assign({}, formData.value, params)
           fn(obj).then(res => {
             const { status } = res
             if (status?.code === '0') {
               emit('callBack')
+              isLoading.value = false
             }
           })
         }
@@ -76,6 +79,7 @@
       formData,
       ruleFormRef,
       addTargetFormConfig,
-      handleAddTarget
+      handleAddTarget,
+      isLoading
     }
   }
